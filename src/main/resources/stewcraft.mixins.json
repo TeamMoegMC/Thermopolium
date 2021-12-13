@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.teammoeg.stewcraft.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "stewcraft.refmap.json",
+  "mixins": [
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
