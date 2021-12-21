@@ -16,7 +16,11 @@
  * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft.event;
+package com.teammoeg.thermopolium.event;
+
+import static com.teammoeg.thermopolium.Contents.*;
+
+import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
@@ -26,8 +30,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import com.teammoeg.stewcraft.Main;
-import static com.teammoeg.stewcraft.Contents.*;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {

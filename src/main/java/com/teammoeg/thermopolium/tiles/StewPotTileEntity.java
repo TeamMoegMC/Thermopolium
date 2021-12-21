@@ -1,6 +1,6 @@
-package com.teammoeg.stewcraft.tiles;
+package com.teammoeg.thermopolium.tiles;
 
-import com.teammoeg.stewcraft.Contents.SCTileTypes;
+import com.teammoeg.thermopolium.Contents.SCTileTypes;
 
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;

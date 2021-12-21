@@ -1,4 +1,4 @@
-package com.teammoeg.stewcraft.recipes;
+package com.teammoeg.thermopolium.recipes;
 
 import com.google.gson.JsonObject;
 

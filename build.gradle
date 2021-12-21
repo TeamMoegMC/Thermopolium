@@ -22,7 +22,7 @@ apply plugin: 'maven-publish'
 
 group = 'com.teammoeg'
 version = "${minecraft_version}-${mod_version}"
-archivesBaseName = 'stewcraft'
+archivesBaseName = 'thermopolium'
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
@@ -53,9 +53,9 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=" + "stewcraft.mixins.json"
+            arg "-mixin.config=" + "thermopolium.mixins.json"
             mods {
-                stewcraft {
+                thermopolium {
                     source sourceSets.main
                 }
             }
@@ -67,9 +67,9 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=" + "stewcraft.mixins.json"
+            arg "-mixin.config=" + "thermopolium.mixins.json"
             mods {
-                stewcraft {
+                thermopolium {
                     source sourceSets.main
                 }
             }
@@ -81,9 +81,9 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'stewcraft', '--all', '--output', file('src/generated/resources/'), 'validate', '--existing', file('src/main/resources/'), '--existing-mod', 'immersiveengineering'
+            args '--mod', 'thermopolium', '--all', '--output', file('src/generated/resources/'), 'validate', '--existing', file('src/main/resources/'), '--existing-mod', 'immersiveengineering'
             mods {
-                stewcraft {
+                thermopolium {
 					source sourceSets.main
                     source sourceSets.datagen
                 }
@@ -97,7 +97,7 @@ sourceSets.main.resources {
 }
 
 mixin {
-    add sourceSets.main, "stewcraft.refmap.json"
+    add sourceSets.main, "thermopolium.refmap.json"
 }
 
 repositories {
@@ -179,7 +179,7 @@ jar {
                 "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "TeamMoeg",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "stewcraft.mixins.json"
+                "MixinConfigs": "thermopolium.mixins.json"
         ])
     }
 }

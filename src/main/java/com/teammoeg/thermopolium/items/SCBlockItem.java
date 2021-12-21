@@ -16,10 +16,10 @@
  * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft.items;
+package com.teammoeg.thermopolium.items;
 
-import com.teammoeg.stewcraft.Contents;
-import com.teammoeg.stewcraft.Main;
+import com.teammoeg.thermopolium.Contents;
+import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

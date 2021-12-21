@@ -16,7 +16,7 @@
  * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft;
+package com.teammoeg.thermopolium;
 
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;

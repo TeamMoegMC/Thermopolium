@@ -1,23 +1,23 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license = "GPLv3"
-issueTrackerURL = "https://github.com/TeamMoegMC/StewCraft/issues"
+issueTrackerURL = "https://github.com/TeamMoegMC/Thermopolium/issues"
 [[mods]] #mandatory
-modId = "stewcraft" #mandatory
+modId = "thermopolium" #mandatory
 version = "${file.jarVersion}" #mandatory
-displayName = "TWR Frosted Heart" #mandatory
+displayName = "Thermopolium" #mandatory
 authors = "[TeamMoeg] YueSha, khjxiaogu, duck_egg, Lyuuke"
 description = '''
 Some heat in the cold...
 '''
-[[dependencies.stewcraft]]
+[[dependencies.thermopolium]]
     modId = "forge"
     mandatory = true
     versionRange = "[36,)"
     ordering = "NONE"
     side = "BOTH"
 
-[[dependencies.stewcraft]]
+[[dependencies.thermopolium]]
     modId = "minecraft"
     mandatory = true
     versionRange = "[1.16.5,1.17)"

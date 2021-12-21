@@ -16,15 +16,15 @@
  * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft;
+package com.teammoeg.thermopolium;
 
 import javax.annotation.Nonnull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.teammoeg.stewcraft.Contents.SCItems;
-import com.teammoeg.stewcraft.network.PacketHandler;
+import com.teammoeg.thermopolium.Contents.SCItems;
+import com.teammoeg.thermopolium.network.PacketHandler;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -40,8 +40,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(Main.MODID)
 public class Main {
 
-    public static final String MODID = "stewcraft";
-    public static final String MODNAME = "Stew Craft";
+    public static final String MODID = "thermopolium";
+    public static final String MODNAME = "Thermopolium";
     public static final Logger logger = LogManager.getLogger(MODNAME);
     public static final ItemGroup itemGroup = new ItemGroup(MODID) {
         @Override

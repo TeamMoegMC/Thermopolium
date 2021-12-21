@@ -1,4 +1,4 @@
-package com.teammoeg.stewcraft.container;
+package com.teammoeg.thermopolium.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;

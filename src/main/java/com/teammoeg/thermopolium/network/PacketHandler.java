@@ -16,7 +16,7 @@
  * along with Steam Powered. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft.network;
+package com.teammoeg.thermopolium.network;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;

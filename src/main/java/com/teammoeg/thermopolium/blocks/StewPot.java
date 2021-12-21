@@ -1,9 +1,9 @@
-package com.teammoeg.stewcraft.blocks;
+package com.teammoeg.thermopolium.blocks;
 
 import java.util.function.BiFunction;
 
-import com.teammoeg.stewcraft.Contents;
-import com.teammoeg.stewcraft.Main;
+import com.teammoeg.thermopolium.Contents;
+import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

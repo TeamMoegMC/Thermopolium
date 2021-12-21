@@ -16,7 +16,7 @@
  * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.teammoeg.stewcraft;
+package com.teammoeg.thermopolium;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
-import com.teammoeg.stewcraft.blocks.StewPot;
-import com.teammoeg.stewcraft.items.SCBlockItem;
-import com.teammoeg.stewcraft.items.StewItem;
-import com.teammoeg.stewcraft.recipes.CookingRecipe;
-import com.teammoeg.stewcraft.recipes.CookingRecipeSerializer;
-import com.teammoeg.stewcraft.tiles.StewPotTileEntity;
+import com.teammoeg.thermopolium.blocks.StewPot;
+import com.teammoeg.thermopolium.items.SCBlockItem;
+import com.teammoeg.thermopolium.items.StewItem;
+import com.teammoeg.thermopolium.recipes.CookingRecipe;
+import com.teammoeg.thermopolium.recipes.CookingRecipeSerializer;
+import com.teammoeg.thermopolium.tiles.StewPotTileEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
