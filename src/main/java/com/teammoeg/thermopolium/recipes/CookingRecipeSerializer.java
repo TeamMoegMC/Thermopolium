@@ -6,36 +6,21 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public class CookingRecipeSerializer implements IRecipeSerializer<CookingRecipe> {
-	ResourceLocation rn;
-	@Override
-	public IRecipeSerializer<?> setRegistryName(ResourceLocation name) {
-		rn=name;
-		return this;
-	}
-
-	@Override
-	public ResourceLocation getRegistryName() {
-		return rn;
-	}
-
-	@Override
-	public Class<IRecipeSerializer<?>> getRegistryType() {
-		return null;
-	}
+public class CookingRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CookingRecipe> {
 
 	@Override
 	public CookingRecipe read(ResourceLocation recipeId, JsonObject json) {
-		return null;
+		return new CookingRecipe(recipeId,json);
 	}
 
 	@Override
 	public CookingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-		return null;
+		return new CookingRecipe(recipeId,buffer);
 	}
 
 	@Override
 	public void write(PacketBuffer buffer, CookingRecipe recipe) {
+		recipe.write(buffer);
 	}
 
 }

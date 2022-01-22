@@ -31,7 +31,6 @@ sourceSets {
         resources {
             srcDirs = [
                     "$rootDir/src/main/resources",
-                    "src/generated/resources",
             ]
         }
     }
@@ -41,6 +40,13 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output
     }
+}
+task genItemNames(){
+	inputs.file(sourceSets.main.resources.srcDirs[0])
+	outputs.file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/items.txt"))
+	file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/items.txt")).withWriter{ out ->
+  		fileTree(include:['*.png'],dir:"src/main/resources/assets/thermopolium/textures/item").each {out.println it.name}
+	}
 }
 minecraft {
     mappings channel: 'snapshot', version: '20210309-1.16.5'
@@ -92,10 +98,7 @@ minecraft {
     }
 }
 
-sourceSets.main.resources {
-    srcDir 'src/generated/resources'
-}
-
+ 
 mixin {
     add sourceSets.main, "thermopolium.refmap.json"
 }
@@ -185,7 +188,7 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
-
+build.finalizedBy('genItemNames')
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')

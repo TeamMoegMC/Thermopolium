@@ -18,6 +18,9 @@
 
 package com.teammoeg.thermopolium;
 
+import com.teammoeg.thermopolium.fluid.SoupFluid;
+import com.teammoeg.thermopolium.fluid.SoupFluid.SoupAttributes;
+
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +40,7 @@ public class Fluids {
         return new ForgeFlowingFluid.Source(Fluids.HOT_WATER_PROPERTIES);
     });
     public static RegistryObject<FlowingFluid> STEW = FLUIDS.register("stew", () -> {
-        return new ForgeFlowingFluid.Source(Fluids.STW_PROPERTIES);
+        return new SoupFluid(Fluids.STW_PROPERTIES);
     });
 
     public static ForgeFlowingFluid.Properties HOT_WATER_PROPERTIES =
@@ -45,7 +48,7 @@ public class Fluids {
                     .color(0xFF3ABDFF).temperature(333)).block(null)
                     .slopeFindDistance(3).explosionResistance(100F);
     public static ForgeFlowingFluid.Properties STW_PROPERTIES =
-            new ForgeFlowingFluid.Properties(STEW, STEW, FluidAttributes.builder(STILL_FLUID_TEXTURE, FLOWING_FLUID_TEXTURE)
-                    .color(0xFFFFFFFF).viscosity(-1))
+            new ForgeFlowingFluid.Properties(STEW, STEW,SoupAttributes.builder(STILL_FLUID_TEXTURE, FLOWING_FLUID_TEXTURE)
+                    .viscosity(1200))
                     .slopeFindDistance(1).explosionResistance(100F);
 }
