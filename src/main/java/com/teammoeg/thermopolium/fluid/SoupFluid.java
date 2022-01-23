@@ -1,11 +1,5 @@
 package com.teammoeg.thermopolium.fluid;
 
-import java.util.List;
-import java.util.function.BiFunction;
-
-import com.teammoeg.thermopolium.Main;
-import com.teammoeg.thermopolium.fluid.SoupFluid.SoupAttributes;
-import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.block.BlockState;
@@ -14,7 +8,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -26,7 +19,7 @@ public class SoupFluid extends ForgeFlowingFluid {
 
 	@Override
 	public Fluid getStillFluid() {
-		return super.getStillFluid();
+		return this;
 	}
 
 	@Override
@@ -43,10 +36,13 @@ public class SoupFluid extends ForgeFlowingFluid {
 	protected BlockState getBlockState(FluidState state) {
 		return Blocks.AIR.getDefaultState();
 	}
-
+    @Override
+    public boolean isEquivalentTo(Fluid fluidIn) {
+        return fluidIn == this;
+    }
 	@Override
 	public boolean isSource(FluidState p_207193_1_) {
-		return false;
+		return true;
 	}
 	public static SoupInfo getInfo(FluidStack stack){
 		if(stack.hasTag())
@@ -63,27 +59,30 @@ public class SoupFluid extends ForgeFlowingFluid {
 
 
 	public static class SoupAttributes extends FluidAttributes {
-		private static final String DefName="fluid."+Main.MODID+".soup";
+		//private static final String DefName="fluid."+Main.MODID+".soup";
 		public SoupAttributes(Builder builder, Fluid fluid) {
 			super(builder, fluid);
 		}
 
 		@Override
 		public int getColor(FluidStack stack) {
-			int color = 0xffffffff;
-			return color;
-		}
-
-		@Override
-		public ITextComponent getDisplayName(FluidStack stack) {
-			return new TranslationTextComponent(getTranslationKey(stack));
+			return super.getColor();
 		}
 		
+
 		@Override
 		public String getTranslationKey(FluidStack stack) {
-			CompoundNBT nbt=stack.getChildTag("soup");
-			return nbt==null?DefName:SoupInfo.getRegName(nbt);
+			ResourceLocation f=stack.getFluid().getRegistryName();
+			return "item."+f.getNamespace()+"."+f.getPath();
 		}
+	    /**
+	     * Returns the localized name of this fluid.
+	     */
+	    public ITextComponent getDisplayName(FluidStack stack)
+	    {
+	        return new TranslationTextComponent(getTranslationKey(stack));
+	    }
+
 		private static class SoupAttributesBuilder extends Builder{
 
 			protected SoupAttributesBuilder(ResourceLocation stillTexture, ResourceLocation flowingTexture) {

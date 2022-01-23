@@ -31,6 +31,7 @@ sourceSets {
         resources {
             srcDirs = [
                     "$rootDir/src/main/resources",
+                    'src/generated/resources'
             ]
         }
     }
@@ -39,13 +40,18 @@ sourceSets {
         runtimeClasspath += main.runtimeClasspath
         compileClasspath += main.output
         runtimeClasspath += main.output
+        resources {
+            srcDirs = [
+                    "$rootDir/src/datagen/resources",
+            ]
+        }
     }
 }
 task genItemNames(){
 	inputs.file(sourceSets.main.resources.srcDirs[0])
-	outputs.file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/items.txt"))
-	file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/items.txt")).withWriter{ out ->
-  		fileTree(include:['*.png'],dir:"src/main/resources/assets/thermopolium/textures/item").each {out.println it.name}
+	outputs.file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/item/items.txt"))
+	file(new File(sourceSets.datagen.resources.srcDirs[0],"assets/thermopolium/item/items.txt")).withWriter{ out ->
+  		fileTree(include:['*.png'],dir:"src/main/resources/assets/thermopolium/textures/item").each {out.println "\""+it.name+"\","}
 	}
 }
 minecraft {

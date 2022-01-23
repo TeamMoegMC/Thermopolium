@@ -17,7 +17,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class CookingRecipe extends IDataRecipe {
 
-
+	public static List<CookingRecipe> recipes;
 	public static IRecipeType<CookingRecipe> TYPE;
 	public static RegistryObject<CookingRecipeSerializer> SERIALIZER;
 	List<StewCondition> allow;

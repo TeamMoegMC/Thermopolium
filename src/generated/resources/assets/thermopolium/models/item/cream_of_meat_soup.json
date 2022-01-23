@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "thermopolium:item/cream_of_meat_soup"
+  }
+}

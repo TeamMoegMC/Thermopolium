@@ -25,23 +25,27 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
 import com.teammoeg.thermopolium.blocks.StewPot;
+import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
+import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.items.SCBlockItem;
 import com.teammoeg.thermopolium.items.StewItem;
 import com.teammoeg.thermopolium.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.recipes.CookingRecipeSerializer;
-import com.teammoeg.thermopolium.tiles.StewPotTileEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -65,12 +69,20 @@ public class Contents {
     }
 
     public static class SCItems {
+    	public static final String[] items=new String[]{"acquacotta","bisque","bone_gelatin","borscht","borscht_cream","congee","cream_of_meat_soup",
+    			"cream_of_mushroom_soup","custard","dilute_soup","egg_drop_soup","egg_tongsui","fish_chowder","fish_soup",
+    			"fricassee","goji_tongsui","goulash","gruel","hodgepodge","meat_soup","mushroom_soup","nail_soup","nettle_soup",
+    			"okroshka","plain_milk","plain_water","porridge","poultry_soup","pumpkin_soup","pumpkin_soup_cream",
+    			"rice_pudding","scalded_milk","seaweed_soup","stock","stracciatella","ukha","vegetable_chowder","vegetable_soup",
+    			"walnut_soup"};
         public static void init() {
+        	for(String s:items)
+        		new StewItem(s,createProps());
         }
         static Properties createProps() {
-        	return new Item.Properties().group(Main.itemGroup);
+        	return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL);
         }
-        public static Item stew_bowl=new StewItem("stew",createProps());
+        //public static Item stew_bowl=new StewItem("stew",createProps());
     }
 
     public static class SCTileTypes {
@@ -80,7 +92,7 @@ public class Contents {
         public static final RegistryObject<TileEntityType<StewPotTileEntity>> STEW_POT = REGISTER.register(
                 "stew_pot", makeType(() -> new StewPotTileEntity(), () -> SCBlocks.stew_pot)
         );
-
+        
         private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
             return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
         }
@@ -90,7 +102,11 @@ public class Contents {
         }
 
     }
-
+    public static class SCGui {
+    	public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Main.MODID);
+    	public static final RegistryObject<ContainerType<StewPotContainer>> STEWPOT=CONTAINERS.register("stew_pot",()->IForgeContainerType.create(StewPotContainer::new));
+    	
+    }
     public static class SCRecipes {
         public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
                 ForgeRegistries.RECIPE_SERIALIZERS, Main.MODID

@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.teammoeg.thermopolium.Contents.SCItems;
+import com.teammoeg.thermopolium.Contents.SCBlocks;
 import com.teammoeg.thermopolium.network.PacketHandler;
 
 import net.minecraft.item.ItemGroup;
@@ -47,7 +47,7 @@ public class Main {
         @Override
         @Nonnull
         public ItemStack createIcon() {
-            return new ItemStack(SCItems.stew_bowl);
+            return new ItemStack(SCBlocks.stew_pot);
         }
     };
 
@@ -66,7 +66,9 @@ public class Main {
 
         Contents.SCItems.init();
         Contents.SCBlocks.init();
+        Fluids.init();
         Contents.SCTileTypes.REGISTER.register(mod);
+        Contents.SCGui.CONTAINERS.register(mod);
         Fluids.FLUIDS.register(mod);
         Contents.SCRecipes.RECIPE_SERIALIZERS.register(mod);
         DeferredWorkQueue.runLater(Contents.SCRecipes::registerRecipeTypes);

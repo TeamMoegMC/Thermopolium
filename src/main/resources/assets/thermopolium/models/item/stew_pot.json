@@ -1,0 +1,4 @@
+{
+  "parent": "thermopolium:block/cistern",
+  "flip-v": true
+}

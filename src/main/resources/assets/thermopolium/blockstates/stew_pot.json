@@ -1,0 +1,8 @@
+{
+  "variants": {
+      "": {
+      "model": "thermopolium:block/cistern",
+      "uvlock": true
+    }
+  }
+}

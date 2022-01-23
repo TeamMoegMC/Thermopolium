@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "thermopolium:block/cistern"
+  },
+  "loader": "forge:obj",
+  "model": "thermopolium:models/block/cistern.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
+}
