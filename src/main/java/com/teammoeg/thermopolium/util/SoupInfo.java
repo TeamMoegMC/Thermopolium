@@ -35,6 +35,9 @@ public class SoupInfo {
 		saturation=nbt.getFloat("saturation");
 		base=new ResourceLocation(nbt.getString("base"));
 	}
+	public CompoundNBT save() {
+		return new CompoundNBT();
+	}
 	public SoupInfo(ResourceLocation base) {
 		this(new ArrayList<>(),new ArrayList<>(),0,0,base);
 	}

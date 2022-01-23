@@ -134,7 +134,8 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
 		tooltip.clear();
 		super.render(transform, mouseX, mouseY, partial);
-		handleGuiTank(transform,te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
+		if(te.proctype!=2)
+			handleGuiTank(transform,te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
 		GuiUtils.drawHoveringText(transform,tooltip,mouseX, mouseY, width, height,
 				-1, font);
 		
@@ -157,42 +158,12 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			 int h = (int) (29 * (te.process / (float) te.processMax));
 			 this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176,54 + h, 16, 29-h);
 		}
-		/*
-		 * // recipe progress icon
-		 * if (tile.processMax > 0 && tile.process > 0) {
-		 * int h = (int) (12 * (tile.process / (float) tile.processMax));
-		 * this.blit(transform, guiLeft + 84, guiTop + 47 - h, 179, 1 + 12 - h, 9, h);
-		 * }
-		 * 
-		 * // work button
-		 * if (tile.isWorking()) {
-		 * this.blit(transform, guiLeft + 56, guiTop + 35, 232, 1, 19, 10);
-		 * }
-		 * 
-		 * // overdrive button
-		 * if (tile.isOverdrive()) {
-		 * this.blit(transform, guiLeft + 101, guiTop + 35, 232, 12, 19, 10);
-		 * }
-		 * 
-		 * float tempLevel = tile.getTemperatureLevel();
-		 * float rangeLevel = tile.getRangeLevel();
-		 * 
-		 * // temperature bar (182, 30)
-		 * if (tile.getIsActive()) {
-		 * int offset = (int) ((4 - tempLevel) * 14);
-		 * int bar = (int) ((tempLevel - 1) * 14);
-		 * this.blit(transform, guiLeft + 12, guiTop + 13 + offset, 181, 30, 2, 12 +
-		 * bar);
-		 * }
-		 * 
-		 * // range bar
-		 * if (tile.getIsActive()) {
-		 * int offset = (int) ((4 - rangeLevel) * 14);
-		 * int bar = (int) ((rangeLevel - 1) * 14);
-		 * this.blit(transform, guiLeft + 161, guiTop + 13 + offset, 181, 30, 2, 12 +
-		 * bar);
-		 * }
-		 */
+		//if(te.proctype==2) {
+			if(te.process>50) {
+				this.blit(transform, guiLeft + 44, guiTop + 16,176,0,52,52);
+				this.blit(transform, guiLeft + 101, guiTop + 16,229,0,21,51);
+			}
+		//}
 	}
 
 	public boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {

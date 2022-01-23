@@ -5,8 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -129,5 +134,29 @@ public class StewSerializer {
 	public static <T> void writeList(PacketBuffer buffer,List<T> nums,BiConsumer<T,PacketBuffer> func){
 		buffer.writeVarInt(nums.size());
 		nums.forEach(e->func.accept(e,buffer));
+	}
+	public static <T> void writeList2(PacketBuffer buffer,List<T> nums,BiConsumer<PacketBuffer,T> func){
+		buffer.writeVarInt(nums.size());
+		nums.forEach(e->func.accept(buffer,e));
+	}
+	public static <T> List<T> parseJsonList(JsonElement elm,Function<JsonObject,T> mapper){
+		if(elm.isJsonArray())
+			return StreamSupport.stream(elm.getAsJsonArray().spliterator(),false)
+					.map(JsonElement::getAsJsonObject)
+					.map(mapper)
+					.collect(Collectors.toList());
+		return ImmutableList.of(mapper.apply(elm.getAsJsonObject()));
+	}
+	public static <T> List<T> parseJsonElmList(JsonElement elm,Function<JsonElement,T> mapper){
+		if(elm.isJsonArray())
+			return StreamSupport.stream(elm.getAsJsonArray().spliterator(),false)
+					.map(mapper)
+					.collect(Collectors.toList());
+		return ImmutableList.of(mapper.apply(elm.getAsJsonObject()));
+	}
+	public static <T> JsonArray toJsonList(List<T> li,Function<T,JsonElement> mapper){
+		JsonArray ja=new JsonArray();
+		li.stream().map(mapper).forEach(ja::add);
+		return ja;
 	}
 }

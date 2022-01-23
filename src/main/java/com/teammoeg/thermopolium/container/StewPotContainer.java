@@ -34,8 +34,9 @@ public class StewPotContainer extends Container {
 	public StewPotContainer(int id,PlayerInventory inv,StewPotTileEntity te) {
 		super(Contents.SCGui.STEWPOT.get(), id);
 		tile=te;
-		for(int i = 0; i < 9; i++)
-			this.addSlot(new SlotItemHandler(te.getInv(), i, 45+(i%3)*18, 17+(i/3)*18));
+		if(te.proctype!=2)
+			for(int i = 0; i < 9; i++)
+				this.addSlot(new SlotItemHandler(te.getInv(), i, 45+(i%3)*18, 17+(i/3)*18));
 		this.addSlot(new SlotItemHandler(te.getInv(), 9,143,17));
 		this.addSlot(new OutputSlot(te.getInv(),10, 143,51));
 

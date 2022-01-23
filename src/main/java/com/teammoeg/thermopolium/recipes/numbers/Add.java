@@ -1,13 +1,7 @@
 package com.teammoeg.thermopolium.recipes.numbers;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.recipes.StewNumber;
 import com.teammoeg.thermopolium.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.recipes.StewSerializer;
@@ -20,9 +14,9 @@ public class Add implements StewNumber {
 	List<StewNumber> nums;
 	public Add(JsonElement jo) {
 		if(jo.isJsonObject())
-			nums=StreamSupport.stream(jo.getAsJsonObject().get("types").getAsJsonArray().spliterator(),false).map(StewSerializer::ofNumber).collect(Collectors.toList());
-		else
-			nums=StreamSupport.stream(jo.getAsJsonArray().spliterator(),false).map(StewSerializer::ofNumber).collect(Collectors.toList());
+			nums=StewSerializer.parseJsonElmList(jo.getAsJsonObject().get("types").getAsJsonArray(),StewSerializer::ofNumber);
+		else if(jo.isJsonArray())
+			nums=StewSerializer.parseJsonElmList(jo.getAsJsonArray(),StewSerializer::ofNumber);
 	}
 
 	@Override
@@ -42,9 +36,7 @@ public class Add implements StewNumber {
 
 	@Override
 	public JsonElement serialize() {
-		JsonArray types=new JsonArray();
-		nums.stream().map(StewNumber::serialize).forEach(types::add);
-		return types;
+		return StewSerializer.toJsonList(nums,StewNumber::serialize);
 	}
 	@Override
 	public void write(PacketBuffer buffer) {

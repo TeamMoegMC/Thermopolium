@@ -50,8 +50,11 @@ public class StewItem extends Item {
 	public Food getFood() {
 		return super.getFood();
 	}
-	public SoupInfo getInfo(ItemStack stack) {
+	public static SoupInfo getInfo(ItemStack stack) {
 		return new SoupInfo(stack.getOrCreateChildTag("soup"));
+	}
+	public static void setInfo(ItemStack stack,SoupInfo si) {
+		stack.getOrCreateTag().put("soup",si.save());
 	}
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {

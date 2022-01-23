@@ -20,7 +20,9 @@ package com.teammoeg.thermopolium.recipes;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -60,13 +62,16 @@ public class THRecipeReloadListener implements IResourceManagerReloadListener {
         Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
         if (recipes.size() == 0)
             return;
-        CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE);
+        BowlContainingRecipe.recipes = filterRecipes(recipes,BowlContainingRecipe.class,BowlContainingRecipe.TYPE).collect(Collectors.toMap(e->e.fluid,UnaryOperator.identity()));
+        CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE).collect(Collectors.toList());
+        BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE).collect(Collectors.toMap(e->e.before,UnaryOperator.identity()));
+        DissolveRecipe.recipes = filterRecipes(recipes, DissolveRecipe.class, DissolveRecipe.TYPE).collect(Collectors.toMap(e->e.item,UnaryOperator.identity()));
     }
 
-    static <R extends IRecipe<?>> List<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType) {
+    static <R extends IRecipe<?>> Stream<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<?> recipeType) {
         return recipes.stream()
                 .filter(iRecipe -> iRecipe.getType() == recipeType)
                 .map(recipeClass::cast)
-                .collect(Collectors.toList());
+                ;
     }
 }

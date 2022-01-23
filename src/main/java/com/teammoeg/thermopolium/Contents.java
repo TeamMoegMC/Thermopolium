@@ -29,8 +29,11 @@ import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
 import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.items.SCBlockItem;
 import com.teammoeg.thermopolium.items.StewItem;
+import com.teammoeg.thermopolium.recipes.BoilingRecipe;
+import com.teammoeg.thermopolium.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.recipes.CookingRecipe;
-import com.teammoeg.thermopolium.recipes.CookingRecipeSerializer;
+import com.teammoeg.thermopolium.recipes.DissolveRecipe;
+import com.teammoeg.thermopolium.recipes.THRecipeSerializer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -113,11 +116,17 @@ public class Contents {
         );
 
         static {
-            CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",CookingRecipeSerializer::new);
+            CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<CookingRecipe>(CookingRecipe::new,CookingRecipe::new,CookingRecipe::write));
+            BoilingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_boiling",()->new THRecipeSerializer<BoilingRecipe>(BoilingRecipe::new,BoilingRecipe::new,BoilingRecipe::write));
+            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
+            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
         }
 
         public static void registerRecipeTypes() {
         	CookingRecipe.TYPE = IRecipeType.register(Main.MODID + ":stew");
+        	BoilingRecipe.TYPE = IRecipeType.register(Main.MODID + ":boil");
+        	BowlContainingRecipe.TYPE = IRecipeType.register(Main.MODID + ":bowl");
+        	DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
         }
     }
 }
