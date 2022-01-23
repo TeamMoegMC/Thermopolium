@@ -35,7 +35,7 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 			return;
 		matrixStack.push();
 		FluidStack fs = te.getTank().getFluid();
-		if(fs!=null&&fs.getFluid()!=null)
+		if(fs!=null&&!fs.isEmpty()&&fs.getFluid()!=null)
 		{
 			float yy = fs.getAmount()/(float)te.getTank().getCapacity()*.5f+.3125f;
 			matrixStack.translate(0,yy,0);

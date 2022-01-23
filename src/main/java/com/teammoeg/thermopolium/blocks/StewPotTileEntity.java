@@ -61,20 +61,28 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	public int process;
 	public int processMax=100;
 	public short proctype=0;
+	public boolean rsstate=false;
 	public static final short NOP=0;
 	public static final short BOILING=1;
 	public static final short COOKING=2;
 	public static final ResourceLocation cookable=new ResourceLocation(Main.MODID,"cookable");
 	@Override
 	public void tick() {
-		i+=10;
-		tank.setFluid(new FluidStack(Fluids.WATER,i));
-		if(i>1250)
-			i=0;
-		process++;
-		if(process>100)
-			process=0;
-			
+		if(!world.isRemote) {
+			processMax=100;
+			i+=10;
+			tank.setFluid(new FluidStack(Fluids.WATER,i));
+			if(i>1250)
+				i=0;
+			if(proctype>0) {
+				process++;
+				if(process>100) {
+					process=0;
+					proctype=0;
+				}
+			}
+		}
+		this.syncData();
 	}
 	public boolean canAddFluid() {
 		return proctype==0;
@@ -82,37 +90,24 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		this.readCustomNBT(pkt.getNbtCompound(),true);
-	}
-
-	@Override
-	public void read(BlockState state, CompoundNBT nbt) {
-		super.read(state, nbt);
-		this.readCustomNBT(nbt,false);
-	}
-
-	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		this.writeCustomNBT(compound,false);
-		return super.write(compound);
-	}
     public void readCustomNBT(CompoundNBT nbt,boolean isClient) {
     	process=nbt.getInt("process");
     	processMax=nbt.getInt("processMax");
     	proctype=nbt.getShort("worktype");
+    	rsstate=nbt.getBoolean("rsstate");
+    	tank.readFromNBT(nbt);
     }
     @Override
-	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
-		this.readCustomNBT(tag,true);
-	}
-
 	public void writeCustomNBT(CompoundNBT nbt,boolean isClient) {
     	nbt.putInt("process",process);
     	nbt.putInt("processMax",processMax);
     	nbt.putShort("worktype",proctype);
+    	nbt.putBoolean("rsstate",rsstate);
+    	tank.writeToNBT(nbt);
     }
+
+
+
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		CompoundNBT cnbt=new CompoundNBT();
@@ -146,7 +141,18 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 
 	@Override
 	public void handleMessage(short type, int data) {
+		if(type==0)
+			if(this.proctype==0)
+				this.proctype=2;
+		if(type==1) {
+			if(data==1) 
+				rsstate=false;
+			else if(data==2)
+				rsstate=true;
+		}
+		
 	}
+	
 	IFluidHandler handler=new IFluidHandler() {
 		@Override
 		public int getTanks() {

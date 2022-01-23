@@ -1,5 +1,7 @@
 package com.teammoeg.thermopolium.container;
 
+import java.util.function.Supplier;
+
 import com.teammoeg.thermopolium.Contents;
 import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
 
@@ -23,6 +25,18 @@ public class StewPotContainer extends Container {
 			return false;
 		}
 	};
+	public static class HidableSlot extends SlotItemHandler{
+		Supplier<Boolean> vs;
+		public HidableSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition,Supplier<Boolean> visible) {
+			super(itemHandler, index, xPosition, yPosition);
+			vs=visible;
+		}
+		@Override
+		public boolean isEnabled() {
+			return vs.get();
+		}
+		
+	}
 	StewPotTileEntity tile;
 
 	public StewPotTileEntity getTile() {
@@ -34,9 +48,8 @@ public class StewPotContainer extends Container {
 	public StewPotContainer(int id,PlayerInventory inv,StewPotTileEntity te) {
 		super(Contents.SCGui.STEWPOT.get(), id);
 		tile=te;
-		if(te.proctype!=2)
-			for(int i = 0; i < 9; i++)
-				this.addSlot(new SlotItemHandler(te.getInv(), i, 45+(i%3)*18, 17+(i/3)*18));
+		for(int i = 0; i < 9; i++)
+			this.addSlot(new HidableSlot(te.getInv(), i, 45+(i%3)*18, 17+(i/3)*18,()->te.proctype!=2));
 		this.addSlot(new SlotItemHandler(te.getInv(), 9,143,17));
 		this.addSlot(new OutputSlot(te.getInv(),10, 143,51));
 

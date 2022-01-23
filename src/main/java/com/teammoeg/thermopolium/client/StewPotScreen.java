@@ -106,25 +106,35 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 
 	public static TranslationTextComponent start = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.canstart");
+	public static TranslationTextComponent started = new TranslationTextComponent("gui." + Main.MODID + ".stewpot.started");
 	public static TranslationTextComponent nostart = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.cantstart");
 	public static TranslationTextComponent nors = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.noredstone");
 	public static TranslationTextComponent rs = new TranslationTextComponent("gui." + Main.MODID + ".stewpot.redstone");
 	private ArrayList<ITextComponent> tooltip=new ArrayList<>(2);
+	ImageButton btn1;
+	ImageButton btn2;
 	@Override
 	public void init() {
 		super.init();
 		this.buttons.clear();
-		this.addButton(new ImageButton(guiLeft + 7, guiTop + 61, 20, 20, 176, 107, (b, s, x, y) -> {
-			tooltip.add(nors);
+		this.addButton(btn1=new ImageButton(guiLeft + 7, guiTop + 48, 20, 12, 176, 83, (b, s, x, y) -> {
+			if(btn1.state==0)
+				tooltip.add(start);
+			else tooltip.add(started);
 		}, btn -> {
-			((ImageButton) btn).state = 1;
+			if(btn1.state==0)
+			te.sendMessage((short) 0,0);
+			
 		}));
-		this.addButton(new ImageButton(guiLeft + 7, guiTop + 48, 20, 12, 176, 83, (b, s, x, y) -> {
-			tooltip.add(start);
+		this.addButton(btn2=new ImageButton(guiLeft + 7, guiTop + 61, 20, 20, 176, 107, (b, s, x, y) -> {
+			if(btn2.state==1)
+				tooltip.add(nors);
+			else
+				tooltip.add(rs);
 		}, btn -> {
-			((ImageButton) btn).state = 1;
+			te.sendMessage((short) 1,btn2.state);
 		}));
 		
 		
@@ -133,6 +143,8 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
 		tooltip.clear();
+		btn1.state=te.proctype>0?1:0;
+		btn2.state=te.rsstate?1:2;
 		super.render(transform, mouseX, mouseY, partial);
 		if(te.proctype!=2)
 			handleGuiTank(transform,te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
@@ -158,12 +170,10 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			 int h = (int) (29 * (te.process / (float) te.processMax));
 			 this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176,54 + h, 16, 29-h);
 		}
-		//if(te.proctype==2) {
-			if(te.process>50) {
-				this.blit(transform, guiLeft + 44, guiTop + 16,176,0,52,52);
-				this.blit(transform, guiLeft + 101, guiTop + 16,229,0,21,51);
-			}
-		//}
+		if(te.proctype==2) {
+			this.blit(transform, guiLeft + 44, guiTop + 16,176,0,54,54);
+			this.blit(transform, guiLeft + 102, guiTop + 17,230,0,21,51);
+		}
 	}
 
 	public boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {
@@ -197,26 +207,17 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 						.build(false)
 		);
 	}
-	private static void drawTexturedColoredRect(
-			IVertexBuilder builder, MatrixStack transform,
-			float x, float y, float w, float h,
-			float r, float g, float b, float alpha,
-			float u0, float u1, float v0, float v1
-	)
-	{
-		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform);
-		innerBuilder.setColor(r, g, b, alpha);
-		innerBuilder.setLight(LightTexture.packLight(15,15));
-		innerBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
-		innerBuilder.setNormal(1, 1, 1);
-		innerBuilder.pos(x, y+h, 0).tex(u0, v1).endVertex();
-		innerBuilder.pos(x+w, y+h, 0).tex(u1, v1).endVertex();
-		innerBuilder.pos(x+w, y, 0).tex(u1, v0).endVertex();
-		innerBuilder.pos(x, y, 0).tex(u0, v0).endVertex();
+	private static void buildVertex(IVertexBuilder bu,MatrixStack transform,float r,float g,float b,float a,float p1,float p2,float u0,float u1) {
+		bu.pos(transform.getLast().getMatrix(),p1,p2, 0)
+		.color(r, g, b, a)
+		.tex(u0, u1)
+		.overlay(OverlayTexture.NO_OVERLAY)
+		.lightmap(LightTexture.packLight(15,15))
+		.normal(transform.getLast().getNormal(),1, 1, 1)
+		.endVertex();
 	}
 
-	public static void drawRepeatedFluidSpriteGui(IRenderTypeBuffer.Impl buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
-	{
+	public static void drawRepeatedFluidSpriteGui(IRenderTypeBuffer.Impl buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h){
 		RenderType renderType = getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		IVertexBuilder builder = buffer.getBuffer(renderType);
 		TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
@@ -259,6 +260,17 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			drawTexturedColoredRect(builder, transform, x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH,
 					r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
 		}
+	}
+	private static void drawTexturedColoredRect(
+			IVertexBuilder builder, MatrixStack transform,
+			float x, float y, float w, float h,
+			float r, float g, float b, float alpha,
+			float u0, float u1, float v0, float v1
+	) {
+		buildVertex(builder, transform,r,g,b,alpha,x, y+h,u0, v1);
+		buildVertex(builder, transform,r,g,b,alpha,x+w, y+h,u1, v1);
+		buildVertex(builder, transform,r,g,b,alpha,x+w, y,u1, v0);
+		buildVertex(builder, transform,r,g,b,alpha,x, y,u0, v0);
 	}
 	//Adapted codes ends
 }

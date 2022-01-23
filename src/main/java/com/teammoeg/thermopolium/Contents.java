@@ -118,8 +118,8 @@ public class Contents {
         static {
             CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<CookingRecipe>(CookingRecipe::new,CookingRecipe::new,CookingRecipe::write));
             BoilingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_boiling",()->new THRecipeSerializer<BoilingRecipe>(BoilingRecipe::new,BoilingRecipe::new,BoilingRecipe::write));
-            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
-            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
+            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("bowl",()->new THRecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
+            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_dissolve",()->new THRecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
         }
 
         public static void registerRecipeTypes() {
