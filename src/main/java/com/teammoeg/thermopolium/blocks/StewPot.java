@@ -1,9 +1,11 @@
 package com.teammoeg.thermopolium.blocks;
 
+import java.util.Random;
 import java.util.function.BiFunction;
 
 import com.teammoeg.thermopolium.Contents;
 import com.teammoeg.thermopolium.Main;
+import com.teammoeg.thermopolium.client.Particles;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -14,6 +16,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -57,6 +61,25 @@ public class StewPot extends Block {
             NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity,tileEntity.getPos());
         }
         return ActionResultType.func_233537_a_(worldIn.isRemote);
+	}
+
+
+	@Override
+	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+		TileEntity te=worldIn.getTileEntity(pos);
+		if (te instanceof StewPotTileEntity) {
+			StewPotTileEntity pot = (StewPotTileEntity) te;
+			if (pot.proctype==2) {
+				double d0 = pos.getX();
+				double d1 = pos.getY() + 1;
+				double d2 = pos.getZ();
+				if(rand.nextDouble()<0.8D) {
+					int count=4;
+					while(--count!=0)
+						worldIn.addParticle(Particles.STEAM.get(), d0+rand.nextFloat(), d1, d2+rand.nextFloat(), 0.0D, 0.0D, 0.0D);
+				}
+			}
+		}
 	}
 
 

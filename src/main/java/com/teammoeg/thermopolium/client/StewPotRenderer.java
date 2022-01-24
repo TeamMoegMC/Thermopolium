@@ -46,7 +46,7 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 			int iW = sprite.getWidth();
 			int iH = sprite.getHeight();
 			if(iW > 0&&iH > 0)
-				StewPotScreen.drawRepeatedSprite(builder,matrixStack,.125f,.125f,.75f,.75f, iW, iH,
+				RenderUtils.drawRepeatedSprite(builder,matrixStack,.125f,.125f,.75f,.75f, iW, iH,
 						sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
 						(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,1f);
 		}

@@ -27,13 +27,14 @@ import com.google.common.collect.ImmutableSet;
 import com.teammoeg.thermopolium.blocks.StewPot;
 import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
 import com.teammoeg.thermopolium.container.StewPotContainer;
+import com.teammoeg.thermopolium.data.RecipeSerializer;
+import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
+import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
+import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
+import com.teammoeg.thermopolium.data.recipes.CountingTags;
+import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.items.SCBlockItem;
 import com.teammoeg.thermopolium.items.StewItem;
-import com.teammoeg.thermopolium.recipes.BoilingRecipe;
-import com.teammoeg.thermopolium.recipes.BowlContainingRecipe;
-import com.teammoeg.thermopolium.recipes.CookingRecipe;
-import com.teammoeg.thermopolium.recipes.DissolveRecipe;
-import com.teammoeg.thermopolium.recipes.THRecipeSerializer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -116,10 +117,11 @@ public class Contents {
         );
 
         static {
-            CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_cooking",()->new THRecipeSerializer<CookingRecipe>(CookingRecipe::new,CookingRecipe::new,CookingRecipe::write));
-            BoilingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_boiling",()->new THRecipeSerializer<BoilingRecipe>(BoilingRecipe::new,BoilingRecipe::new,BoilingRecipe::write));
-            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("bowl",()->new THRecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
-            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("stewpot_dissolve",()->new THRecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
+            CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("cooking",()->new RecipeSerializer<CookingRecipe>(CookingRecipe::new,CookingRecipe::new,CookingRecipe::write));
+            BoilingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("boiling",()->new RecipeSerializer<BoilingRecipe>(BoilingRecipe::new,BoilingRecipe::new,BoilingRecipe::write));
+            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("bowl",()->new RecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
+            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("dissolve",()->new RecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
+            CountingTags.SERIALIZER=RECIPE_SERIALIZERS.register("tags",()->new RecipeSerializer<CountingTags>(CountingTags::new,CountingTags::new,CountingTags::write));
         }
 
         public static void registerRecipeTypes() {
@@ -127,6 +129,7 @@ public class Contents {
         	BoilingRecipe.TYPE = IRecipeType.register(Main.MODID + ":boil");
         	BowlContainingRecipe.TYPE = IRecipeType.register(Main.MODID + ":bowl");
         	DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
+        	CountingTags.TYPE = IRecipeType.register(Main.MODID + ":tags");
         }
     }
 }

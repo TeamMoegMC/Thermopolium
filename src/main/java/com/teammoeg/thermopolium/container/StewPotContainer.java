@@ -35,6 +35,12 @@ public class StewPotContainer extends Container {
 		public boolean isEnabled() {
 			return vs.get();
 		}
+		@Override
+		public ItemStack getStack() {
+			if(vs.get())
+				return super.getStack();
+			return ItemStack.EMPTY;
+		}
 		
 	}
 	StewPotTileEntity tile;
