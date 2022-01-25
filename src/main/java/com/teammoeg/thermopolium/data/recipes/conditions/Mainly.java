@@ -1,6 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemStack;
 
@@ -12,6 +13,15 @@ public class Mainly extends NumberedStewCondition{
 		super(obj);
 		if(obj.has("isItem"))
 			isItem=obj.get("isItem").getAsBoolean();
+	}
+
+	public Mainly(StewNumber number) {
+		super(number);
+	}
+
+	public Mainly(StewNumber number, boolean isItem) {
+		this(number);
+		this.isItem = isItem;
 	}
 
 	@Override

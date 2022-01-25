@@ -36,10 +36,8 @@ public class StewPotContainer extends Container {
 			return vs.get();
 		}
 		@Override
-		public ItemStack getStack() {
-			if(vs.get())
-				return super.getStack();
-			return ItemStack.EMPTY;
+		public boolean canTakeStack(PlayerEntity playerIn) {
+			return vs.get();
 		}
 		
 	}
@@ -70,5 +68,40 @@ public class StewPotContainer extends Container {
 	public boolean canInteractWith(PlayerEntity playerIn) {
 		return true;
 	}
-
+    @Override
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+        ItemStack itemStack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack slotStack = slot.getStack();
+            itemStack = slotStack.copy();
+            if (index == 10) {
+                if (!this.mergeItemStack(slotStack, 11, 47, true)) {
+                    return ItemStack.EMPTY;
+                }
+                slot.onSlotChange(slotStack, itemStack);
+            } else if (index > 10) {
+            	if (!this.mergeItemStack(slotStack,9,10, false))
+            		if (!this.mergeItemStack(slotStack,0,9, false)) {
+            			if (index < 38) 
+                            if (!this.mergeItemStack(slotStack, 38, 47, false)) 
+                                return ItemStack.EMPTY;
+                        else if (index < 47 && !this.mergeItemStack(slotStack,11, 38, false))
+                            return ItemStack.EMPTY;
+            		}
+            } else if (!this.mergeItemStack(slotStack, 11, 47, false)) {
+                return ItemStack.EMPTY;
+            }
+            if (slotStack.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+            if (slotStack.getCount() == itemStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+            slot.onTake(playerIn, slotStack);
+        }
+        return itemStack;
+    }
 }

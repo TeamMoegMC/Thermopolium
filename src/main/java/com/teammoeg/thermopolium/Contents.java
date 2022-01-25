@@ -33,6 +33,7 @@ import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CountingTags;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
+import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.items.SCBlockItem;
 import com.teammoeg.thermopolium.items.StewItem;
 
@@ -41,6 +42,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.Items;
@@ -48,6 +50,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
@@ -76,15 +79,18 @@ public class Contents {
     	public static final String[] items=new String[]{"acquacotta","bisque","bone_gelatin","borscht","borscht_cream","congee","cream_of_meat_soup",
     			"cream_of_mushroom_soup","custard","dilute_soup","egg_drop_soup","egg_tongsui","fish_chowder","fish_soup",
     			"fricassee","goji_tongsui","goulash","gruel","hodgepodge","meat_soup","mushroom_soup","nail_soup","nettle_soup",
-    			"okroshka","plain_milk","plain_water","porridge","poultry_soup","pumpkin_soup","pumpkin_soup_cream",
+    			"okroshka","porridge","poultry_soup","pumpkin_soup","pumpkin_soup_cream",
     			"rice_pudding","scalded_milk","seaweed_soup","stock","stracciatella","ukha","vegetable_chowder","vegetable_soup",
     			"walnut_soup"};
         public static void init() {
         	for(String s:items)
-        		new StewItem(s,createProps());
+        		new StewItem(s,new ResourceLocation(Main.MODID,s),createProps());
+        	new StewItem("plain_milk",new ResourceLocation("milk"),createProps());
+        	new StewItem("plain_water",new ResourceLocation("water"),createProps());
+ 
         }
         static Properties createProps() {
-        	return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL);
+        	return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL).maxStackSize(1);
         }
         //public static Item stew_bowl=new StewItem("stew",createProps());
     }
@@ -122,6 +128,7 @@ public class Contents {
             BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("bowl",()->new RecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
             DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("dissolve",()->new RecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
             CountingTags.SERIALIZER=RECIPE_SERIALIZERS.register("tags",()->new RecipeSerializer<CountingTags>(CountingTags::new,CountingTags::new,CountingTags::write));
+            FoodValueRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("food",()->new RecipeSerializer<FoodValueRecipe>(FoodValueRecipe::new,FoodValueRecipe::new,FoodValueRecipe::write));
         }
 
         public static void registerRecipeTypes() {
@@ -130,6 +137,7 @@ public class Contents {
         	BowlContainingRecipe.TYPE = IRecipeType.register(Main.MODID + ":bowl");
         	DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
         	CountingTags.TYPE = IRecipeType.register(Main.MODID + ":tags");
+        	FoodValueRecipe.TYPE = IRecipeType.register(Main.MODID + ":food");
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
@@ -16,6 +18,11 @@ public class ConstNumber implements StewNumber {
 			n=num.getAsFloat();
 		else
 			n=num.getAsJsonObject().get("num").getAsFloat();
+	}
+
+	public ConstNumber(float n) {
+		super();
+		this.n = n;
 	}
 
 	@Override
@@ -50,4 +57,32 @@ public class ConstNumber implements StewNumber {
 	public String getType() {
 		return "const";
 	}
+
+	@Override
+	public Stream<StewNumber> getItemRelated() {
+		return Stream.empty();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(n);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ConstNumber other = (ConstNumber) obj;
+		if (Float.floatToIntBits(n) != Float.floatToIntBits(other.n))
+			return false;
+		return true;
+	}
+
 }

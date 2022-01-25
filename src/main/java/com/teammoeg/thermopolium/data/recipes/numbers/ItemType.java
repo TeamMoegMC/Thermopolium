@@ -1,5 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
@@ -16,6 +18,12 @@ public class ItemType implements StewNumber {
 	ResourceLocation loc;
 	public ItemType(JsonElement jo) {
 		type=ForgeRegistries.ITEMS.getValue(loc=new ResourceLocation(jo.getAsJsonObject().get("item").getAsString()));
+	}
+
+	public ItemType(Item type) {
+		super();
+		this.type = type;
+		this.loc=type.getRegistryName();
 	}
 
 	@Override
@@ -51,5 +59,34 @@ public class ItemType implements StewNumber {
 	@Override
 	public String getType() {
 		return "item";
+	}
+	@Override
+	public Stream<StewNumber> getItemRelated() {
+		return Stream.of(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((loc == null) ? 0 : loc.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ItemType other = (ItemType) obj;
+		if (loc == null) {
+			if (other.loc != null)
+				return false;
+		} else if (!loc.equals(other.loc))
+			return false;
+		return true;
 	}
 }

@@ -9,6 +9,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -46,12 +47,16 @@ public class SoupFluid extends ForgeFlowingFluid {
 		return true;
 	}
 	public static SoupInfo getInfo(FluidStack stack){
-		if(stack.hasTag())
-			return new SoupInfo(stack.getOrCreateChildTag("soup"));
+		if(stack.hasTag()) {
+			CompoundNBT nbt=stack.getChildTag("soup");
+			if(nbt!=null)
+				return new SoupInfo(nbt);
+		}
 		return new SoupInfo(stack.getFluid().getRegistryName());
 	}
 	public static void setInfo(FluidStack stack,SoupInfo si) {
-		stack.getOrCreateTag().put("soup",si.save());
+		if(!si.isEmpty())
+			stack.getOrCreateTag().put("soup",si.save());
 	}
 	@Override
 	public int getLevel(FluidState p_207192_1_) {

@@ -1,3 +1,4 @@
+package com.teammoeg.thermopolium.datagen;
 import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.data.DataGenerator;

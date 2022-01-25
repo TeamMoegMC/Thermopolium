@@ -1,0 +1,6 @@
+{
+  "type": "thermopolium:boiling",
+  "from": "minecraft:milk",
+  "to": "thermopolium:scalded_milk",
+  "time": 100
+}

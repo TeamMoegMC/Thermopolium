@@ -139,10 +139,16 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 		btn1.state=te.proctype>0?1:0;
 		btn2.state=te.rsstate?1:2;
 		super.render(transform, mouseX, mouseY, partial);
-		if(te.proctype!=2)
+		if(te.proctype<2) {
+			if(isMouseIn(mouseX,mouseY,105,20,16,46))
+				tooltip.add(te.getTank().getFluid().getDisplayName());
 			RenderUtils.handleGuiTank(transform,te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
-		GuiUtils.drawHoveringText(transform,tooltip,mouseX, mouseY, width, height,
+		}
+		if(!tooltip.isEmpty())
+			GuiUtils.drawHoveringText(transform,tooltip,mouseX, mouseY, width, height,
 				-1, font);
+		else
+			super.renderHoveredTooltip(transform,mouseX,mouseY);
 		
 	}
 

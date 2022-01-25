@@ -1,22 +1,39 @@
 package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.data.IDataRecipe;
+import com.teammoeg.thermopolium.fluid.SoupFluid;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class CookingRecipe extends IDataRecipe {
-
-	public static List<CookingRecipe> recipes;
+	public static Set<StewNumber> cookables;
+	public static Map<Fluid,CookingRecipe> recipes;
 	public static IRecipeType<?> TYPE;
 	public static RegistryObject<IRecipeSerializer<?>> SERIALIZER;
+	public static final ResourceLocation cookable = new ResourceLocation(Main.MODID, "cookable");
+	public static final ResourceLocation boilable = new ResourceLocation(Main.MODID, "boilable");
+	public static boolean isCookable(ItemStack stack){
+		return stack.getItem().getTags().contains(cookable)||cookables.stream().anyMatch(e->e.fits(stack));
+	}
+	public static boolean isBoilable(FluidStack f) {
+		Fluid fd=f.getFluid();
+		return fd instanceof SoupFluid||fd.getTags().contains(boilable)||recipes.keySet().contains(fd);
+	}
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
 		return SERIALIZER.get();
@@ -66,7 +83,7 @@ public class CookingRecipe extends IDataRecipe {
 	
 
 	public CookingRecipe(ResourceLocation id, List<StewCondition> allow, List<StewCondition> deny, int priority,
-			int time, float density, List<StewBaseCondition> base, Fluid output, ResourceLocation result) {
+			int time, float density, List<StewBaseCondition> base, Fluid output) {
 		super(id);
 		this.allow = allow;
 		this.deny = deny;
@@ -75,7 +92,6 @@ public class CookingRecipe extends IDataRecipe {
 		this.density = density;
 		this.base = base;
 		this.output = output;
-		this.result = result;
 	}
 	public void write(PacketBuffer data) {
 		if(allow!=null) {
@@ -96,23 +112,28 @@ public class CookingRecipe extends IDataRecipe {
 		data.writeResourceLocation(output.getRegistryName());
 	}
 
-	ResourceLocation result;
-	public boolean matches(StewPendingContext ctx) {
+	public int matches(StewPendingContext ctx) {
 		if(ctx.getTotalItems()<density)
-			return false;
-		if(base!=null)
-			if(base.stream().noneMatch(e->e.test(ctx.getInfo().base)||e.test(ctx.getCur())))
-				return false;
+			return 0;
+		int matchtype=0;
+		if(base!=null) {
+			ResourceLocation b=ctx.getInfo().base,c=ctx.getCur();
+			for(StewBaseCondition e:base) {
+				matchtype=e.apply(b,c);
+				if(matchtype!=0)
+					break;
+			}
+			if(matchtype==0)return 0;
+		}
+		if(matchtype==0)
+			matchtype=1;
 		if(allow!=null)
 			if(!allow.stream().allMatch(e->e.test(ctx)))
-				return false;
+				return 0;
 		if(deny!=null)
 			if(deny.stream().anyMatch(e->e.test(ctx)))
-				return false;
-		return true;
-	}
-	public ResourceLocation getResult() {
-		return result;
+				return 0;
+		return matchtype;
 	}
 	@Override
 	public void serialize(JsonObject json) {
@@ -130,7 +151,10 @@ public class CookingRecipe extends IDataRecipe {
 		}
 		json.addProperty("output",output.getRegistryName().toString());
 	}
-
+	public Stream<StewNumber> getAllNumbers(){
+		return Stream.concat(allow==null?Stream.empty():allow.stream().flatMap(StewCondition::getAllNumbers),deny==null?Stream.empty():deny.stream().flatMap(StewCondition::getAllNumbers));
+		
+	}
 
 
 

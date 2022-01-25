@@ -1,10 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.teammoeg.stewcraft.mixin",
+  "package": "com.teammoeg.thermopolium.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "stewcraft.refmap.json",
   "mixins": [
+  "DietApiImplMixin"
   ],
   "client": [],
   "injectors": {

@@ -6,27 +6,36 @@ import java.util.function.BiFunction;
 import com.teammoeg.thermopolium.Contents;
 import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.client.Particles;
+import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
+import com.teammoeg.thermopolium.items.StewItem;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class StewPot extends Block {
+public class StewPot extends Block implements ILiquidContainer{
 	public final String name;
 	protected int lightOpacity;
     public StewPot(String name, Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock) {
@@ -55,15 +64,55 @@ public class StewPot extends Block {
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote && handIn == Hand.MAIN_HAND) {
-            StewPotTileEntity tileEntity = (StewPotTileEntity) worldIn.getTileEntity(pos);
-            if(tileEntity!=null)
-            NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity,tileEntity.getPos());
+		ActionResultType p=super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+		StewPotTileEntity tileEntity = (StewPotTileEntity) worldIn.getTileEntity(pos);
+        if(tileEntity.canAddFluid()) {
+        	ItemStack held=player.getHeldItem(handIn);
+        	if(held.isEmpty()&&player.isSneaking()) {
+        		tileEntity.getTank().setFluid(FluidStack.EMPTY);
+        		return ActionResultType.SUCCESS;
+        	}
+        	if(held.getItem() instanceof StewItem) {
+        		if(tileEntity.tryAddFluid(BowlContainingRecipe.extractFluid(held))) {
+        			ItemStack ret=held.getContainerItem();
+        			held.shrink(1);
+        			if(!player.addItemStackToInventory(ret))
+        				player.dropItem(ret, false);
+        		}
+        		
+        		return ActionResultType.func_233537_a_(worldIn.isRemote);
+        	}
+        	FluidActionResult fa=FluidUtil.tryEmptyContainerAndStow(held,tileEntity.getTank(),null,1250, player,true);
+        	if(fa.isSuccess()) {
+        		if(fa.getResult()!=null)
+        			player.setHeldItem(handIn, fa.getResult());
+        		return ActionResultType.SUCCESS;
+        	}
+        	
         }
-        return ActionResultType.func_233537_a_(worldIn.isRemote);
+		if (handIn == Hand.MAIN_HAND) {
+            if(tileEntity!=null&&!worldIn.isRemote)
+            	NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity,tileEntity.getPos());
+            return ActionResultType.SUCCESS;
+        }
+        return p;
 	}
 
+    @Override
+    public boolean canContainFluid(IBlockReader w, BlockPos p, BlockState s, Fluid f) {
+    	StewPotTileEntity te = (StewPotTileEntity) w.getTileEntity(p);
+        return te.canAddFluid(new FluidStack(f.getFluid(),1000));
+    }
 
+    @Override
+    public boolean receiveFluid(IWorld w, BlockPos p, BlockState s,
+                                FluidState f) {
+    	StewPotTileEntity te = (StewPotTileEntity) w.getTileEntity(p);
+        if (te.tryAddFluid(new FluidStack(f.getFluid(),1000))) {
+            return true;
+        }
+        return false;
+    }
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
 		TileEntity te=worldIn.getTileEntity(pos);

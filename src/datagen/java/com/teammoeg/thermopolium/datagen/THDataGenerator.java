@@ -1,3 +1,4 @@
+package com.teammoeg.thermopolium.datagen;
 /*
  * Copyright (c) 2021 TeamMoeg
  *
@@ -35,6 +36,8 @@ public class THDataGenerator {
         
         if (event.includeServer()) {
             gen.addProvider(new GenSoupItems(gen,Main.MODID, exHelper));
+            gen.addProvider(new THRecipeProvider(gen));
+            gen.addProvider(new THTagGenerator(gen,Main.MODID, exHelper));
         }
     }
 }

@@ -42,4 +42,17 @@ public abstract class INetworkTile extends TileEntity{
 		super.read(state, tag);
 		this.readCustomNBT(tag,true);
 	}
+	@Override
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		CompoundNBT cnbt = new CompoundNBT();
+		writeCustomNBT(cnbt, true);
+		return new SUpdateTileEntityPacket(this.pos, 3, cnbt);
+	}
+
+	@Override
+	public CompoundNBT getUpdateTag() {
+		CompoundNBT nbt = super.getUpdateTag();
+		writeCustomNBT(nbt, true);
+		return nbt;
+	}
 }

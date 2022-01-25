@@ -14,11 +14,18 @@ public class FluidTag implements StewBaseCondition {
 		tag=new ResourceLocation(jo.get("tag").getAsString());
 	}
 
+	public FluidTag(ResourceLocation tag) {
+		super();
+		this.tag = tag;
+	}
 	@Override
+	public Integer apply(ResourceLocation t, ResourceLocation u) {
+		return test(u)?2:test(t)?1:0;
+	}
 	public boolean test(ResourceLocation t) {
 		Fluid f=ForgeRegistries.FLUIDS.getValue(t);
 		if(f==null)
-		return false;
+			return false;
 		return f.getTags().contains(tag);
 	}
 	public JsonObject serialize() {
@@ -39,4 +46,6 @@ public class FluidTag implements StewBaseCondition {
 	public String getType() {
 		return "tag";
 	}
+
+	
 }

@@ -58,12 +58,12 @@ public class RenderUtils {
 						.build(false)
 		);
 	}
-	private static void buildVertex(IVertexBuilder bu,MatrixStack transform,float r,float g,float b,float a,float p1,float p2,float u0,float u1) {
+	private static void buildVertex(IVertexBuilder bu,MatrixStack transform,float r,float g,float b,float a,float p1,float p2,float u0,float u1,int light,int overlay) {
 		bu.pos(transform.getLast().getMatrix(),p1,p2, 0)
 		.color(r, g, b, a)
 		.tex(u0, u1)
-		.overlay(OverlayTexture.NO_OVERLAY)
-		.lightmap(LightTexture.packLight(15,15))
+		.overlay(overlay)
+		.lightmap(light)
 		.normal(transform.getLast().getNormal(),1, 1, 1)
 		.endVertex();
 	}
@@ -78,14 +78,14 @@ public class RenderUtils {
 		if(iW > 0&&iH > 0)
 			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH,
 					sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
-					(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,0.8f);
+					(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,0.8f,LightTexture.packLight(15,15),OverlayTexture.NO_OVERLAY);
 		buffer.finish(renderType);
 	}
 
 
 	public static void drawRepeatedSprite(IVertexBuilder builder, MatrixStack transform, float x, float y, float w,
 										  float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax,
-										  float r, float g, float b, float alpha)
+										  float r, float g, float b, float alpha,int light,int overlay)
 	{
 		int iterMaxW = (int)(w/iconWidth);
 		int iterMaxH = (int)(h/iconHeight);
@@ -99,28 +99,28 @@ public class RenderUtils {
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
 				drawTexturedColoredRect(builder, transform, x+ww*iconWidth, y+hh*iconHeight, iconWidth, iconHeight,
-						r, g, b, alpha, uMin, uMax, vMin, vMax);
+						r, g, b, alpha, uMin, uMax, vMin, vMax,light,overlay);
 			drawTexturedColoredRect(builder, transform, x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth, leftoverH,
-					r, g, b, alpha, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf));
+					r, g, b, alpha, uMin, uMax, vMin, (vMin+iconVDif*leftoverHf),light,overlay);
 		}
 		if(leftoverW > 0)
 		{
 			for(int hh = 0; hh < iterMaxH; hh++)
 				drawTexturedColoredRect(builder, transform, x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW, iconHeight,
-						r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax);
+						r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, vMax,light,overlay);
 			drawTexturedColoredRect(builder, transform, x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW, leftoverH,
-					r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf));
+					r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf),light,overlay);
 		}
 	}
 	private static void drawTexturedColoredRect(
 			IVertexBuilder builder, MatrixStack transform,
 			float x, float y, float w, float h,
 			float r, float g, float b, float alpha,
-			float u0, float u1, float v0, float v1
+			float u0, float u1, float v0, float v1,int light,int overlay
 	) {
-		buildVertex(builder, transform,r,g,b,alpha,x, y+h,u0, v1);
-		buildVertex(builder, transform,r,g,b,alpha,x+w, y+h,u1, v1);
-		buildVertex(builder, transform,r,g,b,alpha,x+w, y,u1, v0);
-		buildVertex(builder, transform,r,g,b,alpha,x, y,u0, v0);
+		buildVertex(builder, transform,r,g,b,alpha,x, y+h,u0, v1,light,overlay);
+		buildVertex(builder, transform,r,g,b,alpha,x+w, y+h,u1, v1,light,overlay);
+		buildVertex(builder, transform,r,g,b,alpha,x+w, y,u1, v0,light,overlay);
+		buildVertex(builder, transform,r,g,b,alpha,x, y,u0, v0,light,overlay);
 	}
 }

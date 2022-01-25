@@ -48,7 +48,7 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 			if(iW > 0&&iH > 0)
 				RenderUtils.drawRepeatedSprite(builder,matrixStack,.125f,.125f,.75f,.75f, iW, iH,
 						sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
-						(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,1f);
+						(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,1f,combinedLightIn,combinedOverlayIn);
 		}
 
 		matrixStack.pop();

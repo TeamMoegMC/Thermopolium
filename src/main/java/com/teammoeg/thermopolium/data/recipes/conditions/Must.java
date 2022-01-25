@@ -1,6 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 
 import net.minecraft.network.PacketBuffer;
@@ -9,6 +10,10 @@ public class Must extends NumberedStewCondition {
 
 	public Must(JsonObject obj) {
 		super(obj);
+	}
+
+	public Must(StewNumber number) {
+		super(number);
 	}
 
 	@Override

@@ -1,7 +1,8 @@
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
@@ -21,6 +22,11 @@ public class ItemTag implements StewNumber {
 			tag=new ResourceLocation(jo.getAsJsonObject().get("tag").getAsString());
 		else
 			tag=new ResourceLocation(jo.getAsString());
+	}
+
+	public ItemTag(ResourceLocation tag) {
+		super();
+		this.tag = tag;
 	}
 
 	@Override
@@ -60,5 +66,34 @@ public class ItemTag implements StewNumber {
 	@Override
 	public String getType() {
 		return "tag";
+	}
+	@Override
+	public Stream<StewNumber> getItemRelated() {
+		return Stream.of(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ItemTag other = (ItemTag) obj;
+		if (tag == null) {
+			if (other.tag != null)
+				return false;
+		} else if (!tag.equals(other.tag))
+			return false;
+		return true;
 	}
 }

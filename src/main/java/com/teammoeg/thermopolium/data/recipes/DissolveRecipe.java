@@ -28,6 +28,7 @@ public class DissolveRecipe extends IDataRecipe{
 	}
 	public Ingredient item;
 	public int time;
+
 	public DissolveRecipe(ResourceLocation id, Ingredient item, int time) {
 		super(id);
 		this.item = item;

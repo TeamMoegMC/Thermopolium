@@ -1,0 +1,26 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": {
+        "item": "minecraft:egg"
+      }
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": "forge:vegetables"
+    }
+  ],
+  "priority": 0,
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:egg_drop_soup"
+}

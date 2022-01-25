@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidTag;
 import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidType;
+import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidTypeType;
 import com.teammoeg.thermopolium.data.recipes.conditions.Halfs;
 import com.teammoeg.thermopolium.data.recipes.conditions.Mainly;
 import com.teammoeg.thermopolium.data.recipes.conditions.Must;
@@ -26,7 +27,10 @@ import com.teammoeg.thermopolium.data.recipes.numbers.ItemIngredient;
 import com.teammoeg.thermopolium.data.recipes.numbers.ItemTag;
 import com.teammoeg.thermopolium.data.recipes.numbers.ItemType;
 import com.teammoeg.thermopolium.data.recipes.numbers.NopNumber;
+import com.teammoeg.thermopolium.util.FloatemStack;
 
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 
 public class StewSerializer {
@@ -49,7 +53,8 @@ public class StewSerializer {
 		conditions.put("mainly",Mainly::new);
 		conditions.put("contains",Must::new);
 		basetypes.put("tag",FluidTag::new);
-		basetypes.put("fluid",FluidTag::new);
+		basetypes.put("fluid",FluidType::new);
+		basetypes.put("fluid_type",FluidTypeType::new);
 		pnumbers.put("add",Add::new);
 		pnumbers.put("ingredient",ItemIngredient::new);
 		pnumbers.put("item",ItemType::new);
@@ -100,6 +105,8 @@ public class StewSerializer {
 			return new FluidTag(jo);
 		if(jo.has("fluid"))
 			return new FluidType(jo);
+		if(jo.has("base"))
+			return new FluidTypeType(jo);
 		return null;
 	}
 	public static StewNumber ofNumber(PacketBuffer buffer) {
@@ -158,5 +165,10 @@ public class StewSerializer {
 		JsonArray ja=new JsonArray();
 		li.stream().map(mapper).forEach(ja::add);
 		return ja;
+	}
+	public static<T> ListNBT toNBTList(List<T> stacks,Function<T,INBT> mapper) {
+		ListNBT nbt=new ListNBT();
+		stacks.stream().map(mapper).forEach(nbt::add);
+		return nbt;
 	}
 }

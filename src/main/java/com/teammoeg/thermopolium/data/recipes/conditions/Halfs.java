@@ -1,6 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 
 import net.minecraft.network.PacketBuffer;
@@ -11,6 +12,15 @@ public class Halfs extends NumberedStewCondition{
 		super(obj);
 		if(obj.has("isItem"))
 			isItem=obj.get("isItem").getAsBoolean();
+	}
+
+	public Halfs(StewNumber number) {
+		super(number);
+	}
+
+	public Halfs(StewNumber number, boolean isItem) {
+		super(number);
+		this.isItem = isItem;
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import com.teammoeg.thermopolium.network.PacketHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
@@ -64,7 +65,7 @@ public class Main {
         mod.addListener(this::enqueueIMC);
         Config.register();
         PacketHandler.register();
-
+        ForgeMod.enableMilkFluid();
         Contents.SCItems.init();
         Contents.SCBlocks.init();
         SCFluids.init();

@@ -1,6 +1,9 @@
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
@@ -17,6 +20,13 @@ public class Add implements StewNumber {
 			nums=StewSerializer.parseJsonElmList(jo.getAsJsonObject().get("types").getAsJsonArray(),StewSerializer::ofNumber);
 		else if(jo.isJsonArray())
 			nums=StewSerializer.parseJsonElmList(jo.getAsJsonArray(),StewSerializer::ofNumber);
+	}
+	public Add() {
+		this(new ArrayList<>());
+	}
+	public Add(List<StewNumber> nums) {
+		super();
+		this.nums = nums;
 	}
 
 	@Override
@@ -51,4 +61,32 @@ public class Add implements StewNumber {
 	public String getType() {
 		return "add";
 	}
+	@Override
+	public Stream<StewNumber> getItemRelated() {
+		return nums.stream().flatMap(StewNumber::getItemRelated);
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nums == null) ? 0 : nums.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Add other = (Add) obj;
+		if (nums == null) {
+			if (other.nums != null)
+				return false;
+		} else if (!nums.equals(other.nums))
+			return false;
+		return true;
+	}
+
 }

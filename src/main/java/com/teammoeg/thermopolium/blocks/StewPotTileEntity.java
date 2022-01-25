@@ -1,15 +1,18 @@
 package com.teammoeg.thermopolium.blocks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.teammoeg.thermopolium.Contents.SCTileTypes;
 import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
+import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.fluid.SoupFluid;
+import com.teammoeg.thermopolium.items.StewItem;
 import com.teammoeg.thermopolium.network.INetworkTile;
 import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
@@ -20,24 +23,32 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.SmokingRecipe;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -50,21 +61,27 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			if (slot < 9)
-				return stack.getItem()==Items.POTION||stack.getItem().getTags().contains(cookable);
-			if (slot == 9)
-				return stack.getItem() == Items.BOWL;
+				return stack.getItem()==Items.POTION||CookingRecipe.isCookable(stack);
+			if (slot == 9) {
+				Item i=stack.getItem();
+				return  i==Items.BOWL||i instanceof StewItem||stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+			}
 			return false;
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			if (slot < 9)
+				return 1;
+			return super.getSlotLimit(slot);
+		}
 	};
-	private ItemStackHandler interninv=new ItemStackHandler(9);
+	private NonNullList<ItemStack> interninv=NonNullList.withSize(9,ItemStack.EMPTY);
 	public ItemStackHandler getInv() {
 		return inv;
 	}
 
-	private FluidTank tank = new FluidTank(1250, f -> {
-		Fluid fd=f.getFluid();
-		return fd instanceof SoupFluid
-				||fd.getTags().contains(boilable);});
+	private FluidTank tank = new FluidTank(1250,CookingRecipe::isBoilable);
 	
 
 	public StewPotTileEntity() {
@@ -85,8 +102,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	public static final short BOILING = 1;
 	public static final short COOKING = 2;
 	public static final short STIRING=3;
-	public static final ResourceLocation boilable = new ResourceLocation(Main.MODID, "boilable");
-	public static final ResourceLocation cookable = new ResourceLocation(Main.MODID, "cookable");
+	
 	@Override
 	public void tick() {
 		if (!world.isRemote) {
@@ -99,11 +115,31 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				}
 			} else{
 				prepareWork();
+				if(canAddFluid())
+					tryContianFluid();
 			}
 		}
 		this.syncData();
 	}
-
+	private void tryContianFluid() {
+		ItemStack is=inv.getStackInSlot(9);
+		if(!is.isEmpty()&&inv.getStackInSlot(10).isEmpty()) {
+			if(is.getItem()==Items.BOWL&&tank.getFluidAmount()>=250) {
+				BowlContainingRecipe recipe=BowlContainingRecipe.recipes.get(this.tank.getFluid().getFluid());
+				if(recipe!=null){
+					is.shrink(1);
+					inv.setStackInSlot(10,recipe.handle(tank.drain(250,FluidAction.EXECUTE)));
+					return;
+				}
+			}
+			FluidActionResult far=FluidUtil.tryFillContainer(is,this.tank,1250,null,true);
+			if(far.isSuccess()) {
+				is.shrink(1);
+				if(far.getResult()!=null) 
+					inv.setStackInSlot(10,far.getResult());
+			}
+		}
+	}
 	public boolean canAddFluid() {
 		return proctype == 0;
 	}
@@ -114,7 +150,24 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		processMax = nbt.getInt("processMax");
 		proctype = nbt.getShort("worktype");
 		rsstate = nbt.getBoolean("rsstate");
+		inv.deserializeNBT(nbt.getCompound("inv"));
 		tank.readFromNBT(nbt);
+		if(!isClient) {
+			if(nbt.contains("current")) {
+				current=new SoupInfo(nbt.getCompound("current"));
+				
+		        ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+		        for (int i = 0; i < tagList.size(); i++)
+		        {
+		            CompoundNBT itemTags = tagList.getCompound(i);
+		            int slot = itemTags.getInt("Slot");
+		            if (slot >= 0 && slot < interninv.size())
+		            {
+		            	interninv.set(slot, ItemStack.read(itemTags));
+		            }
+		        }
+			}
+		}
 	}
 
 	@Override
@@ -123,22 +176,27 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		nbt.putInt("processMax", processMax);
 		nbt.putShort("worktype", proctype);
 		nbt.putBoolean("rsstate", rsstate);
+		nbt.put("inv",inv.serializeNBT());
 		tank.writeToNBT(nbt);
+		if(!isClient) {
+			if(current!=null)
+				nbt.put("current",current.save());
+	        ListNBT nbtTagList = new ListNBT();
+	        for (int i = 0; i < interninv.size(); i++)
+	        {
+	            if (!interninv.get(i).isEmpty())
+	            {
+	                CompoundNBT itemTag = new CompoundNBT();
+	                itemTag.putInt("Slot", i);
+	                interninv.get(i).write(itemTag);
+	                nbtTagList.add(itemTag);
+	            }
+	        }
+	        nbt.put("Items", nbtTagList);
+		}
 	}
 
-	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT cnbt = new CompoundNBT();
-		writeCustomNBT(cnbt, true);
-		return new SUpdateTileEntityPacket(this.pos, 3, cnbt);
-	}
 
-	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT nbt = super.getUpdateTag();
-		writeCustomNBT(nbt, true);
-		return nbt;
-	}
 
 	private void prepareWork() {
 		if (operate && proctype == 0) {
@@ -158,7 +216,16 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private void doWork() {
 		if (proctype == 1) {
 			finishBoil();
-		} else if (proctype == 2)
+			boolean hasItem=false;
+			for (int i = 0; i < 9; i++) {
+				ItemStack is=inv.getStackInSlot(i);
+				if(!is.isEmpty()) {
+					hasItem=true;
+					break;
+				}
+			}
+			if(!hasItem)proctype=0;
+		} else if (proctype == 2||proctype==3)
 			finishSoup();
 	}
 
@@ -178,8 +245,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		tank.setFluid(recipe.handle(tank.getFluid()));
 	}
 	private void clearIntern() {
-		for(int i=0;i<9;i++)
-			interninv.setStackInSlot(i,ItemStack.EMPTY);
+		interninv.clear();
 	}
 	private void adjustParts(int count) {
 		float oparts=tank.getFluidAmount()/250f;
@@ -190,40 +256,59 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private boolean makeSoup() {
 		if (tank.getFluidAmount() < 250)
 			return false;// cant boil if under one bowl
-		if(current.stacks.size()>27)return false;//too much ingredients
+
+		
 		clearIntern();
 		current=SoupFluid.getInfo(this.tank.getFluid());
-		
+		if(current.stacks.size()>27)return false;//too much ingredients
 		int oparts=tank.getFluidAmount()/250;
 		int parts=oparts-1;
 		int itms=0;
-		int potc=current.effects.size();
+		List<EffectInstance> cr=new ArrayList<>(current.effects);
 		for (int i = 0; i < 9; i++) {
 			ItemStack is=inv.getStackInSlot(i);
 			if(!is.isEmpty()) {
 				if(is.getItem()==Items.POTION) {
-					potc++;
+					outer:for(EffectInstance n:PotionUtils.getEffectsFromStack(is)) {
+						for(EffectInstance eff:cr) {
+							if(SoupInfo.isEffectEquals(eff,n))
+								continue outer;
+						}
+						cr.add(n);
+					}
 				}else
 					itms++;
 			}
 		}
-		if(itms/(float)parts+(current.getDensity()*oparts)/parts>3||potc>3) {//too dense
+		if(itms/(float)parts+(current.getDensity()*oparts)/parts>3||cr.size()>3) {//too dense
 			return false;
 		}
+		
+		process = 0;
+		adjustParts(-1);
 		boolean hasItem=false;
 		for (int i = 0; i < 9; i++) {
 			ItemStack is=inv.getStackInSlot(i);
 			if(!is.isEmpty()) {
 				if(is.getItem()==Items.POTION) {
-					current.effects.addAll(PotionUtils.getEffectsFromStack(is));
-				}else
-					ItemHandlerHelper.insertItem(interninv,is,false);
-				inv.setStackInSlot(i,is.getContainerItem());
+					for(EffectInstance eff:PotionUtils.getEffectsFromStack(is))
+						current.addEffect(eff,parts);
+					inv.setStackInSlot(i,new ItemStack(Items.GLASS_BOTTLE));
+				}else {
+					for(int j=0;j<9;j++) {
+						ItemStack ois=interninv.get(j);
+						if(ois.isEmpty()) {
+							interninv.set(j,is);
+							break;
+						}else if(ois.isItemEqual(is)&&ItemStack.areItemStackTagsEqual(ois,is)) {
+							ois.setCount(ois.getCount()+is.getCount());
+						}
+					}
+					inv.setStackInSlot(i,is.getContainerItem());
+				}
 				hasItem=true;
 			}
 		}
-		process = 0;
-		adjustParts(-1);
 		if (!hasItem) {// just reduce water
 			processMax = 100;
 			return true;
@@ -231,21 +316,27 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		List<SmokingRecipe> irs = this.world.getRecipeManager().getRecipesForType(IRecipeType.SMOKING);
 		int[] iis=new int[9];
 		int imax=9;
-		for (int i = 0; i < 9; i++) {
-			ItemStack is=interninv.getStackInSlot(i);
+		outer:for (int i = 0; i < 9; i++) {
+			ItemStack is=interninv.get(i);
 			if(is.isEmpty()) {
 				imax=i;
 				break;
 			}
+			for(DissolveRecipe rs:DissolveRecipe.recipes) {
+				if(rs.item.test(is)) {
+					iis[i]=rs.time;
+					continue outer;
+				}
+			}
 			CookInfo ci=cook(is,irs);
 			if(ci!=null) {
 				iis[i]=ci.i;
-				interninv.setStackInSlot(i,ci.is);
+				interninv.set(i,ci.is);
 			}
 		}
 		int tpt=100;
 		for(int i=0;i<imax;i++) {
-			ItemStack is=interninv.getStackInSlot(i);
+			ItemStack is=interninv.get(i);
 			if(!is.isEmpty()) {
 				for(DissolveRecipe rs:DissolveRecipe.recipes) {
 					if(rs.item.test(is)) {
@@ -253,15 +344,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 						break;
 					}
 				}
-				boolean added=false;
-				for(FloatemStack sc:current.stacks) {
-					if(sc.equals(is)) {
-						added=true;
-						sc.setCount(sc.getCount()+is.getCount()/parts);
-					}
-				}
-				if(!added)
-					current.stacks.add(new FloatemStack(is.copy(),is.getCount()/parts));
+				current.addItem(is,parts);
 			}
 			tpt=Math.max(tpt,iis[i]);
 		}
@@ -297,18 +380,48 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private void finishSoup() {
 		Fluid fs=tank.getFluid().getFluid();
 		StewPendingContext ctx=new StewPendingContext(current,fs.getRegistryName());
-		for(CookingRecipe cr:CookingRecipe.recipes) {
-			if(cr.matches(ctx)) {
+		for(CookingRecipe cr:CookingRecipe.recipes.values()) {
+			int mt=cr.matches(ctx);
+			if(mt!=0) {
+				if(mt==2)
+					current.base=fs.getRegistryName();
 				fs=cr.output;
 				break;
 			}
 		}
 		FluidStack fss=new FluidStack(fs,tank.getFluidAmount());
+		current.recalculateHAS();
 		SoupFluid.setInfo(fss,current);
 		tank.setFluid(fss);
 		proctype=0;
 	}
-
+	public boolean canAddFluid(FluidStack fs) {
+		if(tank.fill(fs,FluidAction.SIMULATE)==fs.getAmount()) {
+			return true;
+		}
+		return false;
+	}
+	public boolean tryAddFluid(FluidStack fs) {
+		int tryfill=tank.fill(fs,FluidAction.SIMULATE);
+		if(tryfill>0) {
+			if(tryfill==fs.getAmount()) {
+				tank.fill(fs,FluidAction.EXECUTE);
+				return true;
+			}
+			return false;
+		}
+		if(tank.getCapacity()-tank.getFluidAmount()<fs.getAmount())return false;
+		current=SoupFluid.getInfo(tank.getFluid());
+		
+		if(current.merge(SoupFluid.getInfo(fs),tank.getFluidAmount()/250f,fs.getAmount()/250f)) {
+			tank.getFluid().setAmount(tank.getFluidAmount()+fs.getAmount());
+			this.proctype=3;
+			this.process=0;
+			this.processMax=100;
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public Container createMenu(int p1, PlayerInventory p2, PlayerEntity p3) {
 		return new StewPotContainer(p1, p2, this);
@@ -323,7 +436,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	public void handleMessage(short type, int data) {
 		if (type == 0)
 			if (this.proctype == 0)
-				this.proctype = 2;
+				this.operate=true;
 		if (type == 1) {
 			if (data == 1)
 				rsstate = false;

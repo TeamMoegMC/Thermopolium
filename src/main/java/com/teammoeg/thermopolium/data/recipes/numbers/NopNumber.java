@@ -1,5 +1,7 @@
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
@@ -48,5 +50,17 @@ public class NopNumber implements StewNumber {
 	public String getType() {
 		return "nop";
 	}
-
+	@Override
+	public Stream<StewNumber> getItemRelated() {
+		return Stream.empty();
+	}
+	@Override
+	public int hashCode() {
+		return NopNumber.class.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof NopNumber;
+	}
+	
 }
