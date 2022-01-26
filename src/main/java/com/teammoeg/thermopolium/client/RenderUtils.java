@@ -1,10 +1,5 @@
 package com.teammoeg.thermopolium.client;
-/**
- * Fluid render codes adapted from Immersive Engineering and modified.
- * Related codes fall under their license and open-sourced. 
- * @author BluSunrize
- * @author khjxiaogu
- * */
+
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -16,21 +11,26 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.IRenderTypeBuffer.Impl;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-
+/**
+ * Fluid render codes adapted from Immersive Engineering and modified.
+ * Related codes fall under their license and open-sourced. 
+ * @author BluSunrize
+ * @author khjxiaogu
+ * */
 public class RenderUtils {
 
 	private RenderUtils() {
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h)
 	{
 		FluidStack fluid=tank.getFluid();

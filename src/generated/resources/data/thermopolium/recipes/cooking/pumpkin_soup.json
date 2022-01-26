@@ -6,19 +6,18 @@
       "type": "thermopolium:vegetables"
     },
     {
-      "cond": "contains",
+      "cond": "mainlyOf",
       "type": {
         "item": "minecraft:pumpkin"
-      }
+      },
+      "tag": "thermopolium:vegetables"
     }
   ],
-  "deny": [],
-  "priority": 0,
   "density": 0.75,
   "time": 200,
   "base": [
     {
-      "fluid": "thermopolium:nail_soup"
+      "tag": "thermopolium:water"
     }
   ],
   "output": "thermopolium:pumpkin_soup"

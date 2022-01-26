@@ -1,12 +1,9 @@
 package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.List;
-import java.util.Map;
-
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.IDataRecipe;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;

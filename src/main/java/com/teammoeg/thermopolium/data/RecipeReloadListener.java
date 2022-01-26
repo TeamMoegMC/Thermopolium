@@ -18,6 +18,7 @@
 
 package com.teammoeg.thermopolium.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+@SuppressWarnings("deprecation")
 public class RecipeReloadListener implements IResourceManagerReloadListener {
 	DataPackRegistries data;
     public RecipeReloadListener(DataPackRegistries dpr) {
@@ -69,11 +71,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
             return;
         BowlContainingRecipe.recipes = filterRecipes(recipes,BowlContainingRecipe.class,BowlContainingRecipe.TYPE).collect(Collectors.toMap(e->e.fluid,UnaryOperator.identity()));
         CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE).collect(Collectors.toMap(e->e.output,UnaryOperator.identity()));
+        CookingRecipe.sorted=new ArrayList<>(CookingRecipe.recipes.values());
+        CookingRecipe.sorted.sort((t2,t1)->t1.getPriority()-t2.getPriority());
         BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE).collect(Collectors.toMap(e->e.before,UnaryOperator.identity()));
         DissolveRecipe.recipes = filterRecipes(recipes, DissolveRecipe.class, DissolveRecipe.TYPE).collect(Collectors.toList());
         CookingRecipe.cookables=CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getAllNumbers).collect(Collectors.toSet());
         CountingTags.tags=Stream.concat(filterRecipes(recipes,CountingTags.class,CountingTags.TYPE).flatMap(r->r.tag.stream()),CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getTags)).collect(Collectors.toSet());
-        
+        System.out.println(CountingTags.tags);
     }
 
     static <R extends IRecipe<?>> Stream<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<?> recipeType) {

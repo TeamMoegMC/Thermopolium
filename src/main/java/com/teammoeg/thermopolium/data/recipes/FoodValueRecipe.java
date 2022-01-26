@@ -1,6 +1,5 @@
 package com.teammoeg.thermopolium.data.recipes;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonObject;

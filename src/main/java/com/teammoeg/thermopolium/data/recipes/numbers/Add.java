@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import com.google.gson.JsonElement;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
-import com.teammoeg.thermopolium.data.recipes.StewSerializer;
+import com.teammoeg.thermopolium.data.recipes.StewSerializeUtil;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -17,9 +17,9 @@ public class Add implements StewNumber {
 	List<StewNumber> nums;
 	public Add(JsonElement jo) {
 		if(jo.isJsonObject())
-			nums=StewSerializer.parseJsonElmList(jo.getAsJsonObject().get("types").getAsJsonArray(),StewSerializer::ofNumber);
+			nums=StewSerializeUtil.parseJsonElmList(jo.getAsJsonObject().get("types").getAsJsonArray(),StewSerializeUtil::ofNumber);
 		else if(jo.isJsonArray())
-			nums=StewSerializer.parseJsonElmList(jo.getAsJsonArray(),StewSerializer::ofNumber);
+			nums=StewSerializeUtil.parseJsonElmList(jo.getAsJsonArray(),StewSerializeUtil::ofNumber);
 	}
 	public Add() {
 		this(new ArrayList<>());
@@ -46,15 +46,15 @@ public class Add implements StewNumber {
 
 	@Override
 	public JsonElement serialize() {
-		return StewSerializer.toJsonList(nums,StewNumber::serialize);
+		return StewSerializeUtil.toJsonList(nums,StewNumber::serialize);
 	}
 	@Override
 	public void write(PacketBuffer buffer) {
-		StewSerializer.writeList(buffer, nums,StewSerializer::write);
+		StewSerializeUtil.writeList(buffer, nums,StewSerializeUtil::write);
 	}
 
 	public Add(PacketBuffer buffer) {
-		nums=StewSerializer.readList(buffer,StewSerializer::ofNumber);
+		nums=StewSerializeUtil.readList(buffer,StewSerializeUtil::ofNumber);
 	}
 
 	@Override

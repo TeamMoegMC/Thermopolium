@@ -1,0 +1,32 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": "thermopolium:eggs"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:sugar"
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": [
+        "thermopolium:meats",
+        "thermopolium:seafood",
+        "thermopolium:vegetables",
+        "thermopolium:wolfberries"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:egg_tongsui"
+}

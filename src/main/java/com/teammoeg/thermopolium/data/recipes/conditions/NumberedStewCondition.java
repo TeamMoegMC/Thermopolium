@@ -6,21 +6,21 @@ import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.recipes.StewCondition;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
-import com.teammoeg.thermopolium.data.recipes.StewSerializer;
+import com.teammoeg.thermopolium.data.recipes.StewSerializeUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class NumberedStewCondition implements StewCondition {
 	protected StewNumber number;
 	public NumberedStewCondition(JsonObject obj) {
-		this.number = StewSerializer.ofNumber(obj.get("type"));
+		this.number = StewSerializeUtil.ofNumber(obj.get("type"));
 	}
 	public NumberedStewCondition(StewNumber number) {
 		this.number = number;
 	}
 	@Override
 	public boolean test(StewPendingContext t) {
-		return test(t,t.calculateNumber(number));
+		return test(t,t.compute(number));
 	}
 	public abstract boolean test(StewPendingContext t,float n);
 	@Override
@@ -28,7 +28,7 @@ public abstract class NumberedStewCondition implements StewCondition {
 		number.write(buffer);
 	}
 	public NumberedStewCondition(PacketBuffer buffer) {
-		number=StewSerializer.ofNumber(buffer);
+		number=StewSerializeUtil.ofNumber(buffer);
 	}
 	@Override
 	public JsonObject serialize() {

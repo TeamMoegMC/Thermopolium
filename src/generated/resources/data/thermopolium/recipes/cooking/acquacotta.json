@@ -3,16 +3,14 @@
   "allow": [
     {
       "cond": "mainly",
-      "type": "thermopolium:baked"
+      "type": "thermopolium:coreals/baked"
     }
   ],
-  "deny": [],
-  "priority": 0,
   "density": 0.75,
   "time": 200,
   "base": [
     {
-      "fluid": "thermopolium:nail_soup"
+      "tag": "thermopolium:water"
     }
   ],
   "output": "thermopolium:acquacotta"

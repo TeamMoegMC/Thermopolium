@@ -14,13 +14,11 @@ import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.fluid.SoupFluid;
 import com.teammoeg.thermopolium.items.StewItem;
 import com.teammoeg.thermopolium.network.INetworkTile;
-import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
@@ -30,13 +28,11 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.SmokingRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,14 +41,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
@@ -300,10 +294,11 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 					for(int j=0;j<9;j++) {
 						ItemStack ois=interninv.get(j);
 						if(ois.isEmpty()) {
-							interninv.set(j,is);
+							interninv.set(j,is.copy());
 							break;
 						}else if(ois.isItemEqual(is)&&ItemStack.areItemStackTagsEqual(ois,is)) {
 							ois.setCount(ois.getCount()+is.getCount());
+							break;
 						}
 					}
 					inv.setStackInSlot(i,is.getContainerItem());
@@ -350,6 +345,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			}
 			tpt=Math.max(tpt,iis[i]);
 		}
+		interninv.clear();
 		processMax=tpt;
 
 		return true;
@@ -382,13 +378,16 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private void finishSoup() {
 		Fluid fs=tank.getFluid().getFluid();
 		StewPendingContext ctx=new StewPendingContext(current,fs.getRegistryName());
-		for(CookingRecipe cr:CookingRecipe.recipes.values()) {
-			int mt=cr.matches(ctx);
-			if(mt!=0) {
-				if(mt==2)
-					current.base=fs.getRegistryName();
-				fs=cr.output;
-				break;
+		CookingRecipe cri=CookingRecipe.recipes.get(fs);
+		if(cri==null||cri.getPriority()<0||cri.matches(ctx)==0) {
+			for(CookingRecipe cr:CookingRecipe.sorted) {
+				int mt=cr.matches(ctx);
+				if(mt!=0) {
+					if(mt==2)
+						current.base=fs.getRegistryName();
+					fs=cr.output;
+					break;
+				}
 			}
 		}
 		FluidStack fss=new FluidStack(fs,tank.getFluidAmount());

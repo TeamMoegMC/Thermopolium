@@ -1,0 +1,17 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": "thermopolium:meats/meat"
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:scalded_milk"
+    }
+  ],
+  "output": "thermopolium:cream_of_meat_soup"
+}

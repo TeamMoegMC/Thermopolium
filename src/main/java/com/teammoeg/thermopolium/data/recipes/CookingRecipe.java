@@ -23,6 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class CookingRecipe extends IDataRecipe {
 	public static Set<StewNumber> cookables;
 	public static Map<Fluid,CookingRecipe> recipes;
+	public static List<CookingRecipe> sorted;
 	public static IRecipeType<?> TYPE;
 	public static RegistryObject<IRecipeSerializer<?>> SERIALIZER;
 	public static final ResourceLocation cookable = new ResourceLocation(Main.MODID, "cookable");
@@ -44,7 +45,7 @@ public class CookingRecipe extends IDataRecipe {
 	}
 	List<StewCondition> allow;
 	List<StewCondition> deny;
-	int priority;
+	int priority=0;
 	int time;
 	float density;
 	List<StewBaseCondition> base;
@@ -55,29 +56,29 @@ public class CookingRecipe extends IDataRecipe {
 	public CookingRecipe(ResourceLocation id,JsonObject data) {
 		super(id);
 		if(data.has("allow"))
-			allow=StewSerializer.parseJsonList(data.get("allow"),StewSerializer::ofCondition);
+			allow=StewSerializeUtil.parseJsonList(data.get("allow"),StewSerializeUtil::ofCondition);
 		if(data.has("deny"))
-			deny=StewSerializer.parseJsonList(data.get("deny"),StewSerializer::ofCondition);
+			deny=StewSerializeUtil.parseJsonList(data.get("deny"),StewSerializeUtil::ofCondition);
 		if(data.has("priority"))
 			priority=data.get("priority").getAsInt();
 		if(data.has("density"))
 			density=data.get("density").getAsFloat();
 		time=data.get("time").getAsInt();
 		if(data.has("base"))
-			base=StewSerializer.parseJsonList(data.get("base"),StewSerializer::ofBase);
+			base=StewSerializeUtil.parseJsonList(data.get("base"),StewSerializeUtil::ofBase);
 		output=ForgeRegistries.FLUIDS.getValue(new ResourceLocation(data.get("output").getAsString()));
 	}
 	public CookingRecipe(ResourceLocation id,PacketBuffer data) {
 		super(id);
 		if(data.readBoolean())
-			allow=StewSerializer.readList(data,StewSerializer::ofCondition);
+			allow=StewSerializeUtil.readList(data,StewSerializeUtil::ofCondition);
 		if(data.readBoolean())
-			deny=StewSerializer.readList(data,StewSerializer::ofCondition);
+			deny=StewSerializeUtil.readList(data,StewSerializeUtil::ofCondition);
 		priority=data.readVarInt();
 		density=data.readFloat();
 		time=data.readVarInt();
 		if(data.readBoolean())
-			base=StewSerializer.readList(data,StewSerializer::ofBase);
+			base=StewSerializeUtil.readList(data,StewSerializeUtil::ofBase);
 		output=ForgeRegistries.FLUIDS.getValue(data.readResourceLocation());
 	}
 	
@@ -96,18 +97,18 @@ public class CookingRecipe extends IDataRecipe {
 	public void write(PacketBuffer data) {
 		if(allow!=null) {
 			data.writeBoolean(true);
-			StewSerializer.writeList(data,allow,StewSerializer::write);
+			StewSerializeUtil.writeList(data,allow,StewSerializeUtil::write);
 		}else data.writeBoolean(false);
 		if(deny!=null) {
 			data.writeBoolean(true);
-			StewSerializer.writeList(data,deny,StewSerializer::write);
+			StewSerializeUtil.writeList(data,deny,StewSerializeUtil::write);
 		}else data.writeBoolean(false);
 		data.writeVarInt(priority);
 		data.writeFloat(density);
 		data.writeVarInt(time);
 		if(base!=null) {
 			data.writeBoolean(true);
-			StewSerializer.writeList(data,base,StewSerializer::write);
+			StewSerializeUtil.writeList(data,base,StewSerializeUtil::write);
 		}else data.writeBoolean(false);
 		data.writeResourceLocation(output.getRegistryName());
 	}
@@ -117,9 +118,8 @@ public class CookingRecipe extends IDataRecipe {
 			return 0;
 		int matchtype=0;
 		if(base!=null) {
-			ResourceLocation b=ctx.getInfo().base,c=ctx.getCur();
 			for(StewBaseCondition e:base) {
-				matchtype=e.apply(b,c);
+				matchtype=ctx.compute(e);
 				if(matchtype!=0)
 					break;
 			}
@@ -128,26 +128,27 @@ public class CookingRecipe extends IDataRecipe {
 		if(matchtype==0)
 			matchtype=1;
 		if(allow!=null)
-			if(!allow.stream().allMatch(ctx::calculateCondition))
+			if(!allow.stream().allMatch(ctx::compute))
 				return 0;
 		if(deny!=null)
-			if(deny.stream().anyMatch(ctx::calculateCondition))
+			if(deny.stream().anyMatch(ctx::compute))
 				return 0;
 		return matchtype;
 	}
 	@Override
 	public void serialize(JsonObject json) {
-		if(allow!=null) {
-			json.add("allow",StewSerializer.toJsonList(allow,StewCondition::serialize));
+		if(allow!=null&&!allow.isEmpty()) {
+			json.add("allow",StewSerializeUtil.toJsonList(allow,StewCondition::serialize));
 		}
-		if(deny!=null) {
-			json.add("deny",StewSerializer.toJsonList(deny,StewCondition::serialize));
+		if(deny!=null&&!deny.isEmpty()) {
+			json.add("deny",StewSerializeUtil.toJsonList(deny,StewCondition::serialize));
 		}
-		json.addProperty("priority",priority);
+		if(priority!=0)
+			json.addProperty("priority",priority);
 		json.addProperty("density",density);
 		json.addProperty("time",time);
-		if(base!=null) {
-			json.add("base",StewSerializer.toJsonList(base,StewBaseCondition::serialize));
+		if(base!=null&&!base.isEmpty()) {
+			json.add("base",StewSerializeUtil.toJsonList(base,StewBaseCondition::serialize));
 		}
 		json.addProperty("output",output.getRegistryName().toString());
 	}
@@ -156,6 +157,9 @@ public class CookingRecipe extends IDataRecipe {
 	}
 	public Stream<ResourceLocation> getTags(){
 		return Stream.concat(allow==null?Stream.empty():allow.stream().flatMap(StewCondition::getTags),deny==null?Stream.empty():deny.stream().flatMap(StewCondition::getTags));
+	}
+	public int getPriority() {
+		return priority;
 	}
 
 

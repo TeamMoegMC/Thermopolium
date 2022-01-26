@@ -13,9 +13,15 @@ import net.minecraft.util.ResourceLocation;
 
 public class NopNumber implements StewNumber {
 	public static final NopNumber INSTANCE=new NopNumber();
+	/**
+	 * @param elm  
+	 */
 	public static NopNumber of(JsonElement elm) {
 		return INSTANCE;
 	}
+	/**
+	 * @param elm  
+	 */
 	public NopNumber(JsonElement elm) {
 	}
 
@@ -43,6 +49,9 @@ public class NopNumber implements StewNumber {
 	@Override
 	public void write(PacketBuffer buffer) {
 	}
+	/**
+	 * @param buffer  
+	 */
 	public static NopNumber of(PacketBuffer buffer) {
 		return INSTANCE;
 	}

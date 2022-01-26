@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#thermopolium:baked",
+    "#thermopolium:coreals/baked",
     "minecraft:wheat",
     "minecraft:wheat_seeds",
     {

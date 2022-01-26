@@ -37,18 +37,18 @@ public class CountingTags extends IDataRecipe {
 		if(jo.has("tag"))
 			tag=ImmutableList.of(new ResourceLocation(jo.get("tag").getAsString()));
 		else if(jo.has("tags"))
-			tag=StewSerializer.parseJsonElmList(jo.get("tags"),e->new ResourceLocation(e.getAsString()));
+			tag=StewSerializeUtil.parseJsonElmList(jo.get("tags"),e->new ResourceLocation(e.getAsString()));
 	}
 	public CountingTags(ResourceLocation id,PacketBuffer data) {
 		super(id);
-		tag=StewSerializer.readList(data,PacketBuffer::readResourceLocation);
+		tag=StewSerializeUtil.readList(data,PacketBuffer::readResourceLocation);
 	}
 	public void write(PacketBuffer data) {
-		StewSerializer.<ResourceLocation>writeList2(data,tag,PacketBuffer::writeResourceLocation);
+		StewSerializeUtil.<ResourceLocation>writeList2(data,tag,PacketBuffer::writeResourceLocation);
 	}
 	@Override
 	public void serialize(JsonObject json) {
-		json.add("tags",StewSerializer.toJsonList(tag,e->new JsonPrimitive(e.toString())));
+		json.add("tags",StewSerializeUtil.toJsonList(tag,e->new JsonPrimitive(e.toString())));
 	}
 
 }

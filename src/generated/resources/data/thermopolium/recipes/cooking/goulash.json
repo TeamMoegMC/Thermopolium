@@ -1,0 +1,32 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": {
+        "item": "minecraft:cooked_beef"
+      }
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:vegetables"
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": [
+        "thermopolium:seafood",
+        "thermopolium:coreals"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:stock"
+    }
+  ],
+  "output": "thermopolium:goulash"
+}

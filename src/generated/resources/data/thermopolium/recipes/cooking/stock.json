@@ -1,0 +1,20 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": [
+        "thermopolium:bone",
+        "thermopolium:meats/poultry"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:stock"
+}

@@ -26,7 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -69,7 +68,8 @@ public class RegistryEvents {
         }
     }
 
-    @SubscribeEvent
+    @SuppressWarnings("unused")
+	@SubscribeEvent
     public static void registerEffects(final RegistryEvent.Register<Effect> event) {
       
     }

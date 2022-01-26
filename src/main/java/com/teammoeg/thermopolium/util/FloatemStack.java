@@ -14,7 +14,8 @@ public class FloatemStack {
 
 	public FloatemStack(ItemStack stack, float count) {
 		super();
-		this.stack = stack;
+		this.stack = stack.copy();
+		this.stack.setCount(1);
 		this.count = count;
 	}
 
@@ -24,8 +25,7 @@ public class FloatemStack {
 	}
 
 	public FloatemStack(ItemStack is) {
-		this(is.copy(), is.getCount());
-		stack.setCount(1);
+		this(is, is.getCount());
 	}
 
 	public ItemStack getStack() {

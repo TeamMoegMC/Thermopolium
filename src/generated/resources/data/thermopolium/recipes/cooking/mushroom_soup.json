@@ -6,17 +6,16 @@
       "type": "thermopolium:vegetables"
     },
     {
-      "cond": "contains",
-      "type": "thermopolium:mushroom"
+      "cond": "mainlyOf",
+      "type": "thermopolium:mushroom",
+      "tag": "thermopolium:vegetables"
     }
   ],
-  "deny": [],
-  "priority": 0,
   "density": 0.75,
   "time": 200,
   "base": [
     {
-      "fluid": "thermopolium:nail_soup"
+      "tag": "thermopolium:water"
     }
   ],
   "output": "thermopolium:mushroom_soup"

@@ -25,6 +25,7 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 		System.out.println("constructed");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void render(StewPotTileEntity te, float partialTicks, MatrixStack matrixStack,
 			IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {

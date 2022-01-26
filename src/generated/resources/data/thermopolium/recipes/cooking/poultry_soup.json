@@ -3,18 +3,14 @@
   "allow": [
     {
       "cond": "mainly",
-      "type": {
-        "item": "minecraft:cooked_chicken"
-      }
+      "type": "thermopolium:meats/poultry"
     }
   ],
-  "deny": [],
-  "priority": 0,
   "density": 0.75,
   "time": 200,
   "base": [
     {
-      "fluid": "thermopolium:nail_soup"
+      "tag": "thermopolium:water"
     }
   ],
   "output": "thermopolium:poultry_soup"

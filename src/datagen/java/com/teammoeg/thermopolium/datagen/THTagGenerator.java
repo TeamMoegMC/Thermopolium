@@ -3,6 +3,7 @@ package com.teammoeg.thermopolium.datagen;
 import java.nio.file.Path;
 import com.cannolicatfish.rankine.init.RankineItems;
 import com.teammoeg.thermopolium.Main;
+import static com.teammoeg.thermopolium.datagen.THRecipeProvider.*;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.TagsProvider;
@@ -34,26 +35,29 @@ public class THTagGenerator extends TagsProvider<Item> {
 					i.addOptional(it.getRegistryName());
 			}
 		}*/
-		tag("baked").add(Items.BREAD);
-		tag("coreals/non_rice").addTag(otag("baked")).add(Items.WHEAT,Items.WHEAT_SEEDS)
+		tag(baked).add(Items.BREAD);
+		tag(nonrice).addTag(atag(baked)).add(Items.WHEAT,Items.WHEAT_SEEDS)
 		.addOptional(rl(RankineItems.CORN_EAR)).addOptional(rl(RankineItems.CORN_FLOUR)).addOptional(rl(RankineItems.CORN_SEEDS));
-		tag("coreals/rice").addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_FLOUR)).addOptional(rl(RankineItems.RICE_SEEDS));
-		tag("roots").add(Items.POTATO,Items.BAKED_POTATO);
-		tag("vegetables").add(Items.CARROT,Items.BEETROOT,Items.PUMPKIN).addOptionalTag(frl("vegetables")).addOptionalTag(frl("vegetable"))
-		.addTag(otag("roots")).addOptional(rl(RankineItems.ASPARAGUS)).addOptional(rl(RankineItems.ROASTED_ASPARAGUS));
-		tag("eggs").add(Items.EGG);
-		tag("crustaceans");
-		tag("fish").addTag(atag(mcrl("fishes")));
-		tag("seafood").add(Items.KELP,Items.DRIED_KELP).addTag(otag("fish")).addOptionalTag(mrl("crustaceans"));
-		tag("meats/poultry").add(Items.CHICKEN,Items.COOKED_CHICKEN,Items.RABBIT,Items.COOKED_RABBIT);
-		tag("meats/meat").add(Items.BEEF,Items.COOKED_BEEF,Items.MUTTON,Items.COOKED_MUTTON);
-		tag("sugar").add(Items.SUGAR_CANE,Items.HONEYCOMB,Items.HONEY_BOTTLE);
-		tag("bone").add(Items.BONE,Items.BONE_MEAL);
+		tag(rice).addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_FLOUR)).addOptional(rl(RankineItems.RICE_SEEDS));
+		tag(roots).add(Items.POTATO,Items.BAKED_POTATO);
+		tag(vegetables).add(Items.CARROT,Items.BEETROOT,Items.PUMPKIN).addOptionalTag(frl("vegetables")).addOptionalTag(frl("vegetable"))
+		.addOptional(rl(RankineItems.ASPARAGUS)).addOptional(rl(RankineItems.ROASTED_ASPARAGUS));
+		tag(eggs).add(Items.EGG);
+		tag(crustaceans);
+		tag(fish).addTag(atag(mcrl("fishes")));
+		tag(seafood).add(Items.KELP,Items.DRIED_KELP);
+		tag(poultry).add(Items.CHICKEN,Items.COOKED_CHICKEN,Items.RABBIT,Items.COOKED_RABBIT);
+		tag(meat).add(Items.BEEF,Items.COOKED_BEEF,Items.MUTTON,Items.COOKED_MUTTON);
+		tag(sugar).add(Items.SUGAR_CANE,Items.HONEYCOMB,Items.HONEY_BOTTLE);
+		tag("bone").add(Items.BONE);
 		tag("ice").add(Items.ICE,Items.BLUE_ICE,Items.PACKED_ICE);
 		
 	}
 	private Builder<Item> tag(String s){
 		return this.getOrCreateBuilder(ItemTags.createOptional(mrl(s)));
+	}
+	private Builder<Item> tag(ResourceLocation s){
+		return this.getOrCreateBuilder(ItemTags.createOptional(s));
 	}
 	private ResourceLocation rl(RegistryObject<Item> it) {
 		return it.getId();

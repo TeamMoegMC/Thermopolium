@@ -1,16 +1,11 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
-import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 
 public class Mainly extends NumberedStewCondition{
 	private boolean isItem=true;

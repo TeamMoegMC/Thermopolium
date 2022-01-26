@@ -1,0 +1,22 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": "thermopolium:fern"
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": [
+        "thermopolium:seafood",
+        "thermopolium:meats",
+        "thermopolium:coreals"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "output": "thermopolium:nettle_soup"
+}

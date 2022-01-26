@@ -1,0 +1,31 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": "thermopolium:sugar"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:wolfberries"
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": [
+        "thermopolium:meats",
+        "thermopolium:seafood",
+        "thermopolium:vegetables"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:goji_tongsui"
+}

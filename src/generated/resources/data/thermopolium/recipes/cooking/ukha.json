@@ -1,0 +1,29 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": [
+        "thermopolium:seafood/fish",
+        "thermopolium:vegetables/roots"
+      ]
+    }
+  ],
+  "deny": [
+    {
+      "cond": "contains",
+      "type": [
+        "thermopolium:meats",
+        "thermopolium:coreals"
+      ]
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "tag": "thermopolium:water"
+    }
+  ],
+  "output": "thermopolium:ukha"
+}

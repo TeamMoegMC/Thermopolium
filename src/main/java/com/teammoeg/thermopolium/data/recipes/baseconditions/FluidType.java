@@ -45,5 +45,28 @@ public class FluidType implements StewBaseCondition{
 		return "fluid";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((of == null) ? 0 : of.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof FluidType))
+			return false;
+		FluidType other = (FluidType) obj;
+		if (of == null) {
+			if (other.of != null)
+				return false;
+		} else if (!of.equals(other.of))
+			return false;
+		return true;
+	}
+
 
 }

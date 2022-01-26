@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
+import com.cannolicatfish.rankine.init.RankineItems;
 import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.SCFluids;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
@@ -41,7 +42,26 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class THRecipeProvider extends RecipeProvider {
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
-
+	static final ResourceLocation
+	rice=mrl("coreals/rice"),
+	nonrice=mrl("coreals/non_rice"),
+	eggs=mrl("eggs"),
+	baked=mrl("coreals/baked"),
+	anyWater=mrl("water"),
+	vegetables=mrl("vegetables"),
+	meat=mrl("meats/meat"),
+	fish=mrl("seafood/fish"),
+	poultry=mrl("meats/poultry"),
+	seafood=mrl("seafood"),
+	meats=mrl("meats"),
+	sugar=mrl("sugar"),
+	coreals=mrl("coreals"),
+	crustaceans=mrl("seafood/crustaceans"),
+	roots=mrl("vegetables/roots");
+	static final Fluid 
+	water=fluid(mrl("nail_soup")),
+	milk=fluid(mrl("scalded_milk")),
+	stock=fluid(mrl("stock"));
 	public THRecipeProvider(DataGenerator generatorIn) {
 		super(generatorIn);
 	}
@@ -56,27 +76,47 @@ public class THRecipeProvider extends RecipeProvider {
 		out.accept(new BowlContainingRecipe(rl("bowl/plain_milk"),item(mrl("plain_milk")),ForgeMod.MILK.get()));
 		out.accept(new BoilingRecipe(rl("boil/water"),fluid(mcrl("water")),fluid(mrl("nail_soup")),100));
 		out.accept(new BoilingRecipe(rl("boil/milk"),fluid(mcrl("milk")),fluid(mrl("scalded_milk")),100));
-		Fluid bw=fluid(mrl("nail_soup"));
-		Fluid bm=fluid(mrl("scalded_milk"));
-		cook("acquacotta").base().type(bw).and().require().mainly().of(mrl("baked")).and().then().finish(out);
-		cook("congee").base().type(bw).and().require().half().of(mrl("coreals/rice")).and().then().dense(0.25).finish(out);
-		cook("rice_pudding").base().type(bm).and().require().half().of(mrl("coreals/rice")).and().then().dense(0.25).finish(out);
-		cook("gruel").base().type(bw).and().require().half().of(mrl("coreals/non_rice")).and().then().dense(0.25).finish(out);
-		cook("porridge").base().type(bm).and().require().half().of(mrl("coreals/non_rice")).and().then().dense(0.25).finish(out);
-		cook("egg_drop_soup").base().type(bw).and().require().mainly().of(mrl("eggs")).and().then().not().any().of(mrl("vegetables")).and().then().dense(0.5).finish(out);
-		cook("stracciatella").base().type(bw).and().require().mainly().of(mrl("eggs")).and().any().of(mrl("vegetables")).and().then().dense(0.5).finish(out);
-		cook("custard").base().type(bm).and().require().mainly().of(mrl("eggs")).and().then().dense(0.5).finish(out);
-		cook("vegetable_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().then().finish(out);
-		cook("vegetable_chowder").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().then().finish(out);
-		cook("borscht").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.BEETROOT).and().then().finish(out);
-		cook("borscht_cream").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.BEETROOT).and().then().finish(out);
-		cook("pumpkin_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.PUMPKIN).and().then().finish(out);
-		cook("pumpkin_soup_cream").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.PUMPKIN).and().then().finish(out);
-		cook("mushroom_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(mrl("mushroom")).and().then().finish(out);
-		cook("cream_of_mushroom_soup").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(mrl("mushroom")).and().then().finish(out);
-		cook("poultry_soup").base().type(bw).and().require().mainly().of(Items.COOKED_CHICKEN).and().then().finish(out);
 		
 		
+		cook("acquacotta").base().tag(anyWater).and().require().mainly().of(baked).and().then().finish(out);
+		cook("congee").base().tag(anyWater).and().require().half().of(rice).and().then().dense(0.25).finish(out);
+		cook("rice_pudding").base().type(milk).and().require().half().of(rice).and().then().dense(0.25).finish(out);
+		cook("gruel").base().tag(anyWater).and().require().half().of(nonrice).and().then().dense(0.25).finish(out);
+		cook("porridge").base().type(milk).and().require().half().of(nonrice).and().then().dense(0.25).finish(out);
+		cook("egg_drop_soup").base().tag(anyWater).and().require().mainly().of(eggs).and().not().any().of(vegetables).and().then().dense(0.5).finish(out);
+		cook("stracciatella").base().tag(anyWater).and().require().mainly().of(eggs).and().any().of(vegetables).and().then().dense(0.5).finish(out);
+		cook("custard").base().type(milk).and().require().mainly().of(eggs).and().then().dense(0.5).finish(out);
+		cook("vegetable_soup").base().tag(anyWater).and().require().mainly().of(vegetables).and().then().finish(out);
+		cook("vegetable_chowder").base().type(milk).and().require().mainly().of(vegetables).and().then().finish(out);
+		cook("borscht").base().tag(anyWater).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(Items.BEETROOT).and().then().finish(out);
+		cook("borscht_cream").base().type(milk).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(Items.BEETROOT).and().then().finish(out);
+		cook("pumpkin_soup").base().tag(anyWater).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(Items.PUMPKIN).and().then().finish(out);
+		cook("pumpkin_soup_cream").base().type(milk).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(Items.PUMPKIN).and().then().finish(out);
+		cook("mushroom_soup").base().tag(anyWater).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(mrl("mushroom")).and().then().finish(out);
+		cook("cream_of_mushroom_soup").base().type(milk).and().require().mainly().of(vegetables).and().typeMainly(vegetables).of(mrl("mushroom")).and().then().finish(out);
+		cook("seaweed_soup").base().tag(anyWater).and().require().mainly().of(Items.DRIED_KELP).and().then().finish(out);
+		cook("bisque").base().tag(anyWater).and().require().mainly().of(crustaceans).and().then().finish(out);
+		cook("fish_soup").base().tag(anyWater).and().require().mainly().of(fish).and().then().finish(out);
+		cook("fish_chowder").base().type(milk).and().require().mainly().of(seafood).and().then().finish(out);
+		cook("poultry_soup").base().tag(anyWater).and().require().mainly().of(poultry).and().then().finish(out);
+		cook("fricassee").base().type(milk).and().require().mainly().of(poultry).and().then().finish(out);
+		cook("meat_soup").base().tag(anyWater).and().require().mainly().of(meat).and().then().finish(out);
+		cook("cream_of_meat_soup").base().type(milk).and().require().mainly().of(meat).and().then().finish(out);
+		cook("hodgepodge").prio(-1).finish(out);
+		cook("dilute_soup").dense(0).prio(-2).finish(out);
+		cook("stock").base().type(water).and().require().mainly().of(mrl("bone")).of(poultry).and().then().finish(out);
+		cook("bone_gelatin").base().type(water).and().require().half().of(Items.BONE_MEAL).and().then().dense(2).finish(out);
+		cook("egg_tongsui").base().type(water).and().require().half().of(eggs).and().any().of(sugar).and().not().any().of(meats).plus(seafood).plus(vegetables)
+		.plus(mrl("wolfberries")).and().then().finish(out);
+		cook("walnut_soup").base().type(water).and().require().half().of(RankineItems.ROASTED_WALNUT.get()).and().any().of(sugar).and().not().any().of(meats)
+		.plus(seafood).plus(vegetables).plus(mrl("wolfberries")).and().then().finish(out);
+		cook("goji_tongsui").base().type(water).and().require().mainly().of(sugar).and().any().of(mrl("wolfberries")).and().not().any().of(meats).plus(seafood)
+		.plus(vegetables).and().then().finish(out);
+		cook("ukha").base().tag(anyWater).and().require().half().of(fish).plus(roots).and().not().any().of(meats).plus(coreals).and().then().finish(out);
+		cook("goulash").base().type(stock).and().require().mainly().of(Items.COOKED_BEEF).and().any().of(vegetables).and().not().any().of(seafood).plus(coreals)
+		.and().then().finish(out);
+		cook("okroshka").require().half().of(vegetables).plus(meats).and().any().of(mrl("ice")).and().then().finish(out);
+		cook("nettle_soup").require().half().of(mrl("fern")).and().not().any().of(seafood).plus(meats).plus(coreals).and().then().finish(out);
 	}
 	private CookingRecipeBuilder cook(String s) {
 		return CookingRecipeBuilder.start(fluid(mrl(s)));
@@ -84,10 +124,10 @@ public class THRecipeProvider extends RecipeProvider {
 	private Item item(ResourceLocation rl) {
 		return ForgeRegistries.ITEMS.getValue(rl);
 	}
-	private Fluid fluid(ResourceLocation rl) {
+	private static Fluid fluid(ResourceLocation rl) {
 		return ForgeRegistries.FLUIDS.getValue(rl);
 	}
-	private ResourceLocation mrl(String s) {
+	private static ResourceLocation mrl(String s) {
 		return new ResourceLocation(Main.MODID, s);
 	}
 	private ResourceLocation ftag(String s) {

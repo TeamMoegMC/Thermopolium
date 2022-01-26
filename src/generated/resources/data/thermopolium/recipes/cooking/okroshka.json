@@ -1,0 +1,19 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": [
+        "thermopolium:vegetables",
+        "thermopolium:meats"
+      ]
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:ice"
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "output": "thermopolium:okroshka"
+}

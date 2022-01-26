@@ -1,9 +1,6 @@
 package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-
 import com.google.gson.JsonObject;
 
 import net.minecraft.network.PacketBuffer;

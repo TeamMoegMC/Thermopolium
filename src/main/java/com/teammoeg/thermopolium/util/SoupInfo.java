@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.teammoeg.thermopolium.data.recipes.StewSerializer;
-import com.teammoeg.thermopolium.fluid.SoupFluid;
-
+import com.teammoeg.thermopolium.data.recipes.StewSerializeUtil;
 import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -116,8 +114,8 @@ public class SoupInfo {
 	}
 	public CompoundNBT save() {
 		CompoundNBT nbt=new CompoundNBT();
-		nbt.put("items",StewSerializer.toNBTList(stacks,FloatemStack::serializeNBT));
-		nbt.put("effects",StewSerializer.toNBTList(effects,e->e.write(new CompoundNBT())));
+		nbt.put("items",StewSerializeUtil.toNBTList(stacks,FloatemStack::serializeNBT));
+		nbt.put("effects",StewSerializeUtil.toNBTList(effects,e->e.write(new CompoundNBT())));
 		nbt.putInt("heal",healing);
 		nbt.putFloat("sat",saturation);
 		nbt.putString("base",base.toString());

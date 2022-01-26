@@ -16,6 +16,7 @@ import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 
 public class ItemTag implements StewNumber {
+
 	ResourceLocation tag;
 	public ItemTag(JsonElement jo) {
 		if(jo.isJsonObject())
@@ -23,7 +24,6 @@ public class ItemTag implements StewNumber {
 		else
 			tag=new ResourceLocation(jo.getAsString());
 	}
-
 	public ItemTag(ResourceLocation tag) {
 		super();
 		this.tag = tag;

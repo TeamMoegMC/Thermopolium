@@ -11,15 +11,18 @@ import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
+/**
+ * For caching data and reduce calculation
+ * */
 public class StewPendingContext {
-	private Map<ResourceLocation,Float> types=new HashMap<>();
 	private List<FloatemTagStack> items;
 	private float totalTypes;
 	private float totalItems;
 	private SoupInfo info;
-	public Map<StewNumber,Float> cachedNumbers=new HashMap<>();
-	public Map<StewCondition,Boolean> cachedResults=new HashMap<>(); 
+	//cache results to prevent repeat calculation
+	private Map<StewNumber,Float> numbers=new HashMap<>();
+	private Map<StewCondition,Boolean> results=new HashMap<>(); 
+	private Map<StewBaseCondition,Integer> basetypes=new HashMap<>(); 
 	ResourceLocation cur;
 	public ResourceLocation getCur() {
 		return cur;
@@ -31,27 +34,21 @@ public class StewPendingContext {
 			FloatemTagStack fst=new FloatemTagStack(fs);
 			items.add(fst);
 			totalItems+=fs.getCount();
-			addTags(fst);
 		}
 		
 		cur=current;
 	}
-	public float calculateNumber(StewNumber sn) {
-		return cachedNumbers.computeIfAbsent(sn,e->e.apply(this));
+	public float compute(StewNumber sn) {
+		return numbers.computeIfAbsent(sn,e->e.apply(this));
 	}
-	public boolean calculateCondition(StewCondition sc) {
-		return cachedResults.computeIfAbsent(sc,e->e.test(this));
+	public boolean compute(StewCondition sc) {
+		return results.computeIfAbsent(sc,e->e.test(this));
 	}
-	public void addTags(FloatemTagStack item) {
-		
-		for(ResourceLocation rl:item.getTags()) {
-			types.merge(rl,item.getCount(),Float::sum);
-			totalTypes+=item.getCount();
-		}
-		
+	public int compute(StewBaseCondition sbc) {
+		return basetypes.computeIfAbsent(sbc,e->e.apply(info.base,cur));
 	}
 	public float getOfType(ResourceLocation rl) {
-		return types.getOrDefault(rl,0f);
+		return (float) items.stream().filter(e->e.getTags().contains(rl)).mapToDouble(FloatemTagStack::getCount).sum();
 	}
 	public float getOfItem(Predicate<ItemStack> pred) {
 		for(FloatemTagStack fs:items)

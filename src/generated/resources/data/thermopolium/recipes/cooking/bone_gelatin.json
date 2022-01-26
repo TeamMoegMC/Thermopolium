@@ -1,0 +1,19 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": {
+        "item": "minecraft:bone_meal"
+      }
+    }
+  ],
+  "density": 2.0,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:bone_gelatin"
+}

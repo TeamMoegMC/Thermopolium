@@ -2,11 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:kelp",
-    "minecraft:dried_kelp",
-    "#thermopolium:fish",
-    {
-      "id": "#thermopolium:crustaceans",
-      "required": false
-    }
+    "minecraft:dried_kelp"
   ]
 }

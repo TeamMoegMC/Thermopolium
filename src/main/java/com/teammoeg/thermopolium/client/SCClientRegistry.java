@@ -16,12 +16,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SCClientRegistry {
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onClientSetupEvent(FMLClientSetupEvent event) {
 		ScreenManager.registerFactory(Contents.SCGui.STEWPOT.get(), StewPotScreen::new);
 		RenderTypeLookup.setRenderLayer(Contents.SCBlocks.stew_pot, RenderType.getCutoutMipped());
 		ClientRegistry.bindTileEntityRenderer(Contents.SCTileTypes.STEW_POT.get(), StewPotRenderer::new);
 	}
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particles.registerFactory(Particles.STEAM.get(), SteamParticle.Factory::new);

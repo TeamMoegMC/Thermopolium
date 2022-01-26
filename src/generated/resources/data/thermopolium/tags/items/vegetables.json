@@ -12,7 +12,6 @@
       "id": "#forge:vegetable",
       "required": false
     },
-    "#thermopolium:roots",
     {
       "id": "rankine:asparagus",
       "required": false

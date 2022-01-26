@@ -13,6 +13,7 @@ import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidType;
 import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidTypeType;
 import com.teammoeg.thermopolium.data.recipes.conditions.Halfs;
 import com.teammoeg.thermopolium.data.recipes.conditions.Mainly;
+import com.teammoeg.thermopolium.data.recipes.conditions.MainlyOfType;
 import com.teammoeg.thermopolium.data.recipes.conditions.Must;
 import com.teammoeg.thermopolium.data.recipes.numbers.Add;
 import com.teammoeg.thermopolium.data.recipes.numbers.ConstNumber;
@@ -53,6 +54,22 @@ public class CookingRecipeBuilder {
 			types.add(new ItemType(i));
 			return this;
 		}
+		public StewNumberBuilder plus(float n) {
+			types.add(new ConstNumber(n));
+			return this;
+		}
+		public StewNumberBuilder plus(Ingredient i) {
+			types.add(new ItemIngredient(i));
+			return this;
+		}
+		public StewNumberBuilder plus(ResourceLocation i) {
+			types.add(new ItemTag(i));
+			return this;
+		}
+		public StewNumberBuilder plus(Item i) {
+			types.add(new ItemType(i));
+			return this;
+		}
 		public StewNumberBuilder nop() {
 			types.add(NopNumber.INSTANCE);
 			return this;
@@ -69,11 +86,13 @@ public class CookingRecipeBuilder {
 	}
 	public static class StewConditionsBuilder{
 		private CookingRecipeBuilder parent;
-		private List<StewCondition> li;
-		public StewConditionsBuilder(CookingRecipeBuilder parent,List<StewCondition> li) {
+		private List<StewCondition> li,al,dy;
+		public StewConditionsBuilder(CookingRecipeBuilder parent,List<StewCondition> cr,List<StewCondition> al,List<StewCondition> dy) {
 			super();
 			this.parent = parent;
-			this.li=li;
+			this.li=cr;
+			this.al=al;
+			this.dy=dy;
 		}
 		public StewNumberBuilder half() {
 			return new StewNumberBuilder(this,this::makeHalf);
@@ -86,6 +105,9 @@ public class CookingRecipeBuilder {
 		}
 		private void makeHalft(StewNumber sn) {
 			li.add(new Halfs(sn,false));
+		}
+		public StewNumberBuilder typeMainly(ResourceLocation rs) {
+			return new StewNumberBuilder(this,sn->li.add(new MainlyOfType(sn,rs)));
 		}
 		public StewNumberBuilder mainly() {
 			return new StewNumberBuilder(this,this::makeMainly);
@@ -101,6 +123,12 @@ public class CookingRecipeBuilder {
 		}
 		public StewNumberBuilder any() {
 			return new StewNumberBuilder(this,this::makeMust);
+		}
+		public StewConditionsBuilder require() {
+			return new StewConditionsBuilder(parent,al,al,dy);
+		}
+		public StewConditionsBuilder not() {
+			return new StewConditionsBuilder(parent,dy,al,dy);
 		}
 		private void makeMust(StewNumber sn) {
 			li.add(new Must(sn));
@@ -148,10 +176,10 @@ public class CookingRecipeBuilder {
 		return new CookingRecipeBuilder(new ResourceLocation(Main.MODID,"cooking/"+out.getRegistryName().getPath()),out);
 	}
 	public StewConditionsBuilder require() {
-		return new StewConditionsBuilder(this,allow);
+		return new StewConditionsBuilder(this,allow,allow,deny);
 	}
 	public StewConditionsBuilder not() {
-		return new StewConditionsBuilder(this,deny);
+		return new StewConditionsBuilder(this,deny,allow,deny);
 	}
 	public StewBaseBuilder base() {
 		return new StewBaseBuilder(this);

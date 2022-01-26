@@ -2,11 +2,13 @@ package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -20,6 +22,7 @@ import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidType;
 import com.teammoeg.thermopolium.data.recipes.baseconditions.FluidTypeType;
 import com.teammoeg.thermopolium.data.recipes.conditions.Halfs;
 import com.teammoeg.thermopolium.data.recipes.conditions.Mainly;
+import com.teammoeg.thermopolium.data.recipes.conditions.MainlyOfType;
 import com.teammoeg.thermopolium.data.recipes.conditions.Must;
 import com.teammoeg.thermopolium.data.recipes.numbers.Add;
 import com.teammoeg.thermopolium.data.recipes.numbers.ConstNumber;
@@ -27,20 +30,30 @@ import com.teammoeg.thermopolium.data.recipes.numbers.ItemIngredient;
 import com.teammoeg.thermopolium.data.recipes.numbers.ItemTag;
 import com.teammoeg.thermopolium.data.recipes.numbers.ItemType;
 import com.teammoeg.thermopolium.data.recipes.numbers.NopNumber;
-import com.teammoeg.thermopolium.util.FloatemStack;
-
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class StewSerializer {
+public class StewSerializeUtil {
+	//Just return created object when equals, caching would lesser equals operation cost 
+	public static class CacheMap<T> extends HashMap<T,T>{
+		private static final long serialVersionUID = 1L;
+		public T of(T t) {
+			return this.computeIfAbsent(t,UnaryOperator.identity());
+		}
+	}
 	public static Map<String,Function<JsonObject,StewCondition>> conditions=new HashMap<>();
 	public static Map<String,Function<JsonElement,StewNumber>> numbers=new HashMap<>();
 	public static Map<String,Function<JsonObject,StewBaseCondition>> basetypes=new HashMap<>();
 	public static Map<String,Function<PacketBuffer,StewCondition>> pconditions=new HashMap<>();
 	public static Map<String,Function<PacketBuffer,StewNumber>> pnumbers=new HashMap<>();
 	public static Map<String,Function<PacketBuffer,StewBaseCondition>> pbasetypes=new HashMap<>();
-	private StewSerializer() {
+	//do some cache to lower calculation cost
+	public static CacheMap<StewCondition> sccache=new CacheMap<>();
+	public static CacheMap<StewNumber> nmcache=new CacheMap<>();
+	public static CacheMap<StewBaseCondition> bacache=new CacheMap<>();
+	private StewSerializeUtil() {
+
 	}
 	static {
 		numbers.put("add",Add::new);
@@ -52,6 +65,7 @@ public class StewSerializer {
 		conditions.put("half",Halfs::new);
 		conditions.put("mainly",Mainly::new);
 		conditions.put("contains",Must::new);
+		conditions.put("mainlyOf",MainlyOfType::new);
 		basetypes.put("tag",FluidTag::new);
 		basetypes.put("fluid",FluidType::new);
 		basetypes.put("fluid_type",FluidTypeType::new);
@@ -64,10 +78,15 @@ public class StewSerializer {
 		pconditions.put("half",Halfs::new);
 		pconditions.put("mainly",Mainly::new);
 		pconditions.put("contains",Must::new);
+		pconditions.put("mainlyOf",MainlyOfType::new);
 		pbasetypes.put("tag",FluidTag::new);
 		pbasetypes.put("fluid",FluidTag::new);
+		pbasetypes.put("fluid_type",FluidTag::new);
 	}
 	public static StewNumber ofNumber(JsonElement jsonElement) {
+		return nmcache.of(internalOfNumber(jsonElement));
+	}
+	private static StewNumber internalOfNumber(JsonElement jsonElement) {
 		if(jsonElement==null||jsonElement.isJsonNull())
 			return NopNumber.INSTANCE;
 		if(jsonElement.isJsonPrimitive()) {
@@ -96,9 +115,12 @@ public class StewSerializer {
 		return NopNumber.INSTANCE;
 	}
 	public static StewCondition ofCondition(JsonObject json) {
-		return conditions.get(json.get("cond").getAsString()).apply(json);
+		return sccache.of(conditions.get(json.get("cond").getAsString()).apply(json));
 	}
 	public static StewBaseCondition ofBase(JsonObject jo) {
+		return bacache.of(internalOfBase(jo));
+	}
+	private static StewBaseCondition internalOfBase(JsonObject jo) {
 		if(jo.has("type"))
 			return basetypes.get(jo.get("type").getAsString()).apply(jo);
 		if(jo.has("tag"))
@@ -110,14 +132,13 @@ public class StewSerializer {
 		return null;
 	}
 	public static StewNumber ofNumber(PacketBuffer buffer) {
-		
-		return pnumbers.get(buffer.readString()).apply(buffer);
+		return nmcache.of(pnumbers.get(buffer.readString()).apply(buffer));
 	}
 	public static StewCondition ofCondition(PacketBuffer buffer) {
-		return pconditions.get(buffer.readString()).apply(buffer);
+		return sccache.of(pconditions.get(buffer.readString()).apply(buffer));
 	}
 	public static StewBaseCondition ofBase(PacketBuffer buffer) {
-		return pbasetypes.get(buffer.readString()).apply(buffer);
+		return bacache.of(pbasetypes.get(buffer.readString()).apply(buffer));
 	}
 	public static void write(StewNumber e,PacketBuffer buffer) {
 		buffer.writeString(e.getType());

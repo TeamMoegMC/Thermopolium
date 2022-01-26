@@ -1,0 +1,17 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": "thermopolium:meats/meat"
+    }
+  ],
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "tag": "thermopolium:water"
+    }
+  ],
+  "output": "thermopolium:meat_soup"
+}
