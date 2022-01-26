@@ -57,8 +57,26 @@ public class THRecipeProvider extends RecipeProvider {
 		out.accept(new BoilingRecipe(rl("boil/water"),fluid(mcrl("water")),fluid(mrl("nail_soup")),100));
 		out.accept(new BoilingRecipe(rl("boil/milk"),fluid(mcrl("milk")),fluid(mrl("scalded_milk")),100));
 		Fluid bw=fluid(mrl("nail_soup"));
+		Fluid bm=fluid(mrl("scalded_milk"));
+		cook("acquacotta").base().type(bw).and().require().mainly().of(mrl("baked")).and().then().finish(out);
+		cook("congee").base().type(bw).and().require().half().of(mrl("coreals/rice")).and().then().dense(0.25).finish(out);
+		cook("rice_pudding").base().type(bm).and().require().half().of(mrl("coreals/rice")).and().then().dense(0.25).finish(out);
+		cook("gruel").base().type(bw).and().require().half().of(mrl("coreals/non_rice")).and().then().dense(0.25).finish(out);
+		cook("porridge").base().type(bm).and().require().half().of(mrl("coreals/non_rice")).and().then().dense(0.25).finish(out);
+		cook("egg_drop_soup").base().type(bw).and().require().mainly().of(mrl("eggs")).and().then().not().any().of(mrl("vegetables")).and().then().dense(0.5).finish(out);
+		cook("stracciatella").base().type(bw).and().require().mainly().of(mrl("eggs")).and().any().of(mrl("vegetables")).and().then().dense(0.5).finish(out);
+		cook("custard").base().type(bm).and().require().mainly().of(mrl("eggs")).and().then().dense(0.5).finish(out);
+		cook("vegetable_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().then().finish(out);
+		cook("vegetable_chowder").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().then().finish(out);
+		cook("borscht").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.BEETROOT).and().then().finish(out);
+		cook("borscht_cream").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.BEETROOT).and().then().finish(out);
+		cook("pumpkin_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.PUMPKIN).and().then().finish(out);
+		cook("pumpkin_soup_cream").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(Items.PUMPKIN).and().then().finish(out);
+		cook("mushroom_soup").base().type(bw).and().require().mainly().of(mrl("vegetables")).and().any().of(mrl("mushroom")).and().then().finish(out);
+		cook("cream_of_mushroom_soup").base().type(bm).and().require().mainly().of(mrl("vegetables")).and().any().of(mrl("mushroom")).and().then().finish(out);
 		cook("poultry_soup").base().type(bw).and().require().mainly().of(Items.COOKED_CHICKEN).and().then().finish(out);
-		cook("egg_drop_soup").base().type(bw).and().require().mainly().of(Items.EGG).and().then().not().any().of(ftag("vegetables")).and().then().finish(out);
+		
+		
 	}
 	private CookingRecipeBuilder cook(String s) {
 		return CookingRecipeBuilder.start(fluid(mrl(s)));

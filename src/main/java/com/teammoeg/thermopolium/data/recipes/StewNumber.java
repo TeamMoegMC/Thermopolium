@@ -1,6 +1,5 @@
 package com.teammoeg.thermopolium.data.recipes;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -17,5 +16,5 @@ public interface StewNumber extends Function<StewPendingContext,Float>{
 	public void write(PacketBuffer buffer);
 	public String getType();
 	public Stream<StewNumber> getItemRelated();
-	
+	public Stream<ResourceLocation> getTags();
 }

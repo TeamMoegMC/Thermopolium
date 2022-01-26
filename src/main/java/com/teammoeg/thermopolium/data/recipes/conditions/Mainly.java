@@ -1,11 +1,16 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemStack;
+import com.teammoeg.thermopolium.util.FloatemTagStack;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 public class Mainly extends NumberedStewCondition{
 	private boolean isItem=true;
@@ -26,30 +31,12 @@ public class Mainly extends NumberedStewCondition{
 
 	@Override
 	public boolean test(StewPendingContext t, float n) {
-		if(isItem)
-			if(n>=t.getTotalItems()/3) {
-				int eqs=0;
-				for(FloatemStack fs:t.getInfo().stacks) {
-					float f=fs.getCount();
-					if(n<f)
-						return false;
-					else if(n==f)
-						eqs++;
-				}
-				return eqs<2;
-			}
-		else
-			if(n>=t.getTotalTypes()/3) {
-				int eqs=0;
-				for(Float f:t.getTypes().values()) {
-					if(n<f)
-						return false;
-					else if(n==f)
-						eqs++;
-				}
-				return eqs<2;
-			}
-		return false;
+		if(isItem) {
+			if(n<t.getTotalItems()/3)
+				return false;
+		}else if(n<t.getTotalTypes()/3)
+			return false;
+		return FloatemTagStack.calculateTypes(t.getItems().stream().filter(e->!number.fits(e.getStack()))).values().stream().allMatch(e->e<n);
 	}
 
 	@Override
@@ -73,5 +60,28 @@ public class Mainly extends NumberedStewCondition{
 	@Override
 	public String getType() {
 		return "mainly";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (isItem ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if(!(obj instanceof Mainly))
+			return false;
+		if (!super.equals(obj))
+			return false;
+	
+		Mainly other = (Mainly) obj;
+		if (isItem != other.isItem)
+			return false;
+		return true;
 	}
 }

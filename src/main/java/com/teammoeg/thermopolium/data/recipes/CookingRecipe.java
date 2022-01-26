@@ -128,10 +128,10 @@ public class CookingRecipe extends IDataRecipe {
 		if(matchtype==0)
 			matchtype=1;
 		if(allow!=null)
-			if(!allow.stream().allMatch(e->e.test(ctx)))
+			if(!allow.stream().allMatch(ctx::calculateCondition))
 				return 0;
 		if(deny!=null)
-			if(deny.stream().anyMatch(e->e.test(ctx)))
+			if(deny.stream().anyMatch(ctx::calculateCondition))
 				return 0;
 		return matchtype;
 	}
@@ -153,9 +153,10 @@ public class CookingRecipe extends IDataRecipe {
 	}
 	public Stream<StewNumber> getAllNumbers(){
 		return Stream.concat(allow==null?Stream.empty():allow.stream().flatMap(StewCondition::getAllNumbers),deny==null?Stream.empty():deny.stream().flatMap(StewCondition::getAllNumbers));
-		
 	}
-
+	public Stream<ResourceLocation> getTags(){
+		return Stream.concat(allow==null?Stream.empty():allow.stream().flatMap(StewCondition::getTags),deny==null?Stream.empty():deny.stream().flatMap(StewCondition::getTags));
+	}
 
 
 }

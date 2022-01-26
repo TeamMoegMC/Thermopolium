@@ -71,8 +71,9 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
         CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE).collect(Collectors.toMap(e->e.output,UnaryOperator.identity()));
         BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE).collect(Collectors.toMap(e->e.before,UnaryOperator.identity()));
         DissolveRecipe.recipes = filterRecipes(recipes, DissolveRecipe.class, DissolveRecipe.TYPE).collect(Collectors.toList());
-        CountingTags.tags=filterRecipes(recipes,CountingTags.class,CountingTags.TYPE).flatMap(r->r.tag.stream()).collect(Collectors.toList());
         CookingRecipe.cookables=CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getAllNumbers).collect(Collectors.toSet());
+        CountingTags.tags=Stream.concat(filterRecipes(recipes,CountingTags.class,CountingTags.TYPE).flatMap(r->r.tag.stream()),CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getTags)).collect(Collectors.toSet());
+        
     }
 
     static <R extends IRecipe<?>> Stream<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<?> recipeType) {

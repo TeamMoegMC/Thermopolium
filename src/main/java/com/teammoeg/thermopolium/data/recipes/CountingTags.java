@@ -2,6 +2,7 @@ package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
@@ -15,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 public class CountingTags extends IDataRecipe {
-	public static List<ResourceLocation> tags;
+	public static Set<ResourceLocation> tags;
 	public static IRecipeType<?> TYPE;
 	public static RegistryObject<IRecipeSerializer<?>> SERIALIZER;
 	public List<ResourceLocation> tag;

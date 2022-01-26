@@ -77,9 +77,7 @@ public class ItemType implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if(!(obj instanceof ItemType))
 			return false;
 		ItemType other = (ItemType) obj;
 		if (loc == null) {
@@ -88,5 +86,10 @@ public class ItemType implements StewNumber {
 		} else if (!loc.equals(other.loc))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return Stream.empty();
 	}
 }

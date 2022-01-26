@@ -33,4 +33,20 @@ public class Must extends NumberedStewCondition {
 	public String getType() {
 		return "contains";
 	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if(obj instanceof Must)
+			return false;
+		if (!super.equals(obj))
+			return false;
+		return true;
+	}
 }

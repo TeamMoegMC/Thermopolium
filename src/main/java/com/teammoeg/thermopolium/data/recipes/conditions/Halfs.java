@@ -51,4 +51,26 @@ public class Halfs extends NumberedStewCondition{
 	public String getType() {
 		return "half";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (isItem ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if(!(obj instanceof Halfs))
+			return false;
+		if (!super.equals(obj))
+			return false;
+		Halfs other = (Halfs) obj;
+		if (isItem != other.isItem)
+			return false;
+		return true;
+	}
 }

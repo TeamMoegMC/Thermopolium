@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:carrot",
+    "minecraft:beetroot",
+    "minecraft:pumpkin",
+    {
+      "id": "#forge:vegetables",
+      "required": false
+    },
+    {
+      "id": "#forge:vegetable",
+      "required": false
+    },
+    "#thermopolium:roots",
+    {
+      "id": "rankine:asparagus",
+      "required": false
+    },
+    {
+      "id": "rankine:roasted_asparagus",
+      "required": false
+    }
+  ]
+}

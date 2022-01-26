@@ -75,14 +75,17 @@ public class ConstNumber implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if(!(obj instanceof ConstNumber))
 			return false;
 		ConstNumber other = (ConstNumber) obj;
 		if (Float.floatToIntBits(n) != Float.floatToIntBits(other.n))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return Stream.empty();
 	}
 
 }

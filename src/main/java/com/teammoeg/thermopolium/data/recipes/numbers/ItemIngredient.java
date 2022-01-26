@@ -75,9 +75,7 @@ public class ItemIngredient implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if(!(obj instanceof ItemIngredient))
 			return false;
 		ItemIngredient other = (ItemIngredient) obj;
 		if (i == null) {
@@ -86,6 +84,11 @@ public class ItemIngredient implements StewNumber {
 		} else if (!i.equals(other.i))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return Stream.empty();
 	}
 	
 }

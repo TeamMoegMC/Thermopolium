@@ -76,9 +76,7 @@ public class Add implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if(!(obj instanceof Add))
 			return false;
 		Add other = (Add) obj;
 		if (nums == null) {
@@ -87,6 +85,10 @@ public class Add implements StewNumber {
 		} else if (!nums.equals(other.nums))
 			return false;
 		return true;
+	}
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return nums.stream().flatMap(StewNumber::getTags);
 	}
 
 }

@@ -3,22 +3,23 @@
   "allow": [
     {
       "cond": "mainly",
-      "type": "thermopolium:eggs"
-    }
-  ],
-  "deny": [
+      "type": "thermopolium:vegetables"
+    },
     {
       "cond": "contains",
-      "type": "thermopolium:vegetables"
+      "type": {
+        "item": "minecraft:pumpkin"
+      }
     }
   ],
+  "deny": [],
   "priority": 0,
-  "density": 0.5,
+  "density": 0.75,
   "time": 200,
   "base": [
     {
       "fluid": "thermopolium:nail_soup"
     }
   ],
-  "output": "thermopolium:egg_drop_soup"
+  "output": "thermopolium:pumpkin_soup"
 }

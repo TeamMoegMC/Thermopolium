@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "rankine:rice",
+      "required": false
+    },
+    {
+      "id": "rankine:rice_flour",
+      "required": false
+    },
+    {
+      "id": "rankine:rice_seeds",
+      "required": false
+    }
+  ]
+}

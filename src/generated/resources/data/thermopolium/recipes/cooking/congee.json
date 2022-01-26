@@ -1,0 +1,19 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "half",
+      "type": "thermopolium:coreals/rice"
+    }
+  ],
+  "deny": [],
+  "priority": 0,
+  "density": 0.25,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:nail_soup"
+    }
+  ],
+  "output": "thermopolium:congee"
+}

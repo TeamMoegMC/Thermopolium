@@ -84,9 +84,7 @@ public class ItemTag implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if(!(obj instanceof ItemTag))
 			return false;
 		ItemTag other = (ItemTag) obj;
 		if (tag == null) {
@@ -95,5 +93,10 @@ public class ItemTag implements StewNumber {
 		} else if (!tag.equals(other.tag))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return Stream.of(tag);
 	}
 }

@@ -62,5 +62,9 @@ public class NopNumber implements StewNumber {
 	public boolean equals(Object obj) {
 		return obj instanceof NopNumber;
 	}
+	@Override
+	public Stream<ResourceLocation> getTags() {
+		return Stream.empty();
+	}
 	
 }

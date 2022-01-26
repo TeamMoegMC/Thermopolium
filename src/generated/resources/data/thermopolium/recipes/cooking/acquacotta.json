@@ -3,22 +3,17 @@
   "allow": [
     {
       "cond": "mainly",
-      "type": "thermopolium:eggs"
+      "type": "thermopolium:baked"
     }
   ],
-  "deny": [
-    {
-      "cond": "contains",
-      "type": "thermopolium:vegetables"
-    }
-  ],
+  "deny": [],
   "priority": 0,
-  "density": 0.5,
+  "density": 0.75,
   "time": 200,
   "base": [
     {
       "fluid": "thermopolium:nail_soup"
     }
   ],
-  "output": "thermopolium:egg_drop_soup"
+  "output": "thermopolium:acquacotta"
 }

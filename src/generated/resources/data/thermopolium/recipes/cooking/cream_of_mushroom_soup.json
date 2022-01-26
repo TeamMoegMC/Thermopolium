@@ -1,0 +1,23 @@
+{
+  "type": "thermopolium:cooking",
+  "allow": [
+    {
+      "cond": "mainly",
+      "type": "thermopolium:vegetables"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:mushroom"
+    }
+  ],
+  "deny": [],
+  "priority": 0,
+  "density": 0.75,
+  "time": 200,
+  "base": [
+    {
+      "fluid": "thermopolium:scalded_milk"
+    }
+  ],
+  "output": "thermopolium:cream_of_mushroom_soup"
+}

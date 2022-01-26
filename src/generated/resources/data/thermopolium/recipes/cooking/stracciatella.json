@@ -4,14 +4,13 @@
     {
       "cond": "mainly",
       "type": "thermopolium:eggs"
-    }
-  ],
-  "deny": [
+    },
     {
       "cond": "contains",
       "type": "thermopolium:vegetables"
     }
   ],
+  "deny": [],
   "priority": 0,
   "density": 0.5,
   "time": 200,
@@ -20,5 +19,5 @@
       "fluid": "thermopolium:nail_soup"
     }
   ],
-  "output": "thermopolium:egg_drop_soup"
+  "output": "thermopolium:stracciatella"
 }

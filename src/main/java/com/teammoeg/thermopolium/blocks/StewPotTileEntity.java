@@ -254,7 +254,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		tank.getFluid().setAmount(parts*250);
 	}
 	private boolean makeSoup() {
-		if (tank.getFluidAmount() < 250)
+		if (tank.getFluidAmount() <= 250)
 			return false;// cant boil if under one bowl
 
 		
@@ -268,6 +268,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		for (int i = 0; i < 9; i++) {
 			ItemStack is=inv.getStackInSlot(i);
 			if(!is.isEmpty()) {
+				
 				if(is.getItem()==Items.POTION) {
 					outer:for(EffectInstance n:PotionUtils.getEffectsFromStack(is)) {
 						for(EffectInstance eff:cr) {
@@ -276,8 +277,9 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 						}
 						cr.add(n);
 					}
-				}else
+				}else if(CookingRecipe.isCookable(is))
 					itms++;
+				else return false;
 			}
 		}
 		if(itms/(float)parts+(current.getDensity()*oparts)/parts>3||cr.size()>3) {//too dense
