@@ -1,0 +1,7 @@
+{
+  "type": "thermopolium:dissolve",
+  "item": {
+    "item": "rankine:corn_ear"
+  },
+  "time": 10
+}

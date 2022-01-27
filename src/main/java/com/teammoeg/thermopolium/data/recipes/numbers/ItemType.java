@@ -29,7 +29,7 @@ public class ItemType implements StewNumber {
 	@Override
 	public Float apply(StewPendingContext t) {
 		if(type==null)return 0F;
-		return t.getOfItem(type::equals);
+		return t.getOfItem(i->i.getItem().equals(type));
 	}
 
 	@Override

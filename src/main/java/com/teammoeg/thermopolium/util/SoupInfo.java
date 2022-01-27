@@ -47,7 +47,6 @@ public class SoupInfo {
 	}
 	public boolean merge(SoupInfo f,float cparts,float oparts) {
 		if(this.getDensity()+f.getDensity()*oparts/cparts>3)return false;
-		if(!this.base.equals(f.base))return false;
 		for(EffectInstance es:f.effects) {
 			boolean added=false;
 			for(EffectInstance oes:effects) {

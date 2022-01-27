@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
-    "minecraft:bread"
+    "minecraft:bread",
+    {
+      "id": "rankine:toast",
+      "required": false
+    }
   ]
 }

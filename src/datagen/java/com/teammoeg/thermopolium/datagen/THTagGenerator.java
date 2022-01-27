@@ -23,7 +23,6 @@ public class THTagGenerator extends TagsProvider<Item> {
 		super(dataGenerator,Registry.ITEM, modId, existingFileHelper);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void registerTags() {
 		/*Builder<Item> i=this.getOrCreateBuilder(ItemTags.createOptional(mrl("cookable"))).add(Items.EGG);
@@ -35,7 +34,7 @@ public class THTagGenerator extends TagsProvider<Item> {
 					i.addOptional(it.getRegistryName());
 			}
 		}*/
-		tag(baked).add(Items.BREAD);
+		tag(baked).add(Items.BREAD).addOptional(RankineItems.TOAST.getId());
 		tag(nonrice).addTag(atag(baked)).add(Items.WHEAT,Items.WHEAT_SEEDS)
 		.addOptional(rl(RankineItems.CORN_EAR)).addOptional(rl(RankineItems.CORN_FLOUR)).addOptional(rl(RankineItems.CORN_SEEDS));
 		tag(rice).addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_FLOUR)).addOptional(rl(RankineItems.RICE_SEEDS));
@@ -47,10 +46,11 @@ public class THTagGenerator extends TagsProvider<Item> {
 		tag(fish).addTag(atag(mcrl("fishes")));
 		tag(seafood).add(Items.KELP,Items.DRIED_KELP);
 		tag(poultry).add(Items.CHICKEN,Items.COOKED_CHICKEN,Items.RABBIT,Items.COOKED_RABBIT);
-		tag(meat).add(Items.BEEF,Items.COOKED_BEEF,Items.MUTTON,Items.COOKED_MUTTON);
+		tag(meat).add(Items.BEEF,Items.COOKED_BEEF,Items.MUTTON,Items.COOKED_MUTTON,Items.PORKCHOP,Items.COOKED_PORKCHOP);
 		tag(sugar).add(Items.SUGAR_CANE,Items.HONEYCOMB,Items.HONEY_BOTTLE);
 		tag("bone").add(Items.BONE);
 		tag("ice").add(Items.ICE,Items.BLUE_ICE,Items.PACKED_ICE);
+		tag(mushrooms).add(Items.BROWN_MUSHROOM,Items.RED_MUSHROOM);
 		
 	}
 	private Builder<Item> tag(String s){

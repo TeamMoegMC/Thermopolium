@@ -4,6 +4,8 @@
     "minecraft:beef",
     "minecraft:cooked_beef",
     "minecraft:mutton",
-    "minecraft:cooked_mutton"
+    "minecraft:cooked_mutton",
+    "minecraft:porkchop",
+    "minecraft:cooked_porkchop"
   ]
 }

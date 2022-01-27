@@ -112,7 +112,7 @@ public class RenderUtils {
 					r, g, b, alpha, uMin, (uMin+iconUDif*leftoverWf), vMin, (vMin+iconVDif*leftoverHf),light,overlay);
 		}
 	}
-	private static void drawTexturedColoredRect(
+	public static void drawTexturedColoredRect(
 			IVertexBuilder builder, MatrixStack transform,
 			float x, float y, float w, float h,
 			float r, float g, float b, float alpha,

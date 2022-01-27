@@ -48,6 +48,7 @@ public class DissolveRecipe extends IDataRecipe{
 	@Override
 	public void serialize(JsonObject json) {
 		json.add("item",item.serialize());
+		json.addProperty("time",time);
 	}
 
 }

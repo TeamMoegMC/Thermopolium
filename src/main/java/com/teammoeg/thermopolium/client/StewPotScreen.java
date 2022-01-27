@@ -157,8 +157,9 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			 int h = (int) (29 * (te.process / (float) te.processMax));
 			 this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176,54 + h, 16, 29-h);
 		}
-		if(te.proctype==2) {
-			this.blit(transform, guiLeft + 44, guiTop + 16,176,0,54,54);
+		if(te.proctype>1) {
+			if(te.proctype==2)
+				this.blit(transform, guiLeft + 44, guiTop + 16,176,0,54,54);
 			this.blit(transform, guiLeft + 102, guiTop + 17,230,0,21,51);
 		}
 	}

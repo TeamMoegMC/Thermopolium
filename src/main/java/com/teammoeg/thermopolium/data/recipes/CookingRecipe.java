@@ -46,7 +46,7 @@ public class CookingRecipe extends IDataRecipe {
 	List<StewCondition> allow;
 	List<StewCondition> deny;
 	int priority=0;
-	int time;
+	public int time;
 	float density;
 	List<StewBaseCondition> base;
 	public Fluid output;

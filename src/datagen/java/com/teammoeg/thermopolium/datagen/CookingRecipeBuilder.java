@@ -188,6 +188,21 @@ public class CookingRecipeBuilder {
 		priority=p;
 		return this;
 	}
+	public CookingRecipeBuilder special() {
+		priority|=1024;
+		return this;
+	}
+	public CookingRecipeBuilder high() {
+		priority|=128;
+		return this;
+	}
+	public CookingRecipeBuilder med() {
+		priority|=64;
+		return this;
+	}
+	public CookingRecipeBuilder low() {
+		return this;
+	}
 	public CookingRecipeBuilder time(int t) {
 		time=t;
 		return this;

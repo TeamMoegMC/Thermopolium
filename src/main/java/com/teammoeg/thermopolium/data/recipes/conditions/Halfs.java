@@ -26,8 +26,8 @@ public class Halfs extends NumberedStewCondition{
 	@Override
 	public boolean test(StewPendingContext t, float n) {
 		if(isItem)
-			return n>=t.getTotalItems()/2;
-		return n>=t.getTotalTypes()/2;
+			return n>t.getTotalItems()/2;
+		return n>t.getTotalTypes()/2;
 	}
 
 	@Override

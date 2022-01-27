@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fluids.FluidStack;
 
 public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
@@ -24,7 +25,18 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 		super(rendererDispatcherIn);
 		System.out.println("constructed");
 	}
-
+	private static Vector3f clr(int fromcol,int tocol,float proc) {
+		float fcolr=(fromcol >> 16&255)/255.0f,
+		fcolg=(fromcol >> 8&255)/255.0f,
+		fcolb=(fromcol&255)/255.0f,
+		tcolr=(tocol >> 16&255)/255.0f,
+		tcolg=(tocol >> 8&255)/255.0f,
+		tcolb=(tocol&255)/255.0f;
+		return new Vector3f(fcolr+(tcolr-fcolr)*proc,fcolg+(tcolg-fcolg)*proc,fcolb+(tcolb-fcolb)*proc);
+	}
+	private static Vector3f clr(int col) {
+		return new Vector3f((col >> 16&255)/255.0f,(col >> 8&255)/255.0f,(col&255)/255.0f);
+	}
 	@SuppressWarnings("deprecation")
 	@Override
 	public void render(StewPotTileEntity te, float partialTicks, MatrixStack matrixStack,
@@ -46,10 +58,28 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity>
 			int col = fs.getFluid().getAttributes().getColor(fs);
 			int iW = sprite.getWidth();
 			int iH = sprite.getHeight();
-			if(iW > 0&&iH > 0)
-				RenderUtils.drawRepeatedSprite(builder,matrixStack,.125f,.125f,.75f,.75f, iW, iH,
-						sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
-						(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f,1f,combinedLightIn,combinedOverlayIn);
+			if(iW > 0&&iH > 0) {
+				Vector3f clr;
+				float alp=1f;
+				if(te.become!=null&&te.processMax>0) {
+					TextureAtlasSprite sprite2 = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(te.become.getFluid().getAttributes().getStillTexture(fs));
+					float proc=te.process*1f/te.processMax;
+					clr=clr(col,te.become.getAttributes().getColor(fs),proc);
+					if(sprite2.getWidth()>0&&sprite2.getHeight()>0) {
+						alp=1-proc;
+						RenderUtils.drawTexturedColoredRect(builder,matrixStack,.125f,.125f,.75f,.75f,
+								clr.getX(),clr.getY(),clr.getZ(),proc,
+								sprite2.getMinU(), sprite2.getMaxU(), sprite2.getMinV(), sprite2.getMaxV(),combinedLightIn,combinedOverlayIn);
+					}
+				}else {
+					clr=clr(col);
+					
+				}
+				RenderUtils.drawTexturedColoredRect(builder,matrixStack,.125f,.125f,.75f,.75f,
+						clr.getX(),clr.getY(),clr.getZ(),alp,
+						sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),combinedLightIn,combinedOverlayIn);
+				
+			}
 		}
 
 		matrixStack.pop();

@@ -8,6 +8,7 @@
       }
     }
   ],
+  "priority": 1152,
   "density": 2.0,
   "time": 200,
   "base": [
