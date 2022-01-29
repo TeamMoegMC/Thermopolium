@@ -18,6 +18,10 @@
 
 package com.teammoeg.thermopolium.fluid;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.block.BlockState;
@@ -25,6 +29,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -78,6 +83,14 @@ public class SoupFluid extends ForgeFlowingFluid {
 	public static void setInfo(FluidStack stack, SoupInfo si) {
 		if (!si.isEmpty())
 			stack.getOrCreateTag().put("soup", si.save());
+	}
+	public static List<FloatemStack> getItems(FluidStack stack) {
+		if (stack.hasTag()) {
+			CompoundNBT nbt = stack.getChildTag("soup");
+			if (nbt != null)
+				return SoupInfo.getStacks(nbt);
+		}
+		return ImmutableList.of();
 	}
 
 	@Override
