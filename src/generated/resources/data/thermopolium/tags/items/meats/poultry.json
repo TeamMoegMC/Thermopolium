@@ -2,8 +2,12 @@
   "replace": false,
   "values": [
     "minecraft:chicken",
-    "minecraft:cooked_chicken",
     "minecraft:rabbit",
-    "minecraft:cooked_rabbit"
+    "#forge:raw_chicken",
+    "#forge:raw_rabbit",
+    {
+      "id": "stone_age:fowl_meat",
+      "required": false
+    }
   ]
 }

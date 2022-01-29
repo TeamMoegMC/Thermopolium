@@ -3,9 +3,7 @@
   "allow": [
     {
       "cond": "half",
-      "type": {
-        "item": "rankine:roasted_walnut"
-      }
+      "type": "thermopolium:walnut"
     },
     {
       "cond": "contains",
@@ -15,12 +13,19 @@
   "deny": [
     {
       "cond": "contains",
-      "type": [
-        "thermopolium:meats",
-        "thermopolium:seafood",
-        "thermopolium:vegetables",
-        "thermopolium:wolfberries"
-      ]
+      "type": "thermopolium:meats"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:seafood"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:vegetables"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:wolfberries"
     }
   ],
   "priority": 1088,

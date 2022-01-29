@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.ArrayList;
@@ -20,35 +38,42 @@ public class CountingTags extends IDataRecipe {
 	public static IRecipeType<?> TYPE;
 	public static RegistryObject<IRecipeSerializer<?>> SERIALIZER;
 	public List<ResourceLocation> tag;
+
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
 		return SERIALIZER.get();
 	}
+
 	@Override
 	public IRecipeType<?> getType() {
 		return TYPE;
 	}
+
 	public CountingTags(ResourceLocation id) {
 		super(id);
-		tag=new ArrayList<>();
+		tag = new ArrayList<>();
 	}
-	public CountingTags(ResourceLocation id,JsonObject jo) {
+
+	public CountingTags(ResourceLocation id, JsonObject jo) {
 		super(id);
-		if(jo.has("tag"))
-			tag=ImmutableList.of(new ResourceLocation(jo.get("tag").getAsString()));
-		else if(jo.has("tags"))
-			tag=StewSerializeUtil.parseJsonElmList(jo.get("tags"),e->new ResourceLocation(e.getAsString()));
+		if (jo.has("tag"))
+			tag = ImmutableList.of(new ResourceLocation(jo.get("tag").getAsString()));
+		else if (jo.has("tags"))
+			tag = SerializeUtil.parseJsonElmList(jo.get("tags"), e -> new ResourceLocation(e.getAsString()));
 	}
-	public CountingTags(ResourceLocation id,PacketBuffer data) {
+
+	public CountingTags(ResourceLocation id, PacketBuffer data) {
 		super(id);
-		tag=StewSerializeUtil.readList(data,PacketBuffer::readResourceLocation);
+		tag = SerializeUtil.readList(data, PacketBuffer::readResourceLocation);
 	}
+
 	public void write(PacketBuffer data) {
-		StewSerializeUtil.<ResourceLocation>writeList2(data,tag,PacketBuffer::writeResourceLocation);
+		SerializeUtil.<ResourceLocation>writeList2(data, tag, PacketBuffer::writeResourceLocation);
 	}
+
 	@Override
 	public void serialize(JsonObject json) {
-		json.add("tags",StewSerializeUtil.toJsonList(tag,e->new JsonPrimitive(e.toString())));
+		json.add("tags", SerializeUtil.toJsonList(tag, e -> new JsonPrimitive(e.toString())));
 	}
 
 }

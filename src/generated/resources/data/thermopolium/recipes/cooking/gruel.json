@@ -3,7 +3,7 @@
   "allow": [
     {
       "cond": "half",
-      "type": "thermopolium:coreals/non_rice"
+      "type": "thermopolium:coreals"
     }
   ],
   "density": 0.25,

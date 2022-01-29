@@ -4,7 +4,7 @@
     {
       "cond": "mainly",
       "type": {
-        "item": "minecraft:dried_kelp"
+        "item": "minecraft:kelp"
       }
     }
   ],

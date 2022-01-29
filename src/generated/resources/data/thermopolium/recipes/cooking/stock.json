@@ -10,7 +10,7 @@
     },
     {
       "cond": "contains",
-      "type": "thermopolium:meats"
+      "type": "thermopolium:meats/meat"
     }
   ],
   "priority": 1024,

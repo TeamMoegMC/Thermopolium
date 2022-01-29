@@ -3,9 +3,7 @@
   "allow": [
     {
       "cond": "mainly",
-      "type": {
-        "item": "minecraft:cooked_beef"
-      }
+      "type": "forge:raw_beef"
     },
     {
       "cond": "contains",
@@ -15,10 +13,11 @@
   "deny": [
     {
       "cond": "contains",
-      "type": [
-        "thermopolium:seafood",
-        "thermopolium:coreals"
-      ]
+      "type": "thermopolium:seafood"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:coreals"
     }
   ],
   "priority": 1152,

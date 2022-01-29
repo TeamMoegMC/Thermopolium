@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.blocks;
 
 import java.util.ArrayList;
@@ -10,6 +28,7 @@ import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
 import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
+import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.fluid.SoupFluid;
 import com.teammoeg.thermopolium.items.StewItem;
@@ -24,20 +43,17 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.SmokingRecipe;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,10 +73,10 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			if (slot < 9)
-				return stack.getItem()==Items.POTION||CookingRecipe.isCookable(stack);
+				return stack.getItem() == Items.POTION || CookingRecipe.isCookable(stack);
 			if (slot == 9) {
-				Item i=stack.getItem();
-				return  i==Items.BOWL||i instanceof StewItem||stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+				Item i = stack.getItem();
+				return i == Items.BOWL || i instanceof StewItem;
 			}
 			return false;
 		}
@@ -72,13 +88,19 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			return super.getSlotLimit(slot);
 		}
 	};
-	
+
 	public ItemStackHandler getInv() {
 		return inv;
 	}
 
-	private FluidTank tank = new FluidTank(1250,CookingRecipe::isBoilable);
-	
+	public SoupInfo current;
+	private FluidTank tank = new FluidTank(1250, CookingRecipe::isBoilable) {
+		protected void onContentsChanged() {
+			// all fluid emptied
+			if (this.isEmpty())
+				current = null;
+		}
+	};
 
 	public StewPotTileEntity() {
 		super(SCTileTypes.STEW_POT.get());
@@ -93,14 +115,14 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	public boolean operate = false;
 	public short proctype = 0;
 	public boolean rsstate = false;
-	public SoupInfo current;
+
 	public Fluid become;
 	public ResourceLocation nextbase;
 	public static final short NOP = 0;
 	public static final short BOILING = 1;
 	public static final short COOKING = 2;
-	public static final short STIRING=3;
-	
+	public static final short STIRING = 3;
+
 	@Override
 	public void tick() {
 		if (!world.isRemote) {
@@ -111,33 +133,43 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 					processMax = 0;
 					doWork();
 				}
-			} else{
+			} else {
 				prepareWork();
-				if(canAddFluid())
+				if (canAddFluid())
 					tryContianFluid();
 			}
 		}
 		this.syncData();
 	}
+
 	private void tryContianFluid() {
-		ItemStack is=inv.getStackInSlot(9);
-		if(!is.isEmpty()&&inv.getStackInSlot(10).isEmpty()) {
-			if(is.getItem()==Items.BOWL&&tank.getFluidAmount()>=250) {
-				BowlContainingRecipe recipe=BowlContainingRecipe.recipes.get(this.tank.getFluid().getFluid());
-				if(recipe!=null){
+		ItemStack is = inv.getStackInSlot(9);
+		if (!is.isEmpty() && inv.getStackInSlot(10).isEmpty()) {
+			if (is.getItem() == Items.BOWL && tank.getFluidAmount() >= 250) {
+				BowlContainingRecipe recipe = BowlContainingRecipe.recipes.get(this.tank.getFluid().getFluid());
+				if (recipe != null) {
 					is.shrink(1);
-					inv.setStackInSlot(10,recipe.handle(tank.drain(250,FluidAction.EXECUTE)));
+					inv.setStackInSlot(10, recipe.handle(tank.drain(250, FluidAction.EXECUTE)));
 					return;
 				}
 			}
-			FluidActionResult far=FluidUtil.tryFillContainer(is,this.tank,1250,null,true);
-			if(far.isSuccess()) {
+			if (is.getItem() instanceof StewItem) {
+				if (tryAddFluid(BowlContainingRecipe.extractFluid(is))) {
+					ItemStack ret = is.getContainerItem();
+					is.shrink(1);
+					inv.setStackInSlot(10,ret);
+				}
+				return;
+			}
+			FluidActionResult far = FluidUtil.tryFillContainer(is, this.tank, 1250, null, true);
+			if (far.isSuccess()) {
 				is.shrink(1);
-				if(far.getResult()!=null) 
-					inv.setStackInSlot(10,far.getResult());
+				if (far.getResult() != null)
+					inv.setStackInSlot(10, far.getResult());
 			}
 		}
 	}
+
 	public boolean canAddFluid() {
 		return proctype == 0;
 	}
@@ -150,13 +182,13 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		rsstate = nbt.getBoolean("rsstate");
 		inv.deserializeNBT(nbt.getCompound("inv"));
 		tank.readFromNBT(nbt);
-		if(nbt.contains("result"))
-			become=ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString("result")));
+		if (nbt.contains("result"))
+			become = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString("result")));
 		else
-			become=null;
-		if(!isClient) {
-			current=nbt.contains("current")?new SoupInfo(nbt.getCompound("current")):null;
-			nextbase=nbt.contains("resultBase")?new ResourceLocation(nbt.getString("resultBase")):null;
+			become = null;
+		if (!isClient) {
+			current = nbt.contains("current") ? new SoupInfo(nbt.getCompound("current")) : null;
+			nextbase = nbt.contains("resultBase") ? new ResourceLocation(nbt.getString("resultBase")) : null;
 		}
 	}
 
@@ -166,31 +198,29 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		nbt.putInt("processMax", processMax);
 		nbt.putShort("worktype", proctype);
 		nbt.putBoolean("rsstate", rsstate);
-		nbt.put("inv",inv.serializeNBT());
+		nbt.put("inv", inv.serializeNBT());
 		tank.writeToNBT(nbt);
-		if(become!=null)
-			nbt.putString("result",become.getRegistryName().toString());
-		if(!isClient) {
-			if(current!=null)
-				nbt.put("current",current.save());
-			if(nextbase!=null)
-				nbt.putString("resultBase",nextbase.toString());
+		if (become != null)
+			nbt.putString("result", become.getRegistryName().toString());
+		if (!isClient) {
+			if (current != null)
+				nbt.put("current", current.save());
+			if (nextbase != null)
+				nbt.putString("resultBase", nextbase.toString());
 		}
 	}
 
-
-
 	private void prepareWork() {
-		if(rsstate&&proctype==0&&!operate&&world.isBlockPowered(this.pos))
-			operate=true;
-		
+		if (rsstate && proctype == 0 && !operate && world.isBlockPowered(this.pos))
+			operate = true;
+
 		if (operate && proctype == 0) {
 			operate = false;
 			if (doBoil())
 				proctype = 1;
 			else if (makeSoup())
 				proctype = 2;
-		}else if(proctype==1) {
+		} else if (proctype == 1) {
 			if (makeSoup())
 				proctype = 2;
 			else
@@ -201,16 +231,17 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private void doWork() {
 		if (proctype == 1) {
 			finishBoil();
-			boolean hasItem=false;
+			boolean hasItem = false;
 			for (int i = 0; i < 9; i++) {
-				ItemStack is=inv.getStackInSlot(i);
-				if(!is.isEmpty()) {
-					hasItem=true;
+				ItemStack is = inv.getStackInSlot(i);
+				if (!is.isEmpty()) {
+					hasItem = true;
 					break;
 				}
 			}
-			if(!hasItem)proctype=0;
-		} else if (proctype == 2||proctype==3)
+			if (!hasItem)
+				proctype = 0;
+		} else if (proctype == 2 || proctype == 3)
 			finishSoup();
 	}
 
@@ -218,7 +249,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		BoilingRecipe recipe = BoilingRecipe.recipes.get(this.tank.getFluid().getFluid());
 		if (recipe == null)
 			return false;
-		become=recipe.after;
+		become = recipe.after;
 		this.processMax = recipe.time;
 		this.process = 0;
 		return true;
@@ -228,72 +259,73 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		BoilingRecipe recipe = BoilingRecipe.recipes.get(this.tank.getFluid().getFluid());
 		if (recipe == null)
 			return;
+		current = null;
 		tank.setFluid(recipe.handle(tank.getFluid()));
 	}
+
 	private void adjustParts(int count) {
-		float oparts=tank.getFluidAmount()/250f;
-		int parts=(int) (oparts+count);
-		current.adjustParts(oparts, parts);
-		tank.getFluid().setAmount(parts*250);
+		float oparts = tank.getFluidAmount() / 250f;
+		int parts = (int) (oparts + count);
+		getCurrent().adjustParts(oparts, parts);
+		tank.getFluid().setAmount(parts * 250);
 	}
+
 	private boolean makeSoup() {
 		if (tank.getFluidAmount() <= 250)
 			return false;// cant boil if under one bowl
-
-		
-		
-		current=SoupFluid.getInfo(this.tank.getFluid());
-		if(current.stacks.size()>27)return false;//too much ingredients
-		int oparts=tank.getFluidAmount()/250;
-		int parts=oparts-1;
-		int itms=0;
-		List<EffectInstance> cr=new ArrayList<>(current.effects);
+		if (getCurrent().stacks.size() > 27)
+			return false;// too much ingredients
+		int oparts = tank.getFluidAmount() / 250;
+		int parts = oparts - 1;
+		int itms = 0;
+		List<EffectInstance> cr = new ArrayList<>(current.effects);
 		for (int i = 0; i < 9; i++) {
-			ItemStack is=inv.getStackInSlot(i);
-			if(!is.isEmpty()) {
-				
-				if(is.getItem()==Items.POTION) {
-					outer:for(EffectInstance n:PotionUtils.getEffectsFromStack(is)) {
-						for(EffectInstance eff:cr) {
-							if(SoupInfo.isEffectEquals(eff,n))
+			ItemStack is = inv.getStackInSlot(i);
+			if (!is.isEmpty()) {
+
+				if (is.getItem() == Items.POTION) {
+					outer: for (EffectInstance n : PotionUtils.getEffectsFromStack(is)) {
+						for (EffectInstance eff : cr) {
+							if (SoupInfo.isEffectEquals(eff, n))
 								continue outer;
 						}
 						cr.add(n);
 					}
-				}else if(CookingRecipe.isCookable(is))
+				} else if (CookingRecipe.isCookable(is))
 					itms++;
-				else return false;
+				else
+					return false;
 			}
 		}
-		if(itms/(float)parts+(current.getDensity()*oparts)/parts>3||cr.size()>3) {//too dense
+		if (itms / (float) parts + (current.getDensity() * oparts) / parts > 3 || cr.size() > 3) {// too dense
 			return false;
 		}
-		
+
 		process = 0;
 		adjustParts(-1);
-		boolean hasItem=false;
-		NonNullList<ItemStack> interninv=NonNullList.withSize(9,ItemStack.EMPTY);
+		boolean hasItem = false;
+		NonNullList<ItemStack> interninv = NonNullList.withSize(9, ItemStack.EMPTY);
 		for (int i = 0; i < 9; i++) {
-			ItemStack is=inv.getStackInSlot(i);
-			if(!is.isEmpty()) {
-				if(is.getItem()==Items.POTION) {
-					for(EffectInstance eff:PotionUtils.getEffectsFromStack(is))
-						current.addEffect(eff,parts);
-					inv.setStackInSlot(i,new ItemStack(Items.GLASS_BOTTLE));
-				}else {
-					for(int j=0;j<9;j++) {
-						ItemStack ois=interninv.get(j);
-						if(ois.isEmpty()) {
-							interninv.set(j,is.copy());
+			ItemStack is = inv.getStackInSlot(i);
+			if (!is.isEmpty()) {
+				if (is.getItem() == Items.POTION) {
+					for (EffectInstance eff : PotionUtils.getEffectsFromStack(is))
+						current.addEffect(eff, parts);
+					inv.setStackInSlot(i, new ItemStack(Items.GLASS_BOTTLE));
+				} else {
+					for (int j = 0; j < 9; j++) {
+						ItemStack ois = interninv.get(j);
+						if (ois.isEmpty()) {
+							interninv.set(j, is.copy());
 							break;
-						}else if(ois.isItemEqual(is)&&ItemStack.areItemStackTagsEqual(ois,is)) {
-							ois.setCount(ois.getCount()+is.getCount());
+						} else if (ois.isItemEqual(is) && ItemStack.areItemStackTagsEqual(ois, is)) {
+							ois.setCount(ois.getCount() + is.getCount());
 							break;
 						}
 					}
-					inv.setStackInSlot(i,is.getContainerItem());
+					inv.setStackInSlot(i, is.getContainerItem());
 				}
-				hasItem=true;
+				hasItem = true;
 			}
 		}
 		if (!hasItem) {// just reduce water
@@ -301,137 +333,176 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			decideSoup();
 			return true;
 		}
-		List<SmokingRecipe> irs = this.world.getRecipeManager().getRecipesForType(IRecipeType.SMOKING);
-		int[] iis=new int[9];
-		int imax=9;
-		outer:for (int i = 0; i < 9; i++) {
-			ItemStack is=interninv.get(i);
-			if(is.isEmpty()) {
-				imax=i;
+		// List<SmokingRecipe> irs =
+		// this.world.getRecipeManager().getRecipesForType(IRecipeType.SMOKING);
+		int[] iis = new int[9];
+		int imax = 9;
+		outer: for (int i = 0; i < 9; i++) {
+			ItemStack is = interninv.get(i);
+			if (is.isEmpty()) {
+				imax = i;
 				break;
 			}
-			for(DissolveRecipe rs:DissolveRecipe.recipes) {
-				if(rs.item.test(is)) {
-					iis[i]=rs.time;
+			for (DissolveRecipe rs : DissolveRecipe.recipes) {
+				if (rs.item.test(is)) {
+					iis[i] = rs.time;
 					continue outer;
 				}
 			}
-			CookInfo ci=cook(is,irs);
-			if(ci!=null) {
-				iis[i]=ci.i;
-				interninv.set(i,ci.is);
-			}
+			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(is.getItem());
+			if (fvr != null)
+				iis[i] = fvr.processtimes.getOrDefault(is.getItem(), 0);
+			/*
+			 * CookInfo ci=cook(is,irs);
+			 * if(ci!=null) {
+			 * iis[i]=ci.i;
+			 * interninv.set(i,ci.is);
+			 * }
+			 */
 		}
-		int tpt=100;
-		for(int i=0;i<imax;i++) {
-			ItemStack is=interninv.get(i);
-			if(!is.isEmpty()) {
-				for(DissolveRecipe rs:DissolveRecipe.recipes) {
-					if(rs.item.test(is)) {
-						iis[i]+=rs.time;
+		int tpt = 100;
+		for (int i = 0; i < imax; i++) {
+			ItemStack is = interninv.get(i);
+			if (!is.isEmpty()) {
+				for (DissolveRecipe rs : DissolveRecipe.recipes) {
+					if (rs.item.test(is)) {
+						iis[i] += rs.time;
 						break;
 					}
 				}
-				current.addItem(is,parts);
+				current.addItem(is, parts);
 			}
-			tpt=Math.max(tpt,iis[i]);
+			tpt = Math.max(tpt, iis[i]);
 		}
-		
+
 		interninv.clear();
-		processMax=Math.max(decideSoup(),tpt);
+		processMax = Math.max(decideSoup(), tpt);
 		return true;
 	}
-	private static class CookInfo{
-		ItemStack is;
-		int i;
-		public CookInfo(ItemStack is, int i) {
-			this.is = is;
-			this.i = i;
-		}
-		public CookInfo add(CookInfo other) {
-			if(other==null)return this;
-			this.is=other.is;
-			i+=other.i;
-			return this;
-		}
-	}
-	private CookInfo cook(ItemStack org,List<SmokingRecipe> recipes) {
-		if(org.isEmpty())return null;
-		for (SmokingRecipe sr : recipes) {
-			if (sr.getIngredients().get(0).test(org)) {
-				ItemStack ret=sr.getCraftingResult(null).copy();
-				ret.setCount(org.getCount());
-				return new CookInfo(ret,sr.getCookTime()).add(cook(ret,recipes));
-			}
-		}
-		return null;
-	}
+
+	/*
+	 * private static class CookInfo{
+	 * ItemStack is;
+	 * int i;
+	 * public CookInfo(ItemStack is, int i) {
+	 * this.is = is;
+	 * this.i = i;
+	 * }
+	 * public CookInfo add(CookInfo other) {
+	 * if(other==null)return this;
+	 * this.is=other.is;
+	 * i+=other.i;
+	 * return this;
+	 * }
+	 * }
+	 * private CookInfo cook(ItemStack org,List<SmokingRecipe> recipes) {
+	 * if(org.isEmpty())return null;
+	 * for (SmokingRecipe sr : recipes) {
+	 * if (sr.getIngredients().get(0).test(org)) {
+	 * ItemStack ret=sr.getCraftingResult(null).copy();
+	 * ret.setCount(org.getCount());
+	 * return new CookInfo(ret,sr.getCookTime()).add(cook(ret,recipes));
+	 * }
+	 * }
+	 * return null;
+	 * }
+	 */
 	private int decideSoup() {
-		become=tank.getFluid().getFluid();
-		StewPendingContext ctx=new StewPendingContext(current,become.getRegistryName());
-		CookingRecipe cri=CookingRecipe.recipes.get(become);
-		if(cri==null||cri.getPriority()<0||cri.matches(ctx)==0) {
-			for(CookingRecipe cr:CookingRecipe.sorted) {
-				int mt=cr.matches(ctx);
-				if(mt!=0) {
-					if(mt==2)
-						nextbase=become.getRegistryName();
+		become = tank.getFluid().getFluid();
+		
+		StewPendingContext ctx = new StewPendingContext(getCurrent(), become.getRegistryName());
+		if(ctx.getItems().isEmpty())return 0;
+		CookingRecipe cri = CookingRecipe.recipes.get(become);
+		if (cri == null || cri.getPriority() < 0 || cri.matches(ctx) == 0) {
+			
+			for (CookingRecipe cr : CookingRecipe.sorted) {
+
+				int mt = cr.matches(ctx);
+				// System.out.println("pending "+cr.getId()+" returns "+mt);
+				if (mt != 0) {
+					if (mt == 2)
+						nextbase = become.getRegistryName();
 					else
-						nextbase=current.base;
-					become=cr.output;
+						nextbase = current.base;
+					become = cr.output;
 					return cr.time;
 				}
 			}
 		}
 		return 0;
 	}
+
 	private void finishSoup() {
-		if(nextbase!=null&&become!=null) {
-			current.base=nextbase;
-			nextbase=null;
-			FluidStack fss=new FluidStack(become,tank.getFluidAmount());
+		if (nextbase != null && become != null) {
+			getCurrent().base = nextbase;
+			nextbase = null;
+			FluidStack fss = new FluidStack(become, tank.getFluidAmount());
 			current.recalculateHAS();
-			SoupFluid.setInfo(fss,current);
+			SoupFluid.setInfo(fss, current);
+			current = null;
 			tank.setFluid(fss);
 		}
-		become=null;
-		nextbase=null;
-		proctype=0;
+		become = null;
+		nextbase = null;
+		proctype = 0;
 	}
+
 	public boolean canAddFluid(FluidStack fs) {
-		if(tank.fill(fs,FluidAction.SIMULATE)==fs.getAmount()) {
-			return true;
-		}
-		return false;
-	}
-	public boolean tryAddFluid(FluidStack fs) {
-		int tryfill=tank.fill(fs,FluidAction.SIMULATE);
-		if(tryfill>0) {
-			if(tryfill==fs.getAmount()) {
-				tank.fill(fs,FluidAction.EXECUTE);
+		int tryfill = tank.fill(fs, FluidAction.SIMULATE);
+		if (tryfill > 0) {
+			if (tryfill == fs.getAmount()) {
 				return true;
 			}
 			return false;
 		}
-		if(tank.getCapacity()-tank.getFluidAmount()<fs.getAmount())return false;
-		current=SoupFluid.getInfo(tank.getFluid());
-		SoupInfo n=SoupFluid.getInfo(fs);
-		if(!current.base.equals(n.base)) {
-			BoilingRecipe bnx=BoilingRecipe.recipes.get(fs.getFluid());
-			if(bnx==null)return false;
-			if(!current.base.equals(bnx.after.getRegistryName()))return false;
-			fs=bnx.handle(fs);
+		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
+			return false;
+
+		SoupInfo n = SoupFluid.getInfo(fs);
+		if (!getCurrent().base.equals(n.base)) {
+			BoilingRecipe bnx = BoilingRecipe.recipes.get(fs.getFluid());
+			if (bnx == null)
+				return false;
+			if (!current.base.equals(bnx.after.getRegistryName()))
+				return false;
 		}
-		if(current.merge(n,tank.getFluidAmount()/250f,fs.getAmount()/250f)) {
-			this.adjustParts(fs.getAmount()/250);
+		return current.canMerge(n, tank.getFluidAmount() / 250f, fs.getAmount() / 250f);
+	}
+
+	public boolean tryAddFluid(FluidStack fs) {
+		int tryfill = tank.fill(fs, FluidAction.SIMULATE);
+		if (tryfill > 0) {
+			if (tryfill == fs.getAmount()) {
+				tank.fill(fs, FluidAction.EXECUTE);
+				return true;
+			}
+			return false;
+		}
+		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
+			return false;
+
+		SoupInfo n = SoupFluid.getInfo(fs);
+		int pm = 0;
+		if (!getCurrent().base.equals(n.base)) {
+			BoilingRecipe bnx = BoilingRecipe.recipes.get(fs.getFluid());
+			if (bnx == null)
+				return false;
+			if (!getCurrent().base.equals(bnx.after.getRegistryName()))
+				return false;
+			fs = bnx.handle(fs);
+			pm = bnx.time;
+		}
+		if (current.merge(n, tank.getFluidAmount() / 250f, fs.getAmount() / 250f)) {
+			this.adjustParts(fs.getAmount() / 250);
 			decideSoup();
-			this.proctype=3;
-			this.process=0;
-			this.processMax=100;
+			this.proctype = 3;
+			this.process = 0;
+			this.processMax = Math.max(pm, 50);
 			return true;
 		}
 		return false;
 	}
+
 	@Override
 	public Container createMenu(int p1, PlayerInventory p2, PlayerEntity p3) {
 		return new StewPotContainer(p1, p2, this);
@@ -446,7 +517,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	public void handleMessage(short type, int data) {
 		if (type == 0)
 			if (this.proctype == 0)
-				this.operate=true;
+				this.operate = true;
 		if (type == 1) {
 			if (data == 1)
 				rsstate = false;
@@ -541,5 +612,11 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			return fl.cast();
 		return super.getCapability(cap, side);
+	}
+
+	public SoupInfo getCurrent() {
+		if (current == null)
+			current = SoupFluid.getInfo(tank.getFluid());
+		return current;
 	}
 }

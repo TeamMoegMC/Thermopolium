@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.fluid;
 
 import com.teammoeg.thermopolium.util.SoupInfo;
@@ -37,37 +55,42 @@ public class SoupFluid extends ForgeFlowingFluid {
 	protected BlockState getBlockState(FluidState state) {
 		return Blocks.AIR.getDefaultState();
 	}
-    @Override
-    public boolean isEquivalentTo(Fluid fluidIn) {
-        return fluidIn == this;
-    }
+
+	@Override
+	public boolean isEquivalentTo(Fluid fluidIn) {
+		return fluidIn == this;
+	}
+
 	@Override
 	public boolean isSource(FluidState p_207193_1_) {
 		return true;
 	}
-	public static SoupInfo getInfo(FluidStack stack){
-		if(stack.hasTag()) {
-			CompoundNBT nbt=stack.getChildTag("soup");
-			if(nbt!=null)
+
+	public static SoupInfo getInfo(FluidStack stack) {
+		if (stack.hasTag()) {
+			CompoundNBT nbt = stack.getChildTag("soup");
+			if (nbt != null)
 				return new SoupInfo(nbt);
 		}
 		return new SoupInfo(stack.getFluid().getRegistryName());
 	}
-	public static void setInfo(FluidStack stack,SoupInfo si) {
-		if(!si.isEmpty())
-			stack.getOrCreateTag().put("soup",si.save());
+
+	public static void setInfo(FluidStack stack, SoupInfo si) {
+		if (!si.isEmpty())
+			stack.getOrCreateTag().put("soup", si.save());
 	}
+
 	@Override
 	public int getLevel(FluidState p_207192_1_) {
 		return 0;
 	}
+
 	public SoupFluid(Properties properties) {
 		super(properties);
 	}
 
-
 	public static class SoupAttributes extends FluidAttributes {
-		//private static final String DefName="fluid."+Main.MODID+".soup";
+		// private static final String DefName="fluid."+Main.MODID+".soup";
 		public SoupAttributes(Builder builder, Fluid fluid) {
 			super(builder, fluid);
 		}
@@ -76,33 +99,31 @@ public class SoupFluid extends ForgeFlowingFluid {
 		public int getColor(FluidStack stack) {
 			return super.getColor();
 		}
-		
 
 		@Override
 		public String getTranslationKey(FluidStack stack) {
-			ResourceLocation f=stack.getFluid().getRegistryName();
-			return "item."+f.getNamespace()+"."+f.getPath();
+			ResourceLocation f = stack.getFluid().getRegistryName();
+			return "item." + f.getNamespace() + "." + f.getPath();
 		}
-	    /**
-	     * Returns the localized name of this fluid.
-	     */
-	    public ITextComponent getDisplayName(FluidStack stack)
-	    {
-	        return new TranslationTextComponent(getTranslationKey(stack));
-	    }
 
-		private static class SoupAttributesBuilder extends Builder{
+		/**
+		 * Returns the localized name of this fluid.
+		 */
+		public ITextComponent getDisplayName(FluidStack stack) {
+			return new TranslationTextComponent(getTranslationKey(stack));
+		}
+
+		private static class SoupAttributesBuilder extends Builder {
 
 			protected SoupAttributesBuilder(ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-				super(stillTexture, flowingTexture,SoupAttributes::new);
+				super(stillTexture, flowingTexture, SoupAttributes::new);
 			}
-			
+
 		}
+
 		public static Builder builder(ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-			return new SoupAttributesBuilder(stillTexture,flowingTexture);
+			return new SoupAttributesBuilder(stillTexture, flowingTexture);
 		}
 	}
-
-
 
 }

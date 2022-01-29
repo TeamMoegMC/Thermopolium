@@ -7,9 +7,7 @@
     },
     {
       "cond": "mainlyOf",
-      "type": {
-        "item": "minecraft:pumpkin"
-      },
+      "type": "thermopolium:vegetables/pumpkin",
       "tag": "thermopolium:vegetables"
     }
   ],

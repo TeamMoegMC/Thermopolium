@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#minecraft:fishes"
+    "#minecraft:fishes",
+    "#forge:raw_fishes"
   ]
 }

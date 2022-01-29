@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
@@ -7,12 +25,13 @@ import com.teammoeg.thermopolium.util.FloatemTagStack;
 
 import net.minecraft.network.PacketBuffer;
 
-public class Mainly extends NumberedStewCondition{
-	private boolean isItem=true;
+public class Mainly extends NumberedStewCondition {
+	private boolean isItem = true;
+
 	public Mainly(JsonObject obj) {
 		super(obj);
-		if(obj.has("isItem"))
-			isItem=obj.get("isItem").getAsBoolean();
+		if (obj.has("isItem"))
+			isItem = obj.get("isItem").getAsBoolean();
 	}
 
 	public Mainly(StewNumber number) {
@@ -26,19 +45,20 @@ public class Mainly extends NumberedStewCondition{
 
 	@Override
 	public boolean test(StewPendingContext t, float n) {
-		if(isItem) {
-			if(n<t.getTotalItems()/3)
+		if (isItem) {
+			if (n < t.getTotalItems() / 3)
 				return false;
-		}else if(n<t.getTotalTypes()/3)
+		} else if (n < t.getTotalTypes() / 3)
 			return false;
-		return FloatemTagStack.calculateTypes(t.getItems().stream().filter(e->!number.fits(e.getStack()))).values().stream().allMatch(e->e<n);
+		return FloatemTagStack.calculateTypes(t.getItems().stream().filter(e -> !number.fits(e))).values().stream()
+				.allMatch(e -> e < n);
 	}
 
 	@Override
 	public JsonObject serialize() {
-		JsonObject jo=super.serialize();
-		if(!isItem)
-			jo.addProperty("isItem",isItem);
+		JsonObject jo = super.serialize();
+		if (!isItem)
+			jo.addProperty("isItem", isItem);
 		return jo;
 	}
 
@@ -50,8 +70,9 @@ public class Mainly extends NumberedStewCondition{
 
 	public Mainly(PacketBuffer buffer) {
 		super(buffer);
-		isItem=buffer.readBoolean();
+		isItem = buffer.readBoolean();
 	}
+
 	@Override
 	public String getType() {
 		return "mainly";
@@ -69,11 +90,11 @@ public class Mainly extends NumberedStewCondition{
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if(!(obj instanceof Mainly))
+		if (!(obj instanceof Mainly))
 			return false;
 		if (!super.equals(obj))
 			return false;
-	
+
 		Mainly other = (Mainly) obj;
 		if (isItem != other.isItem)
 			return false;

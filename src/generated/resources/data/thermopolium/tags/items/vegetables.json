@@ -1,23 +1,18 @@
 {
   "replace": false,
   "values": [
+    "#thermopolium:mushroom",
+    "#thermopolium:vegetables/roots",
+    "#forge:salad_ingredients",
+    "#thermopolium:vegetables/pumpkin",
     "minecraft:carrot",
     "minecraft:beetroot",
     "minecraft:pumpkin",
-    {
-      "id": "#forge:vegetables",
-      "required": false
-    },
-    {
-      "id": "#forge:vegetable",
-      "required": false
-    },
+    "#thermopolium:mushroom",
+    "#forge:vegetables",
+    "#forge:vegetable",
     {
       "id": "rankine:asparagus",
-      "required": false
-    },
-    {
-      "id": "rankine:roasted_asparagus",
       "required": false
     }
   ]

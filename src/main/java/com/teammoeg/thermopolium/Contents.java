@@ -1,19 +1,19 @@
 /*
- * Copyright (c) 2021 TeamMoeg
+ * Copyright (c) 2022 TeamMoeg
  *
- * This file is part of Frosted Heart.
+ * This file is part of Thermopolium.
  *
- * Frosted Heart is free software: you can redistribute it and/or modify
+ * Thermopolium is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * Frosted Heart is distributed in the hope that it will be useful,
+ * Thermopolium is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Frosted Heart. If not, see <https://www.gnu.org/licenses/>.
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.teammoeg.thermopolium;
@@ -59,85 +59,102 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class Contents {
 
-    public static List<Block> registeredBlocks = new ArrayList<>();
-    public static List<Item> registeredItems = new ArrayList<>();
-    public static List<Fluid> registeredFluids = new ArrayList<>();
+	public static List<Block> registeredBlocks = new ArrayList<>();
+	public static List<Item> registeredItems = new ArrayList<>();
+	public static List<Fluid> registeredFluids = new ArrayList<>();
 
-    public static class SCBlocks {
+	public static class SCBlocks {
 		public static void init() {
-        }
-        public static Block stew_pot=new StewPot("stew_pot", Block.Properties
-                .create(Material.ROCK)
-                .sound(SoundType.STONE)
-                .setRequiresTool()
-                .harvestTool(ToolType.PICKAXE)
-                .hardnessAndResistance(2, 10)
-                .notSolid(), SCBlockItem::new);
-    }
+		}
 
-    public static class SCItems {
-    	public static final String[] items=new String[]{"acquacotta","bisque","bone_gelatin","borscht","borscht_cream","congee","cream_of_meat_soup",
-    			"cream_of_mushroom_soup","custard","dilute_soup","egg_drop_soup","egg_tongsui","fish_chowder","fish_soup",
-    			"fricassee","goji_tongsui","goulash","gruel","hodgepodge","meat_soup","mushroom_soup","nail_soup","nettle_soup",
-    			"okroshka","porridge","poultry_soup","pumpkin_soup","pumpkin_soup_cream",
-    			"rice_pudding","scalded_milk","seaweed_soup","stock","stracciatella","ukha","vegetable_chowder","vegetable_soup",
-    			"walnut_soup"};
-        public static void init() {
-        	for(String s:items)
-        		new StewItem(s,new ResourceLocation(Main.MODID,s),createProps());
-        	new StewItem("plain_milk",new ResourceLocation("milk"),createProps());
-        	new StewItem("plain_water",new ResourceLocation("water"),createProps());
- 
-        }
-        static Properties createProps() {
-        	return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL).maxStackSize(1);
-        }
-        //public static Item stew_bowl=new StewItem("stew",createProps());
-    }
+		public static Block stew_pot = new StewPot("stew_pot",
+				Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
+						.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid(),
+				SCBlockItem::new);
+	}
 
-    public static class SCTileTypes {
-        public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(
-                ForgeRegistries.TILE_ENTITIES, Main.MODID);
+	public static class SCItems {
+		public static final String[] items = new String[] { "acquacotta", "bisque", "bone_gelatin", "borscht",
+				"borscht_cream", "congee", "cream_of_meat_soup", "cream_of_mushroom_soup", "custard", "dilute_soup",
+				"egg_drop_soup", "egg_tongsui", "fish_chowder", "fish_soup", "fricassee", "goji_tongsui", "goulash",
+				"gruel", "hodgepodge", "meat_soup", "mushroom_soup", "nail_soup", "nettle_soup", "okroshka", "porridge",
+				"poultry_soup", "pumpkin_soup", "pumpkin_soup_cream", "rice_pudding", "scalded_milk", "seaweed_soup",
+				"stock", "stracciatella", "ukha", "vegetable_chowder", "vegetable_soup", "walnut_soup" };
+		public static final List<Item> stews = new ArrayList<>();
 
-        public static final RegistryObject<TileEntityType<StewPotTileEntity>> STEW_POT = REGISTER.register(
-                "stew_pot", makeType(() -> new StewPotTileEntity(), () -> SCBlocks.stew_pot)
-        );
-        
-        private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid) {
-            return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
-        }
+		public static void init() {
+			for (String s : items)
+				new StewItem(s, new ResourceLocation(Main.MODID, s), createProps());
+			new StewItem("plain_milk", new ResourceLocation("milk"), createProps());
+			new StewItem("plain_water", new ResourceLocation("water"), createProps());
 
-        private static <T extends TileEntity> Supplier<TileEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create, Supplier<Collection<Block>> valid) {
-            return () -> new TileEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
-        }
+		}
 
-    }
-    public static class SCGui {
-    	public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Main.MODID);
-    	public static final RegistryObject<ContainerType<StewPotContainer>> STEWPOT=CONTAINERS.register("stew_pot",()->IForgeContainerType.create(StewPotContainer::new));
-    	
-    }
-    public static class SCRecipes {
-        public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
-                ForgeRegistries.RECIPE_SERIALIZERS, Main.MODID
-        );
+		static Properties createProps() {
+			return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL).maxStackSize(1);
+		}
+		// public static Item stew_bowl=new StewItem("stew",createProps());
+	}
 
-        static {
-            CookingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("cooking",()->new RecipeSerializer<CookingRecipe>(CookingRecipe::new,CookingRecipe::new,CookingRecipe::write));
-            BoilingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("boiling",()->new RecipeSerializer<BoilingRecipe>(BoilingRecipe::new,BoilingRecipe::new,BoilingRecipe::write));
-            BowlContainingRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("bowl",()->new RecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,BowlContainingRecipe::new,BowlContainingRecipe::write));
-            DissolveRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("dissolve",()->new RecipeSerializer<DissolveRecipe>(DissolveRecipe::new,DissolveRecipe::new,DissolveRecipe::write));
-            CountingTags.SERIALIZER=RECIPE_SERIALIZERS.register("tags",()->new RecipeSerializer<CountingTags>(CountingTags::new,CountingTags::new,CountingTags::write));
-            FoodValueRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("food",()->new RecipeSerializer<FoodValueRecipe>(FoodValueRecipe::new,FoodValueRecipe::new,FoodValueRecipe::write));
-        }
+	public static class SCTileTypes {
+		public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister
+				.create(ForgeRegistries.TILE_ENTITIES, Main.MODID);
 
-        public static void registerRecipeTypes() {
-        	CookingRecipe.TYPE = IRecipeType.register(Main.MODID + ":stew");
-        	BoilingRecipe.TYPE = IRecipeType.register(Main.MODID + ":boil");
-        	BowlContainingRecipe.TYPE = IRecipeType.register(Main.MODID + ":bowl");
-        	DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
-        	CountingTags.TYPE = IRecipeType.register(Main.MODID + ":tags");
-        	FoodValueRecipe.TYPE = IRecipeType.register(Main.MODID + ":food");
-        }
-    }
+		public static final RegistryObject<TileEntityType<StewPotTileEntity>> STEW_POT = REGISTER.register("stew_pot",
+				makeType(() -> new StewPotTileEntity(), () -> SCBlocks.stew_pot));
+
+		private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create,
+				Supplier<Block> valid) {
+			return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
+		}
+
+		private static <T extends TileEntity> Supplier<TileEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create,
+				Supplier<Collection<Block>> valid) {
+			return () -> new TileEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
+		}
+
+	}
+
+	public static class SCGui {
+		public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister
+				.create(ForgeRegistries.CONTAINERS, Main.MODID);
+		public static final RegistryObject<ContainerType<StewPotContainer>> STEWPOT = CONTAINERS.register("stew_pot",
+				() -> IForgeContainerType.create(StewPotContainer::new));
+
+	}
+
+	public static class SCRecipes {
+		public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister
+				.create(ForgeRegistries.RECIPE_SERIALIZERS, Main.MODID);
+
+		static {
+			CookingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("cooking",
+					() -> new RecipeSerializer<CookingRecipe>(CookingRecipe::new, CookingRecipe::new,
+							CookingRecipe::write));
+			BoilingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("boiling",
+					() -> new RecipeSerializer<BoilingRecipe>(BoilingRecipe::new, BoilingRecipe::new,
+							BoilingRecipe::write));
+			BowlContainingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("bowl",
+					() -> new RecipeSerializer<BowlContainingRecipe>(BowlContainingRecipe::new,
+							BowlContainingRecipe::new, BowlContainingRecipe::write));
+			DissolveRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("dissolve",
+					() -> new RecipeSerializer<DissolveRecipe>(DissolveRecipe::new, DissolveRecipe::new,
+							DissolveRecipe::write));
+			CountingTags.SERIALIZER = RECIPE_SERIALIZERS.register("tags",
+					() -> new RecipeSerializer<CountingTags>(CountingTags::new, CountingTags::new,
+							CountingTags::write));
+			FoodValueRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("food",
+					() -> new RecipeSerializer<FoodValueRecipe>(FoodValueRecipe::new, FoodValueRecipe::new,
+							FoodValueRecipe::write));
+		}
+
+		public static void registerRecipeTypes() {
+			CookingRecipe.TYPE = IRecipeType.register(Main.MODID + ":stew");
+			BoilingRecipe.TYPE = IRecipeType.register(Main.MODID + ":boil");
+			BowlContainingRecipe.TYPE = IRecipeType.register(Main.MODID + ":bowl");
+			DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
+			CountingTags.TYPE = IRecipeType.register(Main.MODID + ":tags");
+			FoodValueRecipe.TYPE = IRecipeType.register(Main.MODID + ":food");
+		}
+	}
 }

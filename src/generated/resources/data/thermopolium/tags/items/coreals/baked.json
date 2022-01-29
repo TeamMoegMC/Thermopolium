@@ -5,6 +5,11 @@
     {
       "id": "rankine:toast",
       "required": false
+    },
+    "#forge:pasta",
+    {
+      "id": "farmersdelight:pie_crust",
+      "required": false
     }
   ]
 }

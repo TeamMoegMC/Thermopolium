@@ -12,10 +12,11 @@
   "deny": [
     {
       "cond": "contains",
-      "type": [
-        "thermopolium:meats",
-        "thermopolium:coreals"
-      ]
+      "type": "thermopolium:meats"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:coreals"
     }
   ],
   "priority": 1088,

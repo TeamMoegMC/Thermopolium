@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.data.recipes.numbers;
 
 import java.util.stream.Stream;
@@ -6,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
+import com.teammoeg.thermopolium.util.FloatemTagStack;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,8 +33,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemIngredient implements StewNumber {
 	Ingredient i;
+
 	public ItemIngredient(JsonElement jo) {
-		i=Ingredient.deserialize(jo.getAsJsonObject().get("ingredient"));
+		i = Ingredient.deserialize(jo.getAsJsonObject().get("ingredient"));
 	}
 
 	public ItemIngredient(Ingredient i) {
@@ -29,18 +49,14 @@ public class ItemIngredient implements StewNumber {
 	}
 
 	@Override
-	public boolean fits(ItemStack stack) {
-		return i.test(stack);
+	public boolean fits(FloatemTagStack stack) {
+		return i.test(stack.getStack());
 	}
 
 	@Override
-	public boolean fits(ResourceLocation type) {
-		return false;
-	}
-	@Override
 	public JsonElement serialize() {
-		JsonObject th=new JsonObject();
-		th.add("ingredient",i.serialize());
+		JsonObject th = new JsonObject();
+		th.add("ingredient", i.serialize());
 		return th;
 	}
 
@@ -50,7 +66,7 @@ public class ItemIngredient implements StewNumber {
 	}
 
 	public ItemIngredient(PacketBuffer buffer) {
-		i=Ingredient.read(buffer);
+		i = Ingredient.read(buffer);
 	}
 
 	@Override
@@ -75,7 +91,7 @@ public class ItemIngredient implements StewNumber {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if(!(obj instanceof ItemIngredient))
+		if (!(obj instanceof ItemIngredient))
 			return false;
 		ItemIngredient other = (ItemIngredient) obj;
 		if (i == null) {
@@ -90,5 +106,5 @@ public class ItemIngredient implements StewNumber {
 	public Stream<ResourceLocation> getTags() {
 		return Stream.empty();
 	}
-	
+
 }

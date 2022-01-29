@@ -1,10 +1,30 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.teammoeg.thermopolium.data.recipes.StewSerializeUtil;
+import com.mojang.datafixers.util.Pair;
+import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
+import com.teammoeg.thermopolium.data.recipes.SerializeUtil;
 import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,11 +34,13 @@ import net.minecraft.util.ResourceLocation;
 public class SoupInfo {
 	public List<FloatemStack> stacks;
 	public List<EffectInstance> effects;
+	public List<Pair<EffectInstance, Float>> foodeffect = new ArrayList<>();
 	public int healing;
 	public float saturation;
 	public ResourceLocation base;
-	
-	public SoupInfo(List<FloatemStack> stacks, List<EffectInstance> effects, int healing, float saturation,ResourceLocation base) {
+
+	public SoupInfo(List<FloatemStack> stacks, List<EffectInstance> effects, int healing, float saturation,
+			ResourceLocation base) {
 		super();
 		this.stacks = stacks;
 		this.effects = effects;
@@ -26,122 +48,166 @@ public class SoupInfo {
 		this.saturation = saturation;
 		this.base = base;
 	}
+
 	public SoupInfo() {
-		this(new ArrayList<>(),new ArrayList<>(),0,0,new ResourceLocation("minecraft:water"));
+		this(new ArrayList<>(), new ArrayList<>(), 0, 0, new ResourceLocation("minecraft:water"));
 	}
+
 	public static List<FloatemStack> getStacks(CompoundNBT nbt) {
-		return nbt.getList("items",10).stream().map(e->(CompoundNBT)e).map(FloatemStack::new).collect(Collectors.toList());
+		return nbt.getList("items", 10).stream().map(e -> (CompoundNBT) e).map(FloatemStack::new)
+				.collect(Collectors.toList());
 	}
+
 	public float getDensity() {
-		return stacks.stream().map(FloatemStack::getCount).reduce(0f,Float::sum);
+		return stacks.stream().map(FloatemStack::getCount).reduce(0f, Float::sum);
 	}
+
 	public SoupInfo(CompoundNBT nbt) {
-		stacks=nbt.getList("items",10).stream().map(e->(CompoundNBT)e).map(FloatemStack::new).collect(Collectors.toList());
-		effects=nbt.getList("effects",10).stream().map(e->(CompoundNBT)e).map(EffectInstance::read).collect(Collectors.toList());
-		healing=nbt.getInt("heal");
-		saturation=nbt.getFloat("sat");
-		base=new ResourceLocation(nbt.getString("base"));
+		stacks = nbt.getList("items", 10).stream().map(e -> (CompoundNBT) e).map(FloatemStack::new)
+				.collect(Collectors.toList());
+		effects = nbt.getList("effects", 10).stream().map(e -> (CompoundNBT) e).map(EffectInstance::read)
+				.collect(Collectors.toList());
+		healing = nbt.getInt("heal");
+		saturation = nbt.getFloat("sat");
+		foodeffect = nbt.getList("feffects", 10).stream().map(e -> (CompoundNBT) e)
+				.map(e -> new Pair<>(EffectInstance.read(e.getCompound("effect")), e.getFloat("chance")))
+				.collect(Collectors.toList());
+		base = new ResourceLocation(nbt.getString("base"));
 	}
+
 	public boolean isEmpty() {
-		return stacks.isEmpty()&&effects.isEmpty();
+		return stacks.isEmpty() && effects.isEmpty();
 	}
-	public boolean merge(SoupInfo f,float cparts,float oparts) {
-		if(this.getDensity()+f.getDensity()*oparts/cparts>3)return false;
-		for(EffectInstance es:f.effects) {
-			boolean added=false;
-			for(EffectInstance oes:effects) {
-				if(isEffectEquals(oes,es)) {
-					oes.duration+=es.duration*oparts/cparts;
-					added=true;
+
+	public boolean canMerge(SoupInfo f, float cparts, float oparts) {
+		return this.getDensity() + f.getDensity() * oparts / cparts <= 33;
+	}
+
+	public boolean merge(SoupInfo f, float cparts, float oparts) {
+		if (this.getDensity() + f.getDensity() * oparts / cparts > 3)
+			return false;
+		for (EffectInstance es : f.effects) {
+			boolean added = false;
+			for (EffectInstance oes : effects) {
+				if (isEffectEquals(oes, es)) {
+					oes.duration += es.duration * oparts / cparts;
+					added = true;
 					break;
 				}
 			}
-			if(!added) {
-				if(effects.size()<3)
+			if (!added) {
+				if (effects.size() < 3)
 					effects.add(es);
 			}
 		}
-		for(FloatemStack fs:f.stacks) {
-			this.addItem(new FloatemStack(fs.getStack(),fs.count*oparts/cparts));
+		for (FloatemStack fs : f.stacks) {
+			this.addItem(new FloatemStack(fs.getStack(), fs.count * oparts / cparts));
 		}
-		recalculateHAS();
 		return true;
 	}
-	public static boolean isEffectEquals(EffectInstance t1,EffectInstance t2) {
-		return t1.getPotion()==t2.getPotion()&&t1.getAmplifier()==t2.getAmplifier();
+
+	public static boolean isEffectEquals(EffectInstance t1, EffectInstance t2) {
+		return t1.getPotion() == t2.getPotion() && t1.getAmplifier() == t2.getAmplifier();
 	}
-	public void addEffect(EffectInstance eff,float parts) {
-		
-		for(EffectInstance oes:effects) {
-			if(isEffectEquals(oes,eff)) {
-				
-				oes.duration+=eff.duration/parts;
+
+	public void addEffect(EffectInstance eff, float parts) {
+
+		for (EffectInstance oes : effects) {
+			if (isEffectEquals(oes, eff)) {
+
+				oes.duration += eff.duration / parts;
 				return;
 			}
 		}
-		if(effects.size()<3) {
-			EffectInstance copy=new EffectInstance(eff);
-			copy.duration/=parts;
+		if (effects.size() < 3) {
+			EffectInstance copy = new EffectInstance(eff);
+			copy.duration /= parts;
 			effects.add(copy);
 		}
 	}
-	public void recalculateHAS() {
-		float nh=this.getDensity();
-		float ns=0;
-		for(FloatemStack fs:stacks) {
 
-			Food f=fs.getItem().getFood();
-			if(f!=null) {
-				nh+=fs.count*f.getHealing();
-				ns+=fs.count*f.getSaturation();
+	public void recalculateHAS() {
+		foodeffect.clear();
+		float nh = this.getDensity();
+		float ns = 0;
+		for (FloatemStack fs : stacks) {
+			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(fs.getItem());
+			if (fvr != null) {
+				nh += fvr.heal * fs.count;
+				ns += fvr.sat * fs.count;
+				foodeffect.addAll(fvr.effects);
+				continue;
+			}
+			Food f = fs.getItem().getFood();
+			if (f != null) {
+				nh += fs.count * f.getHealing();
+				ns += fs.count * f.getSaturation();
+				foodeffect.addAll(f.getEffects());
 			}
 		}
-		this.healing=(int) Math.ceil(nh);
-		this.saturation=ns;
+		this.healing = (int) Math.ceil(nh);
+		this.saturation = ns;
 	}
-	public void adjustParts(float oparts,float parts) {
-		if(oparts==parts)return;
-		for(FloatemStack fs:stacks) {
-			fs.setCount(fs.getCount()*oparts/parts);
+
+	public void adjustParts(float oparts, float parts) {
+		if (oparts == parts)
+			return;
+		for (FloatemStack fs : stacks) {
+			fs.setCount(fs.getCount() * oparts / parts);
 		}
-		
-		for(EffectInstance es:effects) {
-			es.duration=(int) (es.duration*oparts/parts);
+
+		for (EffectInstance es : effects) {
+			es.duration = (int) (es.duration * oparts / parts);
 		}
-		healing=(int) (healing*oparts/parts);
-		saturation=saturation*oparts/parts;
+		healing = (int) (healing * oparts / parts);
+		saturation = saturation * oparts / parts;
 	}
+
 	public CompoundNBT save() {
-		CompoundNBT nbt=new CompoundNBT();
-		nbt.put("items",StewSerializeUtil.toNBTList(stacks,FloatemStack::serializeNBT));
-		nbt.put("effects",StewSerializeUtil.toNBTList(effects,e->e.write(new CompoundNBT())));
-		nbt.putInt("heal",healing);
-		nbt.putFloat("sat",saturation);
-		nbt.putString("base",base.toString());
+		CompoundNBT nbt = new CompoundNBT();
+		write(nbt);
 		return nbt;
 	}
+
 	public SoupInfo(ResourceLocation base) {
-		this(new ArrayList<>(),new ArrayList<>(),0,0,base);
+		this(new ArrayList<>(), new ArrayList<>(), 0, 0, base);
 	}
+
 	public static String getRegName(CompoundNBT nbt) {
 		return nbt.getString("base");
 	}
-	public void addItem(ItemStack is,float parts) {
-		for(FloatemStack i:stacks) {
-			if(i.equals(is)) {
-				i.count+=is.getCount()/parts;
+
+	public void addItem(ItemStack is, float parts) {
+		for (FloatemStack i : stacks) {
+			if (i.equals(is)) {
+				i.count += is.getCount() / parts;
 				return;
 			}
 		}
-		stacks.add(new FloatemStack(is.copy(),is.getCount()/parts));
+		stacks.add(new FloatemStack(is.copy(), is.getCount() / parts));
 	}
+
 	public void addItem(FloatemStack is) {
-		for(FloatemStack i:stacks) {
-			if(i.equals(is.getStack())) {
-				i.count+=is.count;
+		for (FloatemStack i : stacks) {
+			if (i.equals(is.getStack())) {
+				i.count += is.count;
 				return;
 			}
 		}
 		stacks.add(is);
+	}
+
+	public void write(CompoundNBT nbt) {
+		nbt.put("items", SerializeUtil.toNBTList(stacks, FloatemStack::serializeNBT));
+		nbt.put("effects", SerializeUtil.toNBTList(effects, e -> e.write(new CompoundNBT())));
+		nbt.put("feffects", SerializeUtil.toNBTList(foodeffect, e -> {
+			CompoundNBT cnbt = new CompoundNBT();
+			cnbt.put("effect", e.getFirst().write(new CompoundNBT()));
+			cnbt.putFloat("chance", e.getSecond());
+			return cnbt;
+		}));
+		nbt.putInt("heal", healing);
+		nbt.putFloat("sat", saturation);
+		nbt.putString("base", base.toString());
 	}
 }

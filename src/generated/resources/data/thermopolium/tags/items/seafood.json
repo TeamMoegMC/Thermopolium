@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "#thermopolium:seafood/fish",
+    "#thermopolium:seafood/crustaceans",
     "minecraft:kelp",
     "minecraft:dried_kelp"
   ]

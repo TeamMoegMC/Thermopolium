@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import java.util.stream.Stream;
@@ -10,35 +28,34 @@ import com.teammoeg.thermopolium.util.FloatemTagStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public class MainlyOfType extends NumberedStewCondition{
+public class MainlyOfType extends NumberedStewCondition {
 	private final ResourceLocation type;
+
 	public MainlyOfType(JsonObject obj) {
 		super(obj);
-		type=new ResourceLocation(obj.get("tag").getAsString());
+		type = new ResourceLocation(obj.get("tag").getAsString());
 	}
-
-	
 
 	public MainlyOfType(StewNumber obj, ResourceLocation type) {
 		super(obj);
 		this.type = type;
 	}
 
-
-
-
 	@Override
 	public boolean test(StewPendingContext t, float n) {
-		float thistype=t.getOfType(type);
-		if(n<thistype/3)
+		float thistype = t.getOfType(type);
+		if (n < thistype / 3)
 			return false;
-		return FloatemTagStack.calculateTypes(t.getItems().stream().filter(e->e.getTags().contains(type)).filter(e->!number.fits(e.getStack()))).values().stream().allMatch(e->e<n);
+		return FloatemTagStack
+				.calculateTypes(
+						t.getItems().stream().filter(e -> e.getTags().contains(type)).filter(e -> !number.fits(e)))
+				.values().stream().allMatch(e -> e < n);
 	}
 
 	@Override
 	public JsonObject serialize() {
-		JsonObject jo=super.serialize();
-		jo.addProperty("tag",type.toString());
+		JsonObject jo = super.serialize();
+		jo.addProperty("tag", type.toString());
 		return jo;
 	}
 
@@ -50,14 +67,13 @@ public class MainlyOfType extends NumberedStewCondition{
 
 	public MainlyOfType(PacketBuffer buffer) {
 		super(buffer);
-		type=buffer.readResourceLocation();
+		type = buffer.readResourceLocation();
 	}
+
 	@Override
 	public String getType() {
 		return "mainlyOf";
 	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -67,13 +83,11 @@ public class MainlyOfType extends NumberedStewCondition{
 		return result;
 	}
 
-
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if(!(obj instanceof MainlyOfType))
+		if (!(obj instanceof MainlyOfType))
 			return false;
 		if (!super.equals(obj))
 			return false;
@@ -86,13 +100,9 @@ public class MainlyOfType extends NumberedStewCondition{
 		return true;
 	}
 
-
-
 	@Override
 	public Stream<ResourceLocation> getTags() {
-		return Stream.concat(super.getTags(),Stream.of(type));
+		return Stream.concat(super.getTags(), Stream.of(type));
 	}
-
-
 
 }

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#thermopolium:meats/poultry",
+    "#thermopolium:meats/meat"
+  ]
+}

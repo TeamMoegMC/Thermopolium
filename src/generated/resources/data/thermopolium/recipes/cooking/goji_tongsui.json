@@ -13,11 +13,15 @@
   "deny": [
     {
       "cond": "contains",
-      "type": [
-        "thermopolium:meats",
-        "thermopolium:seafood",
-        "thermopolium:vegetables"
-      ]
+      "type": "thermopolium:meats"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:seafood"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:vegetables"
     }
   ],
   "priority": 1088,

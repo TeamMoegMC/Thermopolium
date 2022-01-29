@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#forge:grain/rice",
     {
       "id": "rankine:rice",
       "required": false

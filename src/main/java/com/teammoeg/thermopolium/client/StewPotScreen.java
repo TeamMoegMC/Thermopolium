@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2022 TeamMoeg
+ *
+ * This file is part of Thermopolium.
+ *
+ * Thermopolium is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * Thermopolium is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.teammoeg.thermopolium.client;
 
 import java.util.ArrayList;
@@ -18,6 +36,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class StewPotScreen extends ContainerScreen<StewPotContainer> {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID,
+			"textures/gui/cistern_culinary.png");
+
 	public static class ImageButton extends Button {
 		int xTexStart;
 		int yTexStart;
@@ -62,7 +83,7 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			if (this.isHovered()) {
 				i += this.width;
 			}
-
+			Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
 			RenderSystem.enableDepthTest();
 			blit(matrixStack, this.x, this.y, this.xTexStart + i, this.yTexStart + j, this.width, this.height,
 					this.textureWidth, this.textureHeight);
@@ -73,78 +94,79 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 		}
 	}
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID,
-			"textures/gui/cistern_culinary.png");
 	StewPotTileEntity te;
+
 	public StewPotScreen(StewPotContainer container, PlayerInventory inv, ITextComponent titleIn) {
 		super(container, inv, titleIn);
-		this.titleY=4;
-		this.titleX=7;
-		this.playerInventoryTitleY=this.ySize-92;
-		this.playerInventoryTitleX=4;
-		te=container.getTile();
+		this.titleY = 4;
+		this.titleX = 7;
+		this.playerInventoryTitleY = this.ySize - 92;
+		this.playerInventoryTitleX = 4;
+		te = container.getTile();
 	}
 
 	public static TranslationTextComponent start = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.canstart");
-	public static TranslationTextComponent started = new TranslationTextComponent("gui." + Main.MODID + ".stewpot.started");
+	public static TranslationTextComponent started = new TranslationTextComponent(
+			"gui." + Main.MODID + ".stewpot.started");
 	public static TranslationTextComponent nostart = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.cantstart");
 	public static TranslationTextComponent nors = new TranslationTextComponent(
 			"gui." + Main.MODID + ".stewpot.noredstone");
 	public static TranslationTextComponent rs = new TranslationTextComponent("gui." + Main.MODID + ".stewpot.redstone");
-	private ArrayList<ITextComponent> tooltip=new ArrayList<>(2);
+	private ArrayList<ITextComponent> tooltip = new ArrayList<>(2);
 	ImageButton btn1;
 	ImageButton btn2;
+
 	@Override
 	public void init() {
 		super.init();
 		this.buttons.clear();
-		this.addButton(btn1=new ImageButton(guiLeft + 7, guiTop + 48, 20, 12, 176, 83, (b, s, x, y) -> {
-			if(btn1.state==0)
+		this.addButton(btn1 = new ImageButton(guiLeft + 7, guiTop + 48, 20, 12, 176, 83, (b, s, x, y) -> {
+			if (btn1.state == 0)
 				tooltip.add(start);
-			else tooltip.add(started);
+			else
+				tooltip.add(started);
 		}, btn -> {
-			if(btn1.state==0)
-			te.sendMessage((short) 0,0);
-			
+			if (btn1.state == 0)
+				te.sendMessage((short) 0, 0);
+
 		}));
-		this.addButton(btn2=new ImageButton(guiLeft + 7, guiTop + 61, 20, 20, 176, 107, (b, s, x, y) -> {
-			if(btn2.state==1)
+		this.addButton(btn2 = new ImageButton(guiLeft + 7, guiTop + 61, 20, 20, 176, 107, (b, s, x, y) -> {
+			if (btn2.state == 1)
 				tooltip.add(nors);
 			else
 				tooltip.add(rs);
 		}, btn -> {
-			te.sendMessage((short) 1,btn2.state);
+			te.sendMessage((short) 1, btn2.state);
 		}));
-		
-		
+
 	}
 
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partial) {
 		tooltip.clear();
-		btn1.state=te.proctype>0?1:0;
-		btn2.state=te.rsstate?1:2;
+		btn1.state = te.proctype > 0 ? 1 : 0;
+		btn2.state = te.rsstate ? 1 : 2;
 		super.render(transform, mouseX, mouseY, partial);
-		if(te.proctype<2) {
-			if(isMouseIn(mouseX,mouseY,105,20,16,46))
+		if (te.proctype < 2) {
+			if (isMouseIn(mouseX, mouseY, 105, 20, 16, 46))
 				tooltip.add(te.getTank().getFluid().getDisplayName());
-			RenderUtils.handleGuiTank(transform,te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
+			RenderUtils.handleGuiTank(transform, te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
 		}
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform,tooltip,mouseX, mouseY, width, height,
-				-1, font);
+		if (!tooltip.isEmpty())
+			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 		else
-			super.renderHoveredTooltip(transform,mouseX,mouseY);
-		
+			super.renderHoveredTooltip(transform, mouseX, mouseY);
+
 	}
 
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
 		this.font.drawText(matrixStack, this.title, this.titleX, this.titleY, 0xffda856b);
-		ITextComponent name=this.playerInventory.getDisplayName();
-		int w=this.font.getStringWidth(name.getString());
-		this.font.drawText(matrixStack,name, this.xSize-w-this.playerInventoryTitleX,this.playerInventoryTitleY,0xffda856b);
+		ITextComponent name = this.playerInventory.getDisplayName();
+		int w = this.font.getStringWidth(name.getString());
+		this.font.drawText(matrixStack, name, this.xSize - w - this.playerInventoryTitleX, this.playerInventoryTitleY,
+				0xffda856b);
 	}
 
 	@Override
@@ -154,13 +176,13 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		if (te.processMax > 0 && te.process > 0) {
-			 int h = (int) (29 * (te.process / (float) te.processMax));
-			 this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176,54 + h, 16, 29-h);
+			int h = (int) (29 * (te.process / (float) te.processMax));
+			this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176, 54 + h, 16, 29 - h);
 		}
-		if(te.proctype>1) {
-			if(te.proctype==2)
-				this.blit(transform, guiLeft + 44, guiTop + 16,176,0,54,54);
-			this.blit(transform, guiLeft + 102, guiTop + 17,230,0,21,51);
+		if (te.proctype > 1) {
+			if (te.proctype == 2)
+				this.blit(transform, guiLeft + 44, guiTop + 16, 176, 0, 54, 54);
+			this.blit(transform, guiLeft + 102, guiTop + 17, 230, 0, 21, 51);
 		}
 	}
 

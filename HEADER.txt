@@ -1,15 +1,15 @@
-Copyright (c) 2021 TeamMoeg
+Copyright (c) 2022 TeamMoeg
 
-This file is part of Stew Craft.
+This file is part of Thermopolium.
 
-Stew Craft is free software: you can redistribute it and/or modify
+Thermopolium is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3.
 
-Stew Craft is distributed in the hope that it will be useful,
+Thermopolium is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Stew Craft. If not, see <https://www.gnu.org/licenses/>.
+along with Thermopolium. If not, see <https://www.gnu.org/licenses/>.

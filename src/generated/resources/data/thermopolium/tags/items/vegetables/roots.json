@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "minecraft:potato",
-    "minecraft:baked_potato"
+    "minecraft:baked_potato",
+    "#forge:rootvegetables"
   ]
 }
