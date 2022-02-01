@@ -1,0 +1,13 @@
+{
+  "type": "thermopolium:food",
+  "heal": 3,
+  "sat": 5.0,
+  "items": [
+    {
+      "item": "pamhc2crops:riceitem"
+    }
+  ],
+  "item": {
+    "item": "pamhc2crops:riceitem"
+  }
+}

@@ -61,7 +61,7 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 		if (!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 		BlockState state = te.getBlockState();
-		if (state.getBlock() != Contents.SCBlocks.stew_pot)
+		if (state.getBlock() != Contents.THPBlocks.stew_pot)
 			return;
 		matrixStack.push();
 		FluidStack fs = te.getTank().getFluid();

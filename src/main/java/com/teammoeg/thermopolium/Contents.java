@@ -24,8 +24,13 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
+import com.teammoeg.thermopolium.blocks.KitchenStoveT1;
+import com.teammoeg.thermopolium.blocks.KitchenStoveT2;
+import com.teammoeg.thermopolium.blocks.KitchenStove;
+import com.teammoeg.thermopolium.blocks.KitchenStoveTileEntity;
 import com.teammoeg.thermopolium.blocks.StewPot;
 import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
+import com.teammoeg.thermopolium.container.KitchenStoveContainer;
 import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.data.RecipeSerializer;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
@@ -34,15 +39,17 @@ import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CountingTags;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
-import com.teammoeg.thermopolium.items.SCBlockItem;
+import com.teammoeg.thermopolium.items.THPBlockItem;
+import com.teammoeg.thermopolium.items.THPItem;
 import com.teammoeg.thermopolium.items.StewItem;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.Items;
@@ -51,6 +58,8 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
@@ -63,17 +72,28 @@ public class Contents {
 	public static List<Item> registeredItems = new ArrayList<>();
 	public static List<Fluid> registeredFluids = new ArrayList<>();
 
-	public static class SCBlocks {
+	public static class THPBlocks {
 		public static void init() {
 		}
 
 		public static Block stew_pot = new StewPot("stew_pot",
 				Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
 						.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid(),
-				SCBlockItem::new);
+				THPBlockItem::new);
+		public static Block stove1 = new KitchenStove("kitchen_stove_t1",Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
+				.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid().setLightLevel(s->s.get(KitchenStove.LIT)?7:0).setOpaque(THPBlocks::isntSolid).setSuffocates(THPBlocks::isntSolid).setBlocksVision(THPBlocks::isntSolid),
+				THPTileTypes.STOVE1,
+				THPBlockItem::new);
+		public static Block stove2 = new KitchenStove("kitchen_stove_t2",Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
+				.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid().setLightLevel(s->s.get(KitchenStove.LIT)?9:0).setOpaque(THPBlocks::isntSolid).setSuffocates(THPBlocks::isntSolid).setBlocksVision(THPBlocks::isntSolid),
+				THPTileTypes.STOVE2,
+				THPBlockItem::new);
+		   private static boolean isntSolid(BlockState state, IBlockReader reader, BlockPos pos) {
+			      return false;
+			   }
 	}
 
-	public static class SCItems {
+	public static class THPItems {
 		public static final String[] items = new String[] { "acquacotta", "bisque", "bone_gelatin", "borscht",
 				"borscht_cream", "congee", "cream_of_meat_soup", "cream_of_mushroom_soup", "custard", "dilute_soup",
 				"egg_drop_soup", "egg_tongsui", "fish_chowder", "fish_soup", "fricassee", "goji_tongsui", "goulash",
@@ -81,7 +101,7 @@ public class Contents {
 				"poultry_soup", "pumpkin_soup", "pumpkin_soup_cream", "rice_pudding", "scalded_milk", "seaweed_soup",
 				"stock", "stracciatella", "ukha", "vegetable_chowder", "vegetable_soup", "walnut_soup" };
 		public static final List<Item> stews = new ArrayList<>();
-
+		//public static Item BOOK=new THPItem("book",new Item.Properties().group(Main.itemGroup));
 		public static void init() {
 			for (String s : items)
 				new StewItem(s, new ResourceLocation(Main.MODID, s), createProps());
@@ -96,34 +116,33 @@ public class Contents {
 		// public static Item stew_bowl=new StewItem("stew",createProps());
 	}
 
-	public static class SCTileTypes {
+	public static class THPTileTypes {
 		public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister
 				.create(ForgeRegistries.TILE_ENTITIES, Main.MODID);
 
 		public static final RegistryObject<TileEntityType<StewPotTileEntity>> STEW_POT = REGISTER.register("stew_pot",
-				makeType(() -> new StewPotTileEntity(), () -> SCBlocks.stew_pot));
-
+				makeType(() -> new StewPotTileEntity(), () -> THPBlocks.stew_pot));
+		public static final RegistryObject<TileEntityType<KitchenStoveTileEntity>> STOVE1 = REGISTER.register("kitchen_stove_t1",
+				makeType(() -> new KitchenStoveT1(), () -> THPBlocks.stove1));
+		public static final RegistryObject<TileEntityType<KitchenStoveTileEntity>> STOVE2 = REGISTER.register("kitchen_stove_t2",
+				makeType(() -> new KitchenStoveT2(), () -> THPBlocks.stove2));
 		private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create,
 				Supplier<Block> valid) {
-			return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));
-		}
-
-		private static <T extends TileEntity> Supplier<TileEntityType<T>> makeTypeMultipleBlocks(Supplier<T> create,
-				Supplier<Collection<Block>> valid) {
-			return () -> new TileEntityType<>(create, ImmutableSet.copyOf(valid.get()), null);
+			return () -> new TileEntityType<>(create,ImmutableSet.of(valid.get()), null);
 		}
 
 	}
 
-	public static class SCGui {
+	public static class THPGui {
 		public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister
 				.create(ForgeRegistries.CONTAINERS, Main.MODID);
 		public static final RegistryObject<ContainerType<StewPotContainer>> STEWPOT = CONTAINERS.register("stew_pot",
 				() -> IForgeContainerType.create(StewPotContainer::new));
-
+		public static final RegistryObject<ContainerType<KitchenStoveContainer>> STOVE = CONTAINERS.register("kitchen_stove",
+				() -> IForgeContainerType.create(KitchenStoveContainer::new));
 	}
 
-	public static class SCRecipes {
+	public static class THPRecipes {
 		public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister
 				.create(ForgeRegistries.RECIPE_SERIALIZERS, Main.MODID);
 

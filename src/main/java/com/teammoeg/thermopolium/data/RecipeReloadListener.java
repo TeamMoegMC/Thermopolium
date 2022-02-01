@@ -157,8 +157,6 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 		CookingRecipe.sorted.sort((t2, t1) -> t1.getPriority() - t2.getPriority());
 		BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE)
 				.collect(Collectors.toMap(e -> e.before, UnaryOperator.identity()));
-
-		System.out.println(CountingTags.tags);
 	}
 
 	static <R extends IRecipe<?>> Stream<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass,

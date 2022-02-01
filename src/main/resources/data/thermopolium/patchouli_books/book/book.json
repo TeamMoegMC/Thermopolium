@@ -1,0 +1,9 @@
+{
+  "name": "item.thermopolium.book",
+  "landing_text": "book.thermopolium.landing_text",
+  "version": 1,
+  "book_texture": "thermopolium:textures/gui/book.png",
+  "model": "thermopolium:book",
+  "show_progress": false,
+  "creative_tab": "thermopolium"
+}

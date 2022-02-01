@@ -197,7 +197,7 @@ public class RegistryEvents {
 			}
 
 		};
-		for (Item i : SCItems.stews) {
+		for (Item i : THPItems.stews) {
 			DispenserBlock.registerDispenseBehavior(i, ddib);
 		}
 	}

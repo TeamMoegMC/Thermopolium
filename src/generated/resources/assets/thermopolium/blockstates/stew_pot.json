@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "thermopolium:block/cistern",
+      "y": 90,
+      "uvlock": true
+    },
+    "axis=z": {
+      "model": "thermopolium:block/cistern",
+      "uvlock": true
+    }
+  }
+}

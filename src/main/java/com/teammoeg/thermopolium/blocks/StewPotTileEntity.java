@@ -21,7 +21,7 @@ package com.teammoeg.thermopolium.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.teammoeg.thermopolium.Contents.SCTileTypes;
+import com.teammoeg.thermopolium.Contents.THPTileTypes;
 import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
@@ -47,7 +47,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -103,7 +103,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	};
 
 	public StewPotTileEntity() {
-		super(SCTileTypes.STEW_POT.get());
+		super(THPTileTypes.STEW_POT.get());
 	}
 
 	public FluidTank getTank() {
@@ -112,6 +112,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 
 	public int process;
 	public int processMax;
+	public boolean working=false;
 	public boolean operate = false;
 	public short proctype = 0;
 	public boolean rsstate = false;
@@ -126,13 +127,20 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	@Override
 	public void tick() {
 		if (!world.isRemote) {
+			working=false;
 			if (processMax > 0) {
-				process++;
-				if (process >= processMax) {
-					process = 0;
-					processMax = 0;
-					doWork();
-				}
+				TileEntity te=world.getTileEntity(pos.down());
+				if(te instanceof AbstractStove) {
+					int rh=((AbstractStove) te).requestHeat();
+					process+=rh;
+					if(rh>0)
+						working=true;
+					if (process >= processMax) {
+						process = 0;
+						processMax = 0;
+						doWork();
+					}
+				}else return;
 			} else {
 				prepareWork();
 				if (canAddFluid())
@@ -181,6 +189,8 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		proctype = nbt.getShort("worktype");
 		rsstate = nbt.getBoolean("rsstate");
 		inv.deserializeNBT(nbt.getCompound("inv"));
+		if(isClient)
+			working=nbt.getBoolean("working");
 		tank.readFromNBT(nbt);
 		if (nbt.contains("result"))
 			become = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString("result")));
@@ -198,6 +208,8 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		nbt.putInt("processMax", processMax);
 		nbt.putShort("worktype", proctype);
 		nbt.putBoolean("rsstate", rsstate);
+		if (isClient)
+			nbt.putBoolean("working",working);
 		nbt.put("inv", inv.serializeNBT());
 		tank.writeToNBT(nbt);
 		if (become != null)
@@ -213,9 +225,12 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	private void prepareWork() {
 		if (rsstate && proctype == 0 && !operate && world.isBlockPowered(this.pos))
 			operate = true;
-
+		
 		if (operate && proctype == 0) {
 			operate = false;
+			TileEntity te=world.getTileEntity(pos.down());
+			if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
+				return;
 			if (doBoil())
 				proctype = 1;
 			else if (makeSoup())
@@ -250,7 +265,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		if (recipe == null)
 			return false;
 		become = recipe.after;
-		this.processMax = recipe.time;
+		this.processMax = (int) (recipe.time*(this.tank.getFluidAmount()/250f));
 		this.process = 0;
 		return true;
 	}
@@ -329,8 +344,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			}
 		}
 		if (!hasItem) {// just reduce water
-			processMax = 100;
-			decideSoup();
+			processMax = Math.max(100,decideSoup());
 			return true;
 		}
 		// List<SmokingRecipe> irs =
@@ -411,7 +425,10 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		become = tank.getFluid().getFluid();
 		
 		StewPendingContext ctx = new StewPendingContext(getCurrent(), become.getRegistryName());
-		if(ctx.getItems().isEmpty())return 0;
+		if(ctx.getItems().isEmpty()) {
+			nextbase = current.base;
+			return 0;
+		}
 		CookingRecipe cri = CookingRecipe.recipes.get(become);
 		if (cri == null || cri.getPriority() < 0 || cri.matches(ctx) == 0) {
 			
@@ -457,7 +474,9 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		}
 		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
 			return false;
-
+		TileEntity te=world.getTileEntity(pos.down());
+		if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
+			return false;
 		SoupInfo n = SoupFluid.getInfo(fs);
 		if (!getCurrent().base.equals(n.base)) {
 			BoilingRecipe bnx = BoilingRecipe.recipes.get(fs.getFluid());
@@ -480,7 +499,9 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		}
 		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
 			return false;
-
+		TileEntity te=world.getTileEntity(pos.down());
+		if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
+			return false;
 		SoupInfo n = SoupFluid.getInfo(fs);
 		int pm = 0;
 		if (!getCurrent().base.equals(n.base)) {
@@ -490,14 +511,14 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			if (!getCurrent().base.equals(bnx.after.getRegistryName()))
 				return false;
 			fs = bnx.handle(fs);
-			pm = bnx.time;
+			pm = (int) (bnx.time*(fs.getAmount()/250f));
 		}
 		if (current.merge(n, tank.getFluidAmount() / 250f, fs.getAmount() / 250f)) {
 			this.adjustParts(fs.getAmount() / 250);
-			decideSoup();
+			int num=Math.max(decideSoup(),50);
 			this.proctype = 3;
 			this.process = 0;
-			this.processMax = Math.max(pm, 50);
+			this.processMax = Math.max(pm,num);
 			return true;
 		}
 		return false;

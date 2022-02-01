@@ -7,6 +7,14 @@
         "thermopolium:seafood/fish",
         "thermopolium:vegetables/roots"
       ]
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:seafood/fish"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:vegetables/roots"
     }
   ],
   "deny": [

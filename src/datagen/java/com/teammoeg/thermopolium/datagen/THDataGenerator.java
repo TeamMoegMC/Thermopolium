@@ -34,9 +34,12 @@ public class THDataGenerator {
 		ExistingFileHelper exHelper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			gen.addProvider(new GenSoupItems(gen, Main.MODID, exHelper));
-			gen.addProvider(new THRecipeProvider(gen));
-			gen.addProvider(new THTagGenerator(gen, Main.MODID, exHelper));
+			gen.addProvider(new THPItemModelProvider(gen, Main.MODID, exHelper));
+			gen.addProvider(new THPRecipeProvider(gen));
+			gen.addProvider(new THPItemTagGenerator(gen, Main.MODID, exHelper));
+			gen.addProvider(new THPFluidTagGenerator(gen, Main.MODID, exHelper));
+			gen.addProvider(new THPLootGenerator(gen));
+			gen.addProvider(new THPStatesProvider(gen, Main.MODID, exHelper));
 		}
 	}
 }

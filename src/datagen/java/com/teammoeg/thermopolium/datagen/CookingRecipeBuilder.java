@@ -51,68 +51,68 @@ public class CookingRecipeBuilder {
 		private StewConditionsBuilder parent;
 		private List<StewNumber> types = new ArrayList<>();
 		private Consumer<StewNumber> fin;
-		private final boolean doFlatten;
-
-		public StewNumberBuilder(StewConditionsBuilder parent, Consumer<StewNumber> fin, boolean doFlatten) {
+		public StewNumberBuilder(StewConditionsBuilder parent, Consumer<StewNumber> fin) {
 			super();
 			this.parent = parent;
 			this.fin = fin;
-			this.doFlatten = doFlatten;
 		}
 
 		public StewNumberBuilder of(float n) {
-			types.add(new ConstNumber(n));
-			return this;
+			return of(new ConstNumber(n));
 		}
 
 		public StewNumberBuilder of(Ingredient i) {
-			types.add(new ItemIngredient(i));
-			return this;
+			return of(new ItemIngredient(i));
 		}
 
 		public StewNumberBuilder of(ResourceLocation i) {
-			types.add(new ItemTag(i));
-			return this;
+			return of(new ItemTag(i));
 		}
 
 		public StewNumberBuilder of(Item i) {
-			types.add(new ItemType(i));
+			return of(new ItemType(i));
+		}
+		public StewNumberBuilder of(StewNumber sn) {
+			types.add(sn);
 			return this;
 		}
-
-		public StewNumberBuilder plus(float n) {
-			types.add(new ConstNumber(n));
+		public StewNumberBuilder plus(StewNumber sn) {
+			if(types.size()<=0)
+				return of(sn);
+			StewNumber sn2=types.get(types.size()-1);
+			if(sn2 instanceof Add) {
+				((Add) sn2).add(sn);
+			}else {
+				List<StewNumber> t2s = new ArrayList<>();
+				t2s.add(sn2);
+				t2s.add(sn);
+				types.set(types.size()-1,new Add(t2s));
+			}
 			return this;
+		}
+		public StewNumberBuilder plus(float n) {
+			return plus(new ConstNumber(n));
 		}
 
 		public StewNumberBuilder plus(Ingredient i) {
-			types.add(new ItemIngredient(i));
-			return this;
+			return plus(new ItemIngredient(i));
 		}
 
 		public StewNumberBuilder plus(ResourceLocation i) {
-			types.add(new ItemTag(i));
-			return this;
+			return plus(new ItemTag(i));
 		}
 
 		public StewNumberBuilder plus(Item i) {
-			types.add(new ItemType(i));
-			return this;
+			return plus(new ItemType(i));
 		}
 
 		public StewNumberBuilder nop() {
-			types.add(NopNumber.INSTANCE);
-			return this;
+			return of(NopNumber.INSTANCE);
 		}
 
 		public StewConditionsBuilder and() {
 			if (!types.isEmpty()) {
-				if (types.size() == 1)
-					fin.accept(types.get(0));
-				else if (doFlatten)
-					types.forEach(fin);
-				else
-					fin.accept(new Add(types));
+				types.forEach(fin);
 			}
 			return parent;
 		}
@@ -132,11 +132,11 @@ public class CookingRecipeBuilder {
 		}
 
 		public StewNumberBuilder half() {
-			return new StewNumberBuilder(this, this::makeHalf, false);
+			return new StewNumberBuilder(this, this::makeHalf);
 		}
 
 		public StewNumberBuilder halft() {
-			return new StewNumberBuilder(this, this::makeHalft, false);
+			return new StewNumberBuilder(this, this::makeHalft);
 		}
 
 		private void makeHalf(StewNumber sn) {
@@ -148,11 +148,11 @@ public class CookingRecipeBuilder {
 		}
 
 		public StewNumberBuilder typeMainly(ResourceLocation rs) {
-			return new StewNumberBuilder(this, sn -> li.add(new MainlyOfType(sn, rs)), false);
+			return new StewNumberBuilder(this, sn -> li.add(new MainlyOfType(sn, rs)));
 		}
 
 		public StewNumberBuilder mainly() {
-			return new StewNumberBuilder(this, this::makeMainly, false);
+			return new StewNumberBuilder(this, this::makeMainly);
 		}
 
 		private void makeMainly(StewNumber sn) {
@@ -160,7 +160,7 @@ public class CookingRecipeBuilder {
 		}
 
 		public StewNumberBuilder mainlyt() {
-			return new StewNumberBuilder(this, this::makeMainlyt, false);
+			return new StewNumberBuilder(this, this::makeMainlyt);
 		}
 
 		private void makeMainlyt(StewNumber sn) {
@@ -168,7 +168,7 @@ public class CookingRecipeBuilder {
 		}
 
 		public StewNumberBuilder any() {
-			return new StewNumberBuilder(this, this::makeMust, true);
+			return new StewNumberBuilder(this, this::makeMust);
 		}
 
 		public StewConditionsBuilder require() {

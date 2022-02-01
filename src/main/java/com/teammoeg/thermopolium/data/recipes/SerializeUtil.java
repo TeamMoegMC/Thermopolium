@@ -231,6 +231,7 @@ public class SerializeUtil {
 	}
 
 	public static <T> List<T> parseJsonList(JsonElement elm, Function<JsonObject, T> mapper) {
+		if(elm==null)return ImmutableList.of();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(JsonElement::getAsJsonObject)
 					.map(mapper).collect(Collectors.toList());
@@ -238,19 +239,20 @@ public class SerializeUtil {
 	}
 
 	public static <T> List<T> parseJsonElmList(JsonElement elm, Function<JsonElement, T> mapper) {
+		if(elm==null)return ImmutableList.of();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(mapper)
 					.collect(Collectors.toList());
 		return ImmutableList.of(mapper.apply(elm.getAsJsonObject()));
 	}
 
-	public static <T> JsonArray toJsonList(List<T> li, Function<T, JsonElement> mapper) {
+	public static <T> JsonArray toJsonList(Collection<T> li, Function<T, JsonElement> mapper) {
 		JsonArray ja = new JsonArray();
 		li.stream().map(mapper).forEach(ja::add);
 		return ja;
 	}
 
-	public static <T> ListNBT toNBTList(List<T> stacks, Function<T, INBT> mapper) {
+	public static <T> ListNBT toNBTList(Collection<T> stacks, Function<T, INBT> mapper) {
 		ListNBT nbt = new ListNBT();
 		stacks.stream().map(mapper).forEach(nbt::add);
 		return nbt;

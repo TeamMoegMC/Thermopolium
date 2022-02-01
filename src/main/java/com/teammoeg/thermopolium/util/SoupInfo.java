@@ -37,6 +37,7 @@ public class SoupInfo {
 	public List<Pair<EffectInstance, Float>> foodeffect = new ArrayList<>();
 	public int healing;
 	public float saturation;
+	public float shrinkedFluid=0;
 	public ResourceLocation base;
 
 	public SoupInfo(List<FloatemStack> stacks, List<EffectInstance> effects, int healing, float saturation,
@@ -73,6 +74,7 @@ public class SoupInfo {
 				.map(e -> new Pair<>(EffectInstance.read(e.getCompound("effect")), e.getFloat("chance")))
 				.collect(Collectors.toList());
 		base = new ResourceLocation(nbt.getString("base"));
+		shrinkedFluid=nbt.getFloat("afluid");
 	}
 
 	public boolean isEmpty() {
@@ -114,8 +116,7 @@ public class SoupInfo {
 
 		for (EffectInstance oes : effects) {
 			if (isEffectEquals(oes, eff)) {
-
-				oes.duration += eff.duration / parts;
+				oes.duration =Math.max(oes.duration,(int)Math.min(oes.duration+eff.duration / parts,eff.duration*2f));
 				return;
 			}
 		}
@@ -159,6 +160,8 @@ public class SoupInfo {
 		for (EffectInstance es : effects) {
 			es.duration = (int) (es.duration * oparts / parts);
 		}
+		if(oparts>parts)
+			shrinkedFluid+=oparts-parts;
 		healing = (int) (healing * oparts / parts);
 		saturation = saturation * oparts / parts;
 	}
@@ -209,5 +212,6 @@ public class SoupInfo {
 		nbt.putInt("heal", healing);
 		nbt.putFloat("sat", saturation);
 		nbt.putString("base", base.toString());
+		nbt.putFloat("afluid",shrinkedFluid);
 	}
 }

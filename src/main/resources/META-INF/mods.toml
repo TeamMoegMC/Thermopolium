@@ -6,9 +6,9 @@ issueTrackerURL = "https://github.com/TeamMoegMC/Thermopolium/issues"
 modId = "thermopolium" #mandatory
 version = "${file.jarVersion}" #mandatory
 displayName = "Thermopolium" #mandatory
-authors = "[TeamMoeg] YueSha, khjxiaogu, duck_egg, Lyuuke"
+authors = "[TeamMoeg] khjxiaogu, Lyuuke"
 description = '''
-Some heat in the cold...
+Cook anything into stew
 '''
 [[dependencies.thermopolium]]
     modId = "forge"

@@ -105,6 +105,31 @@ public class FoodValueRecipe extends IDataRecipe {
 				repersent = i[0];
 		}
 	}
+	@Override
+	public void serialize(JsonObject json) {
+		json.addProperty("heal", heal);
+		json.addProperty("sat", sat);
+		if(processtimes!=null&&!processtimes.isEmpty())
+		json.add("items",SerializeUtil.toJsonList(processtimes.entrySet(),e->{
+			JsonObject jo=new JsonObject();
+			jo.addProperty("item",e.getKey().getRegistryName().toString());
+			if(e.getValue()!=0)
+				jo.addProperty("time",e.getValue());
+		return jo;}));
+		if(effects!=null&&!effects.isEmpty())
+		json.add("effects",SerializeUtil.toJsonList(effects,x->{
+			JsonObject jo=new JsonObject();
+			jo.addProperty("level",x.getFirst().getAmplifier());
+			jo.addProperty("time",x.getFirst().getDuration());
+			jo.addProperty("effect",x.getFirst().getPotion().getRegistryName().toString());
+			jo.addProperty("chance",x.getSecond());
+			return jo;
+		}));
+		if(repersent!=null)
+		json.add("item",Ingredient.fromStacks(repersent).serialize());
+				
+			
+	}
 
 	public FoodValueRecipe(ResourceLocation id, PacketBuffer data) {
 		super(id);
@@ -134,11 +159,6 @@ public class FoodValueRecipe extends IDataRecipe {
 		SerializeUtil.writeOptional(data, repersent, (d, e) -> e.writeCompoundTag(d.serializeNBT()));
 	}
 
-	@Override
-	public void serialize(JsonObject json) {
-		json.addProperty("heal", heal);
-		json.addProperty("sat", sat);
-	}
 
 	public Set<ResourceLocation> getTags() {
 		if (tags == null)

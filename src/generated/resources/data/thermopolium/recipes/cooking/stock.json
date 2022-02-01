@@ -10,7 +10,11 @@
     },
     {
       "cond": "contains",
-      "type": "thermopolium:meats/meat"
+      "type": "thermopolium:bone"
+    },
+    {
+      "cond": "contains",
+      "type": "thermopolium:meats/poultry"
     }
   ],
   "priority": 1024,

@@ -24,7 +24,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
 
-public class SteamParticle extends THParticle {
+public class SteamParticle extends THPParticle {
 
 	public SteamParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY,
 			double motionZ) {

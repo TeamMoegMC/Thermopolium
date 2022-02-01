@@ -76,7 +76,7 @@ public class StewPotContainer extends Container {
 	}
 
 	public StewPotContainer(int id, PlayerInventory inv, StewPotTileEntity te) {
-		super(Contents.SCGui.STEWPOT.get(), id);
+		super(Contents.THPGui.STEWPOT.get(), id);
 		tile = te;
 		for (int i = 0; i < 9; i++)
 			this.addSlot(new HidableSlot(te.getInv(), i, 45 + (i % 3) * 18, 17 + (i / 3) * 18, () -> te.proctype != 2));

@@ -34,10 +34,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -56,6 +62,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class StewPot extends Block implements ILiquidContainer {
 	public final String name;
 	protected int lightOpacity;
+	public static final EnumProperty<Axis> FACING = BlockStateProperties.HORIZONTAL_AXIS;
 
 	public StewPot(String name, Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock) {
 		super(blockProps.variableOpacity());
@@ -80,11 +87,15 @@ public class StewPot extends Block implements ILiquidContainer {
 			ISelectionContext context) {
 		return shape;
 	}
-
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return shape;
+	}
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
 		ActionResultType p = super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+		if(p.isSuccessOrConsume())return p;
 		StewPotTileEntity tileEntity = (StewPotTileEntity) worldIn.getTileEntity(pos);
 		if (tileEntity.canAddFluid()) {
 			ItemStack held = player.getHeldItem(handIn);
@@ -109,7 +120,7 @@ public class StewPot extends Block implements ILiquidContainer {
 				if (fa.getResult() != null)
 					player.setHeldItem(handIn, fa.getResult());
 				return ActionResultType.SUCCESS;
-			}else if(held.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
+			} else if (held.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
 				return ActionResultType.PASS;
 			}
 
@@ -142,12 +153,12 @@ public class StewPot extends Block implements ILiquidContainer {
 		TileEntity te = worldIn.getTileEntity(pos);
 		if (te instanceof StewPotTileEntity) {
 			StewPotTileEntity pot = (StewPotTileEntity) te;
-			if (pot.proctype == 2) {
+			if (pot.proctype == 2&&pot.working) {
 				double d0 = pos.getX();
 				double d1 = pos.getY() + 1;
 				double d2 = pos.getZ();
 				if (rand.nextDouble() < 0.8D) {
-					int count = 4;
+					int count = 2;
 					while (--count != 0)
 						worldIn.addParticle(Particles.STEAM.get(), d0 + rand.nextFloat(), d1, d2 + rand.nextFloat(),
 								0.0D, 0.0D, 0.0D);
@@ -156,10 +167,7 @@ public class StewPot extends Block implements ILiquidContainer {
 		}
 	}
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return shape;
-	}
+
 
 	public ResourceLocation createRegistryName() {
 		return new ResourceLocation(Main.MODID, name);
@@ -173,6 +181,50 @@ public class StewPot extends Block implements ILiquidContainer {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new StewPotTileEntity();
+	}
+
+	@Override
+	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if (tileEntity instanceof StewPotTileEntity && state.getBlock() != newState.getBlock()) {
+			StewPotTileEntity te = (StewPotTileEntity) tileEntity;
+			if (te.proctype != 2)
+				for (int i = 0; i < 11; i++) {
+					ItemStack is = te.getInv().getStackInSlot(i);
+					if (!is.isEmpty())
+						super.spawnAsEntity(worldIn, pos, is);
+				}
+		}
+		super.onReplaced(state, worldIn, pos, newState, isMoving);
+	}
+
+	@Override
+	protected void fillStateContainer(net.minecraft.state.StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(FACING);
+	}
+
+	@Override
+	public void fillWithRain(World worldIn, BlockPos pos) {
+		if (worldIn.rand.nextInt(25) == 1) {
+			float f = worldIn.getBiome(pos).getTemperature(pos);
+			if (!(f < 0.15F)) {
+				TileEntity tileEntity = worldIn.getTileEntity(pos);
+				if (tileEntity instanceof StewPotTileEntity) {
+					StewPotTileEntity te = (StewPotTileEntity) tileEntity;
+					if (te.canAddFluid())
+						te.tryAddFluid(new FluidStack(Fluids.WATER, 250));
+				}
+
+			}
+		}
+
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
+		return this.getDefaultState().with(FACING,context.getPlacementHorizontalFacing().getAxis());
+		
 	}
 
 }

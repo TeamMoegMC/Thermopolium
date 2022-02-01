@@ -1,6 +1,7 @@
 "acquacotta.png",
 "bisque.png",
 "bone_gelatin.png",
+"book.png",
 "borscht.png",
 "borscht_cream.png",
 "congee.png",

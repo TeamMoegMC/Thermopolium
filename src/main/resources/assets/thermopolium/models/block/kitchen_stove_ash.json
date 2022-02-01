@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "thermopolium:block/kitchen_stove_ash",
+	"texture": "thermopolium:block/kitchen_stove_ash"
+  },
+  "loader": "forge:obj",
+  "model": "thermopolium:models/block/kitchen_stove_ash.obj",
+  "shade": false,
+  "detectCullableFaces": false,
+  "flip-v": true
+}

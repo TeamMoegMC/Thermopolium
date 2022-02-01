@@ -71,7 +71,13 @@ public class Add implements StewNumber, ComplexCalculated {
 	public boolean fits(FloatemTagStack stack) {
 		return nums.stream().anyMatch(s -> s.fits(stack));
 	}
-
+	/**
+	 * Convenience method for adding number<br>
+	 * <b>Warning! only available in datagen environment!</b>
+	 * */
+	public void add(StewNumber sn) {
+		nums.add(sn);
+	}
 	@Override
 	public JsonElement serialize() {
 		return SerializeUtil.toJsonList(nums, StewNumber::serialize);

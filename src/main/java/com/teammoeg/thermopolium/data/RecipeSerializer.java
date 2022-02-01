@@ -21,7 +21,11 @@ package com.teammoeg.thermopolium.data;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -32,10 +36,15 @@ public class RecipeSerializer<T extends IDataRecipe>
 	BiFunction<ResourceLocation, JsonObject, T> jsfactory;
 	BiFunction<ResourceLocation, PacketBuffer, T> pkfactory;
 	BiConsumer<T, PacketBuffer> writer;
-
+	static final Logger logger=LogManager.getLogger(Main.MODID+" recipe serialize");
 	@Override
 	public T read(ResourceLocation recipeId, JsonObject json) {
-		return jsfactory.apply(recipeId, json);
+		try {
+			return jsfactory.apply(recipeId, json);
+		}catch(Exception e) {
+			logger.info("cannot load recipe "+recipeId+" because "+e.getMessage());
+			return null;
+		}
 	}
 
 	@Override

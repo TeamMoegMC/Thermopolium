@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.teammoeg.thermopolium.Contents.SCBlocks;
+import com.teammoeg.thermopolium.Contents.THPBlocks;
 import com.teammoeg.thermopolium.client.Particles;
 import com.teammoeg.thermopolium.network.PacketHandler;
 
@@ -52,7 +52,7 @@ public class Main {
 		@Override
 		@Nonnull
 		public ItemStack createIcon() {
-			return new ItemStack(SCBlocks.stew_pot);
+			return new ItemStack(THPBlocks.stew_pot);
 		}
 	};
 
@@ -69,16 +69,16 @@ public class Main {
 		Config.register();
 		PacketHandler.register();
 		ForgeMod.enableMilkFluid();
-		Contents.SCItems.init();
-		Contents.SCBlocks.init();
-		SCFluids.init();
-		Contents.SCTileTypes.REGISTER.register(mod);
-		Contents.SCGui.CONTAINERS.register(mod);
+		Contents.THPItems.init();
+		Contents.THPBlocks.init();
+		THPFluids.init();
+		Contents.THPTileTypes.REGISTER.register(mod);
+		Contents.THPGui.CONTAINERS.register(mod);
 		Particles.REGISTER.register(mod);
 		
-		SCFluids.FLUIDS.register(mod);
-		Contents.SCRecipes.RECIPE_SERIALIZERS.register(mod);
-		DeferredWorkQueue.runLater(Contents.SCRecipes::registerRecipeTypes);
+		THPFluids.FLUIDS.register(mod);
+		Contents.THPRecipes.RECIPE_SERIALIZERS.register(mod);
+		DeferredWorkQueue.runLater(Contents.THPRecipes::registerRecipeTypes);
 	}
 
 	public void setup(final FMLCommonSetupEvent event) {

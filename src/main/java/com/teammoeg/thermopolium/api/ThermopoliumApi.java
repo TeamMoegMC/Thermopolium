@@ -54,11 +54,10 @@ public class ThermopoliumApi {
 				if(r.nextFloat()<ef.getSecond())
 					entityLiving.addPotionEffect(ef.getFirst());
 			}
-		}
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) entityLiving;
-			if (!worldIn.isRemote)
+			if (entityLiving instanceof PlayerEntity) {
+				PlayerEntity player = (PlayerEntity) entityLiving;
 				player.getFoodStats().addStats(info.healing,info.saturation);
+			}
 		}
 	}
 	public static Optional<ItemStack> fillBowl(IFluidHandler handler) {
