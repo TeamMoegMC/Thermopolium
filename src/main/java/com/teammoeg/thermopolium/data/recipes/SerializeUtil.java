@@ -246,24 +246,24 @@ public class SerializeUtil {
 		return nums;
 	}
 
-	public static <T> void writeList(PacketBuffer buffer, Collection<T> nums, BiConsumer<T, PacketBuffer> func) {
-		if (nums == null) {
+	public static <T> void writeList(PacketBuffer buffer, Collection<T> elms, BiConsumer<T, PacketBuffer> func) {
+		if (elms == null) {
 			buffer.writeBoolean(false);
 			return;
 		}
 		buffer.writeBoolean(true);
-		buffer.writeVarInt(nums.size());
-		nums.forEach(e -> func.accept(e, buffer));
+		buffer.writeVarInt(elms.size());
+		elms.forEach(e -> func.accept(e, buffer));
 	}
 
-	public static <T> void writeList2(PacketBuffer buffer, Collection<T> nums, BiConsumer<PacketBuffer, T> func) {
-		if (nums == null) {
+	public static <T> void writeList2(PacketBuffer buffer, Collection<T> elms, BiConsumer<PacketBuffer, T> func) {
+		if (elms == null) {
 			buffer.writeBoolean(false);
 			return;
 		}
 		buffer.writeBoolean(true);
-		buffer.writeVarInt(nums.size());
-		nums.forEach(e -> func.accept(buffer, e));
+		buffer.writeVarInt(elms.size());
+		elms.forEach(e -> func.accept(buffer, e));
 	}
 
 	public static <T> List<T> parseJsonList(JsonElement elm, Function<JsonObject, T> mapper) {

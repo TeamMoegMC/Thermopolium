@@ -374,7 +374,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			 * }
 			 */
 		}
-		int tpt = 100;
+		int tpt = 50;
 		for (int i = 0; i < imax; i++) {
 			ItemStack is = interninv.get(i);
 			if (!is.isEmpty()) {
@@ -386,9 +386,9 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				}
 				current.addItem(is, parts);
 			}
-			tpt = Math.max(tpt, iis[i]);
+			tpt +=iis[i];
 		}
-
+		tpt=Math.max(100,tpt);
 		interninv.clear();
 		processMax = Math.max(decideSoup(), tpt);
 		return true;

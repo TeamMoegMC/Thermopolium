@@ -1,21 +1,27 @@
 
 {
-  "name": "灶台",
+  "name": "Kitchen Stove",
   "icon": "thermopolium:kitchen_stove_t2",
   "category": "intro",
   "sortnum": 4,
   "pages": [
     {
       "type": "text",
-      "text": "灶台可以用于加热各种锅，它需要消耗熔炉燃料进行燃烧。"
+      "text": "Kitchen Stoves can be used to heat cooking devices."
     },
     {
       "type": "text",
-      "text": "灶台可以在没有工作一段时间之后自动关闭，需要的时候随时重新开始，无需手动操作。"
+      "text": "Kitchen Stoves would stop working after idling for a while. "
     },
-     {
-      "type": "text",
-      "text": "高级灶台燃烧速度更快，燃烧效率略低于低级灶台。"
+    {
+      "type": "crafting",
+      "recipe": "thermopolium:kitchen_stove_t1",
+      "text": "Stone Stove is cheap and useful."
+    },
+    {
+      "type": "crafting",
+      "recipe": "thermopolium:kitchen_stove_t2",
+      "text": "Brick Stove is faster, but cost more fuel."
     }
   ]
 }

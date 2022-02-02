@@ -66,7 +66,10 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 		matrixStack.push();
 		FluidStack fs = te.getTank().getFluid();
 		if (fs != null && !fs.isEmpty() && fs.getFluid() != null) {
-			float yy = fs.getAmount() / (float) te.getTank().getCapacity() * .5f + .3125f;
+			float rr=fs.getAmount();
+			if(te.proctype==2)//just animate fluid reduction
+				rr+=250f*(1-te.process*1f/te.processMax);
+			float yy = Math.max(1,rr / te.getTank().getCapacity()) * .5f + .3125f;
 			matrixStack.translate(0, yy, 0);
 			matrixStack.rotate(new Quaternion(90, 0, 0, true));
 			IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());

@@ -1,41 +1,42 @@
 
 {
-  "name": "汤锅",
+  "name": "Stew pots",
   "icon": "thermopolium:stew_pot",
   "category": "intro",
   "priority": true,
   "pages": [
     {
-      "type": "text",
-      "text": "陶锅是煮汤的厨具之一，需要放在灶台上面使用。"
+      "type": "crafting",
+      "recipe": "thermopolium:stew_pot",
+      "text": "Stew pots is tool for cooking soup. It should be on any kind of $(l:stove)stove$(/l)."
     },
     {
       "type": "text",
-      "text": "其中左边为进度槽和控制按钮，中间九格为放入汤品的原料，右侧为碗的流体交互槽，具有1250mb的容积。左下角按钮图标即为当前的红石控制状态，默认是关闭红石控制。"
+      "text": "On the left, there's progress bar and control buttons. On the middle, there're 9 ingredient slots and a fluid tank. On the right is bowl interact slot, bowl of fluids can be inserted or extracted."
     },
      {
       "type": "text",
-      "text": "陶锅可以进行煮沸、烹饪、浓缩、混合四大操作，所有操作均是不同情况下进行烹饪。进行烹饪、浓缩、混合时，无法操作物品槽，进行任何操作时均无法操作液体槽。"
+      "text": "Stew pot can do boiling/cooking/concerntration/mixing. Ingredient slot uninteractable when cooking, while fluid tank uninteractable during any of operation."
     },
     {
       "type": "text",
-      "text": "启动陶锅后，陶锅会先尝试进行煮沸，此时仍然可以操作物品栏。一旦煮沸，如果物品栏符合烹饪条件（见下文）则会自动开始烹饪。"
+      "text": "When a pot is activate, it would first try to boil fluids. After boiling, it would start cooking when conditions(See below) meet."
     },
     {
       "type": "text",
-      "text": "陶锅液体量超过一碗（不含）时即可烹饪，但是每碗汤对应物品数量不能超过3且锅内不能有不可烹饪的物品，否则不能烹饪。烹饪过程中无法进行任何交互。进行任意烹饪都需要消耗一碗的水。"
+      "text": "Cooking is available when there're more than a bowl of fluid inside the pot and less than 3 items for each bowl. Also, there should not be anything uncookable. Cooking would evaporate a bowl of fluid. "
     },
     {
       "type": "text",
-      "text": "陶锅在有汤的时候允许填加基底（煮沸或不煮沸均可）稀释或者添加其它相同基底的汤进行混合，稀释和混合均会进行一次混合操作，此时不可交互。陶锅也可以在没有添加物品的时候进行烹饪，视为一次浓缩操作，减少一碗水并浓缩汤。"
+      "text": "When there's any soup in the pot, you can add base whether boiled or not to dilute. You can also add other soup insid to mix. Dilute or mixing would start a mixing operation automatically. Stew pot can also cooking without adding ingredient, it would be a concerntrate operation, losing a bowl of water and concerntrate the soup."
     },
     {
       "type": "text",
-      "text": "陶锅在任意烹饪的时候允许加入药水，药水时间相加且均分到所有汤份中，但是一份汤最多有三种药水效果，每种时间长度最多为加入药水的两倍。"
+      "text": "You can add potion bottles inside in any kind of cooking, but double duration and three different kind of potion for each bowl of soup at most."
     },
     {
       "type": "text",
-      "text": "陶锅在红石信号为高且空闲时会不断尝试开始烹饪，配合其它自动化工具可以实现完全自动化。"
+      "text": "Stew pot would try to start cooking when redstone signal and settings on, making it possible to fully automate cooking process."
     }
   ]
 }
