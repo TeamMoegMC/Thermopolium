@@ -48,7 +48,7 @@ public abstract class NumberedStewCondition implements StewCondition {
 
 	@Override
 	public void write(PacketBuffer buffer) {
-		number.write(buffer);
+		SerializeUtil.write(number, buffer);
 	}
 
 	public NumberedStewCondition(PacketBuffer buffer) {

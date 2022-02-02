@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.teammoeg.thermopolium.Contents.THPBlocks;
 import com.teammoeg.thermopolium.client.Particles;
+import com.teammoeg.thermopolium.data.RecipeReloadListener;
 import com.teammoeg.thermopolium.network.PacketHandler;
 
 import net.minecraft.block.DispenserBlock;
@@ -34,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
@@ -75,7 +77,7 @@ public class Main {
 		Contents.THPTileTypes.REGISTER.register(mod);
 		Contents.THPGui.CONTAINERS.register(mod);
 		Particles.REGISTER.register(mod);
-		
+		MinecraftForge.EVENT_BUS.register(RecipeReloadListener.class);
 		THPFluids.FLUIDS.register(mod);
 		Contents.THPRecipes.RECIPE_SERIALIZERS.register(mod);
 		DeferredWorkQueue.runLater(Contents.THPRecipes::registerRecipeTypes);

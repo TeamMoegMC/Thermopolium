@@ -24,10 +24,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public interface StewBaseCondition extends BiFunction<ResourceLocation, ResourceLocation, Integer> {
+public interface StewBaseCondition extends BiFunction<ResourceLocation, ResourceLocation, Integer>,Writeable {
 	public JsonObject serialize();
-
-	public void write(PacketBuffer buffer);
 
 	public String getType();
 }

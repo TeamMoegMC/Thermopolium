@@ -181,11 +181,6 @@ dependencies {
 	compile fg.deobf("curse.maven:crock-pot-404523:3568413")
 	implementation fg.deobf("curse.maven:crock-pot-404523:3568413")
 	
-	compile fg.deobf("curse.maven:ages-api-353992:3176394")
-	implementation fg.deobf("curse.maven:ages-api-353992:3176394")
-	
-	compile fg.deobf("curse.maven:stone-age-534605:3601123")
-	implementation fg.deobf("curse.maven:stone-age-534605:3601123")
 	compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.2:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.2")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2")
@@ -242,20 +237,13 @@ String getChangelogText() {
         if (it.size() > 1) {
             def temp = it
             if (lineCount == 0) {
-                temp = "Frosted Heart for The Winter Rescue Modpack ${version}"
-                temp = "<span style=\"font-size: 18px; color: #333399;\">Frosted Heart for The Winter Rescue Modpack v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
-            } else if (it.startsWith('-')) {
-                temp = "&nbsp;&nbsp;&nbsp;$temp<br/>"
-                temp = temp.replaceAll("(\\S+\\/\\S+)#([0-9]+)\\b", "<a href=\"https://github.com/\$1/issues/\$2\">\$0</a>");
-                temp = temp.replaceAll("#([0-9]+)\\b(?!<\\/a>)", "<a href=\"https://github.com/$github_project/issues/\$1\">\$0</a>");
-            } else {
+                temp = "Thermopolium for The Winter Rescue Modpack ${version}"
+                temp = "<span style=\"font-size: 18px; color: #333399;\">Thermopolium v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
+            }else {
                 temp = "<h4>$temp</h4>"
             }
             str += temp
             lineCount++
-        } else {
-            str += "<p>Please submit any Issues you come across on the&nbsp;<a href=\"https://github.com/${github_project}/issues\" rel=\"nofollow\">Issue Tracker</a>.</p>"
-            done = true
         }
     }
     return str

@@ -26,10 +26,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public interface StewCondition extends Predicate<StewPendingContext> {
+public interface StewCondition extends Predicate<StewPendingContext>,Writeable {
 	public JsonObject serialize();
-
-	public void write(PacketBuffer buffer);
 
 	public String getType();
 

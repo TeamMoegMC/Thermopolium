@@ -100,6 +100,7 @@ public class THPRecipeProvider extends RecipeProvider {
 		simpleFood(out,3,5f,ItemRegistry.soybeanitem);
 		simpleFood(out,0,.5f,Items.BONE_MEAL);
 		simpleFood(out,1,1f,Items.BONE);
+		simpleFood(out,3,4f,Items.EGG);
 		cook("acquacotta").base().tag(anyWater).and().require().mainly().of(baked).and().then().finish(out);
 		cook("congee").med().base().tag(anyWater).and().require().half().of(rice).and().then().dense(0.25).finish(out);
 		cook("rice_pudding").med().base().type(milk).and().require().half().of(rice).and().then().dense(0.25)

@@ -159,7 +159,9 @@ public class FoodValueRecipe extends IDataRecipe {
 		SerializeUtil.writeOptional(data, repersent, (d, e) -> e.writeCompoundTag(d.serializeNBT()));
 	}
 
-
+	public void clearCache() {
+		tags=null;
+	}
 	public Set<ResourceLocation> getTags() {
 		if (tags == null)
 			tags = processtimes.keySet().stream().map(Item::getTags).flatMap(Set::stream)

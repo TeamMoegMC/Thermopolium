@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +40,8 @@ import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CountingTags;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
+
+import com.google.common.base.Stopwatch;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.Minecraft;
@@ -52,8 +55,11 @@ import net.minecraft.item.crafting.SmokingRecipe;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,12 +79,15 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 	}
 
 	RecipeManager clientRecipeManager;
-
+    @SubscribeEvent
+    public static void onTagsUpdated(TagsUpdatedEvent event) {
+        if(FoodValueRecipe.recipeset!=null)
+        	FoodValueRecipe.recipeset.forEach(FoodValueRecipe::clearCache);
+    }
 	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onRecipesUpdated(RecipesUpdatedEvent event) {
-		clientRecipeManager = event.getRecipeManager();
+	public static void onRecipesUpdated(RecipesUpdatedEvent event) {
 		if (!Minecraft.getInstance().isSingleplayer())
-			buildRecipeLists(clientRecipeManager);
+			buildRecipeLists(event.getRecipeManager());
 	}
 
 	static int generated_fv = 0;
@@ -99,7 +108,6 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 					ret.sat = of.getSaturation();
 					ret.setRepersent(iis);
 				}
-				logger.info("adding item " + i.getRegistryName());
 				FoodValueRecipe.recipes.put(i, ret);
 				ret.processtimes.put(i, sr.getCookTime() + ret.processtimes.getOrDefault(reslt.getItem(), 0));
 				return ret;
@@ -107,7 +115,6 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 		}
 		if (force) {
 			Food of = i.getFood();
-			logger.info("adding item " + i.getRegistryName());
 			FoodValueRecipe ret = FoodValueRecipe.recipes.computeIfAbsent(i,
 					e -> new FoodValueRecipe(new ResourceLocation(Main.MODID, "food/generated/" + (generated_fv++)), 0,
 							0, iis, e));
@@ -123,9 +130,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 	}
 
 	public static void buildRecipeLists(RecipeManager recipeManager) {
+	
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
 		if (recipes.size() == 0)
 			return;
+		
+		logger.info("Building recipes...");
+		Stopwatch sw=Stopwatch.createStarted();
 		BowlContainingRecipe.recipes = filterRecipes(recipes, BowlContainingRecipe.class, BowlContainingRecipe.TYPE)
 				.collect(Collectors.toMap(e -> e.fluid, UnaryOperator.identity()));
 		FoodValueRecipe.recipes = filterRecipes(recipes, FoodValueRecipe.class, FoodValueRecipe.TYPE)
@@ -136,6 +147,8 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 				.collect(Collectors.toList());
 		CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE)
 				.collect(Collectors.toMap(e -> e.output, UnaryOperator.identity()));
+		BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE)
+				.collect(Collectors.toMap(e -> e.before, UnaryOperator.identity()));
 		CountingTags.tags = Stream
 				.concat(filterRecipes(recipes, CountingTags.class, CountingTags.TYPE).flatMap(r -> r.tag.stream()),
 						CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getTags))
@@ -143,6 +156,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 		// CountingTags.tags.forEach(System.out::println);
 		CookingRecipe.cookables = CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getAllNumbers)
 				.collect(Collectors.toSet());
+		
 		for (Item i : ForgeRegistries.ITEMS) {
 			ItemStack iis = new ItemStack(i);
 			if (FoodValueRecipe.recipes.containsKey(i))
@@ -155,8 +169,8 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 		FoodValueRecipe.recipeset = new HashSet<>(FoodValueRecipe.recipes.values());
 		CookingRecipe.sorted = new ArrayList<>(CookingRecipe.recipes.values());
 		CookingRecipe.sorted.sort((t2, t1) -> t1.getPriority() - t2.getPriority());
-		BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE)
-				.collect(Collectors.toMap(e -> e.before, UnaryOperator.identity()));
+		sw.stop();
+		logger.info("Recipes built, cost {}",sw);
 	}
 
 	static <R extends IRecipe<?>> Stream<R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass,

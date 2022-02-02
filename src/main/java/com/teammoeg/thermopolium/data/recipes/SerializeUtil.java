@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,12 +57,38 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 
 public class SerializeUtil {
-	private static Map<String, Function<JsonObject, StewCondition>> conditions = new HashMap<>();
-	private static Map<String, Function<JsonElement, StewNumber>> numbers = new HashMap<>();
-	private static Map<String, Function<JsonObject, StewBaseCondition>> basetypes = new HashMap<>();
-	private static Map<String, Function<PacketBuffer, StewCondition>> pconditions = new HashMap<>();
-	private static Map<String, Function<PacketBuffer, StewNumber>> pnumbers = new HashMap<>();
-	private static Map<String, Function<PacketBuffer, StewBaseCondition>> pbasetypes = new HashMap<>();
+	public static class Deserializer<T extends JsonElement, U extends Writeable> {
+		private int id;
+		public Function<T, U> fromJson;
+		public Function<PacketBuffer, U> fromPacket;
+
+		public Deserializer(Function<T, U> fromJson, Function<PacketBuffer, U> fromPacket) {
+			super();
+			this.fromJson = fromJson;
+			this.fromPacket = fromPacket;
+		}
+
+		public U read(T json) {
+			return fromJson.apply(json);
+		}
+
+		public U read(PacketBuffer packet) {
+			return fromPacket.apply(packet);
+		}
+
+		public void write(PacketBuffer packet, U obj) {
+			packet.writeVarInt(id);
+			obj.write(packet);
+		}
+
+		public JsonElement serialize(U obj) {
+			return obj.serialize();
+		}
+	}
+
+	private static HashMap<String, Deserializer<JsonObject, StewCondition>> conditions = new HashMap<>();
+	private static HashMap<String, Deserializer<JsonElement, StewNumber>> numbers = new HashMap<>();
+	private static HashMap<String, Deserializer<JsonObject, StewBaseCondition>> basetypes = new HashMap<>();
 	// do some cache to lower calculation cost
 	private static CacheMap<StewCondition> sccache = new CacheMap<>();
 	private static CacheMap<StewNumber> nmcache = new CacheMap<>();
@@ -71,33 +98,42 @@ public class SerializeUtil {
 
 	}
 
+	public static void registerCondition(String name, Deserializer<JsonObject, StewCondition> des) {
+		conditions.put(name, des);
+	}
+	public static void registerNumber(String name, Deserializer<JsonElement, StewNumber> des) {
+		numbers.put(name, des);
+	}
+
+	public static void registerBase(String name, Deserializer<JsonObject, StewBaseCondition> des) {
+		basetypes.put(name, des);
+	}
+	
+	public static void registerCondition(String name,Function<JsonObject, StewCondition> rjson,Function<PacketBuffer, StewCondition> rpacket) {
+		registerCondition(name,new Deserializer<>(rjson,rpacket));
+	}
+
+	public static void registerNumber(String name,Function<JsonElement,StewNumber> rjson,Function<PacketBuffer,StewNumber> rpacket) {
+		registerNumber(name,new Deserializer<>(rjson,rpacket));
+	}
+
+	public static void registerBase(String name,Function<JsonObject,StewBaseCondition> rjson,Function<PacketBuffer,StewBaseCondition> rpacket) {
+		registerBase(name,new Deserializer<>(rjson,rpacket));
+	}
 	static {
-		numbers.put("add", Add::new);
-		numbers.put("ingredient", ItemIngredient::new);
-		numbers.put("item", ItemType::new);
-		numbers.put("tag", ItemTag::new);
-		numbers.put("nop", NopNumber::of);
-		numbers.put("const", ConstNumber::new);
-		conditions.put("half", Halfs::new);
-		conditions.put("mainly", Mainly::new);
-		conditions.put("contains", Must::new);
-		conditions.put("mainlyOf", MainlyOfType::new);
-		basetypes.put("tag", FluidTag::new);
-		basetypes.put("fluid", FluidType::new);
-		basetypes.put("fluid_type", FluidTypeType::new);
-		pnumbers.put("add", Add::new);
-		pnumbers.put("ingredient", ItemIngredient::new);
-		pnumbers.put("item", ItemType::new);
-		pnumbers.put("tag", ItemTag::new);
-		pnumbers.put("nop", NopNumber::of);
-		pnumbers.put("const", ConstNumber::new);
-		pconditions.put("half", Halfs::new);
-		pconditions.put("mainly", Mainly::new);
-		pconditions.put("contains", Must::new);
-		pconditions.put("mainlyOf", MainlyOfType::new);
-		pbasetypes.put("tag", FluidTag::new);
-		pbasetypes.put("fluid", FluidTag::new);
-		pbasetypes.put("fluid_type", FluidTag::new);
+		registerNumber("add", Add::new, Add::new);
+		registerNumber("ingredient", ItemIngredient::new, ItemIngredient::new);
+		registerNumber("item", ItemType::new, ItemType::new);
+		registerNumber("tag", ItemTag::new, ItemTag::new);
+		registerNumber("nop", NopNumber::of, NopNumber::of);
+		registerNumber("const", ConstNumber::new, ConstNumber::new);
+		registerCondition("half", Halfs::new, Halfs::new);
+		registerCondition("mainly", Mainly::new, Mainly::new);
+		registerCondition("contains", Must::new, Must::new);
+		registerCondition("mainlyOf", MainlyOfType::new, MainlyOfType::new);
+		registerBase("tag", FluidTag::new, FluidTag::new);
+		registerBase("fluid", FluidType::new, FluidType::new);
+		registerBase("fluid_type", FluidTypeType::new, FluidTypeType::new);
 	}
 
 	public static StewNumber ofNumber(JsonElement jsonElement) {
@@ -118,10 +154,10 @@ public class SerializeUtil {
 			return new Add(jsonElement);
 		JsonObject jo = jsonElement.getAsJsonObject();
 		if (jo.has("type")) {
-			Function<JsonElement, StewNumber> factory = numbers.get(jo.get("type").getAsString());
+			Deserializer<JsonElement, StewNumber> factory = numbers.get(jo.get("type").getAsString());
 			if (factory == null)
 				return NopNumber.INSTANCE;
-			return factory.apply(jo);
+			return factory.read(jo);
 		}
 		if (jo.has("item"))
 			return new ItemType(jo);
@@ -135,7 +171,7 @@ public class SerializeUtil {
 	}
 
 	public static StewCondition ofCondition(JsonObject json) {
-		return sccache.of(conditions.get(json.get("cond").getAsString()).apply(json));
+		return sccache.of(conditions.get(json.get("cond").getAsString()).read(json));
 	}
 
 	public static StewBaseCondition ofBase(JsonObject jo) {
@@ -144,7 +180,7 @@ public class SerializeUtil {
 
 	private static StewBaseCondition internalOfBase(JsonObject jo) {
 		if (jo.has("type"))
-			return basetypes.get(jo.get("type").getAsString()).apply(jo);
+			return basetypes.get(jo.get("type").getAsString()).read(jo);
 		if (jo.has("tag"))
 			return new FluidTag(jo);
 		if (jo.has("fluid"))
@@ -155,15 +191,15 @@ public class SerializeUtil {
 	}
 
 	public static StewNumber ofNumber(PacketBuffer buffer) {
-		return nmcache.of(pnumbers.get(buffer.readString()).apply(buffer));
+		return nmcache.of(numbers.get(buffer.readString()).read(buffer));
 	}
 
 	public static StewCondition ofCondition(PacketBuffer buffer) {
-		return sccache.of(pconditions.get(buffer.readString()).apply(buffer));
+		return sccache.of(conditions.get(buffer.readString()).read(buffer));
 	}
 
 	public static StewBaseCondition ofBase(PacketBuffer buffer) {
-		return bacache.of(pbasetypes.get(buffer.readString()).apply(buffer));
+		return bacache.of(basetypes.get(buffer.readString()).read(buffer));
 	}
 
 	public static void write(StewNumber e, PacketBuffer buffer) {
@@ -231,7 +267,8 @@ public class SerializeUtil {
 	}
 
 	public static <T> List<T> parseJsonList(JsonElement elm, Function<JsonObject, T> mapper) {
-		if(elm==null)return ImmutableList.of();
+		if (elm == null)
+			return ImmutableList.of();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(JsonElement::getAsJsonObject)
 					.map(mapper).collect(Collectors.toList());
@@ -239,7 +276,8 @@ public class SerializeUtil {
 	}
 
 	public static <T> List<T> parseJsonElmList(JsonElement elm, Function<JsonElement, T> mapper) {
-		if(elm==null)return ImmutableList.of();
+		if (elm == null)
+			return ImmutableList.of();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(mapper)
 					.collect(Collectors.toList());

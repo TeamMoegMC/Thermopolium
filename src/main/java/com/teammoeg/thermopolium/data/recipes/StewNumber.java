@@ -27,12 +27,8 @@ import com.teammoeg.thermopolium.util.FloatemTagStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public interface StewNumber extends Function<StewPendingContext, Float> {
+public interface StewNumber extends Function<StewPendingContext, Float>,Writeable {
 	public boolean fits(FloatemTagStack stack);
-
-	public JsonElement serialize();
-
-	public void write(PacketBuffer buffer);
 
 	public String getType();
 
