@@ -1,0 +1,12 @@
+{
+  "name": "海带汤",
+  "icon": "thermopolium:seaweed_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/seaweed_soup.png",
+      "result": "thermopolium:seaweed_soup"
+    }
+  ]
+}

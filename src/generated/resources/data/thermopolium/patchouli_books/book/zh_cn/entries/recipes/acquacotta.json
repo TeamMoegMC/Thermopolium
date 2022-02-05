@@ -1,0 +1,12 @@
+{
+  "name": "面包汤",
+  "icon": "thermopolium:acquacotta",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/acquacotta.png",
+      "result": "thermopolium:acquacotta"
+    }
+  ]
+}

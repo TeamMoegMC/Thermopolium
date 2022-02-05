@@ -1,0 +1,12 @@
+{
+  "name": "蛋花汤",
+  "icon": "thermopolium:egg_drop_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/egg_drop_soup.png",
+      "result": "thermopolium:egg_drop_soup"
+    }
+  ]
+}

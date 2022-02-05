@@ -1,0 +1,12 @@
+{
+  "name": "红烩牛肉",
+  "icon": "thermopolium:goulash",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/goulash.png",
+      "result": "thermopolium:goulash"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Congee",
+  "icon": "thermopolium:congee",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/congee.png",
+      "result": "thermopolium:congee"
+    }
+  ]
+}

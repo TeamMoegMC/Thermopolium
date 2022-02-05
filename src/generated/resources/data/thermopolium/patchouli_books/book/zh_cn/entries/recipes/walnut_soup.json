@@ -1,0 +1,12 @@
+{
+  "name": "核桃露",
+  "icon": "thermopolium:walnut_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/walnut_soup.png",
+      "result": "thermopolium:walnut_soup"
+    }
+  ]
+}

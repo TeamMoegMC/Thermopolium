@@ -1,0 +1,12 @@
+{
+  "name": "Mushroom Soup",
+  "icon": "thermopolium:mushroom_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/mushroom_soup.png",
+      "result": "thermopolium:mushroom_soup"
+    }
+  ]
+}

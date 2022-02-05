@@ -21,6 +21,7 @@ package com.teammoeg.thermopolium.fluid;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
@@ -90,7 +91,7 @@ public class SoupFluid extends ForgeFlowingFluid {
 			if (nbt != null)
 				return SoupInfo.getStacks(nbt);
 		}
-		return ImmutableList.of();
+		return Lists.newArrayList();
 	}
 
 	@Override

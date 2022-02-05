@@ -206,7 +206,7 @@ public class StewItem extends Item {
 			if (nbt != null)
 				return SoupInfo.getStacks(nbt);
 		}
-		return ImmutableList.of();
+		return Lists.newArrayList();
 	}
 
 	@Override

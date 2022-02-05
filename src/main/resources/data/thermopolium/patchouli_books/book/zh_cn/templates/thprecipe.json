@@ -1,0 +1,33 @@
+{
+	"components": [
+		{
+			"type": "header",
+			"text": "#result->iname",
+			"x":-1,
+			"y":-1
+		},
+		{
+			"type": "separator",
+			"x":-1,
+			"y":-1
+		},
+		{
+			"type": "image",
+			"image": "#img",
+			"width": 200,
+			"height": 200,
+			"scale":0.5,
+			"y":20
+		},
+		{
+			"type": "frame",
+			"y":20
+		},
+		{
+			"type": "text",
+			"text": "test words",
+			"x": 0,
+			"y": 200
+		}
+	]
+}

@@ -40,6 +40,7 @@ public class THDataGenerator {
 			gen.addProvider(new THPFluidTagGenerator(gen, Main.MODID, exHelper));
 			gen.addProvider(new THPLootGenerator(gen));
 			gen.addProvider(new THPStatesProvider(gen, Main.MODID, exHelper));
+			gen.addProvider(new THPBookGenerator(gen,exHelper));
 		}
 	}
 }

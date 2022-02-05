@@ -1,0 +1,12 @@
+{
+  "name": "Okroshka",
+  "icon": "thermopolium:okroshka",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/okroshka.png",
+      "result": "thermopolium:okroshka"
+    }
+  ]
+}

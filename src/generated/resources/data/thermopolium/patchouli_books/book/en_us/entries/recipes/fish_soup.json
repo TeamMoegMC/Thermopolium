@@ -1,0 +1,12 @@
+{
+  "name": "Fish Soup",
+  "icon": "thermopolium:fish_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/fish_soup.png",
+      "result": "thermopolium:fish_soup"
+    }
+  ]
+}

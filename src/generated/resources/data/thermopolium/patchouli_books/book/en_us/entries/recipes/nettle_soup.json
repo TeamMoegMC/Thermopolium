@@ -1,0 +1,12 @@
+{
+  "name": "Nettle Soup",
+  "icon": "thermopolium:nettle_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/nettle_soup.png",
+      "result": "thermopolium:nettle_soup"
+    }
+  ]
+}

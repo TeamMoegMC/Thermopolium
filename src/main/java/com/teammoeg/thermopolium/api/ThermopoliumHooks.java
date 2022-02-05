@@ -3,6 +3,7 @@ package com.teammoeg.thermopolium.api;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.teammoeg.thermopolium.fluid.SoupFluid;
 import com.teammoeg.thermopolium.items.StewItem;
 import com.teammoeg.thermopolium.util.FloatemStack;
@@ -26,6 +27,6 @@ public class ThermopoliumHooks {
 			IFluidHandlerItem data = cap.resolve().get();
 			return SoupFluid.getItems(data.getFluidInTank(0));
 		}
-		return ImmutableList.of();
+		return Lists.newArrayList();
 	}
 }

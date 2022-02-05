@@ -1,0 +1,14 @@
+{
+    "components": [
+        {
+            "type": "header",
+            "text":"#result->iname"
+        },
+        {
+            "type": "image",
+            "image":"#img",
+            "width": 256,
+            "height": 256
+        }
+    ]
+}

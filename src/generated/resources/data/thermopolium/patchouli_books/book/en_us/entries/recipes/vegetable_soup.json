@@ -1,0 +1,12 @@
+{
+  "name": "Vegetable Soup",
+  "icon": "thermopolium:vegetable_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/vegetable_soup.png",
+      "result": "thermopolium:vegetable_soup"
+    }
+  ]
+}

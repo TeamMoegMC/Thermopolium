@@ -1,0 +1,12 @@
+{
+  "name": "奶油炖肉",
+  "icon": "thermopolium:cream_of_meat_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/cream_of_meat_soup.png",
+      "result": "thermopolium:cream_of_meat_soup"
+    }
+  ]
+}

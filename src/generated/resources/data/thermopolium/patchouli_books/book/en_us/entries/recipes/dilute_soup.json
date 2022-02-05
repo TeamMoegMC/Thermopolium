@@ -1,0 +1,12 @@
+{
+  "name": "Dilute Soup",
+  "icon": "thermopolium:dilute_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/dilute_soup.png",
+      "result": "thermopolium:dilute_soup"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hodge-Podge",
+  "icon": "thermopolium:hodgepodge",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/hodgepodge.png",
+      "result": "thermopolium:hodgepodge"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Porridge",
+  "icon": "thermopolium:porridge",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/porridge.png",
+      "result": "thermopolium:porridge"
+    }
+  ]
+}

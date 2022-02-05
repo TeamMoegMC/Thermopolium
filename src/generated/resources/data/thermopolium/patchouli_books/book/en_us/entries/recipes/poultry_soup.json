@@ -1,0 +1,12 @@
+{
+  "name": "Poultry Stew",
+  "icon": "thermopolium:poultry_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/poultry_soup.png",
+      "result": "thermopolium:poultry_soup"
+    }
+  ]
+}

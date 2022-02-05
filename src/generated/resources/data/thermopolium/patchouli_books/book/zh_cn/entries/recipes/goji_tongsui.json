@@ -1,0 +1,12 @@
+{
+  "name": "枸杞糖水",
+  "icon": "thermopolium:goji_tongsui",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/goji_tongsui.png",
+      "result": "thermopolium:goji_tongsui"
+    }
+  ]
+}

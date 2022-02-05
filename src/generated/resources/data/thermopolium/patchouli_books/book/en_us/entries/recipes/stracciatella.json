@@ -1,0 +1,12 @@
+{
+  "name": "Stracciatella",
+  "icon": "thermopolium:stracciatella",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/stracciatella.png",
+      "result": "thermopolium:stracciatella"
+    }
+  ]
+}

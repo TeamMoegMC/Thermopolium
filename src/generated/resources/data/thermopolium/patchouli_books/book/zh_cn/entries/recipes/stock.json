@@ -1,0 +1,12 @@
+{
+  "name": "高汤",
+  "icon": "thermopolium:stock",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/stock.png",
+      "result": "thermopolium:stock"
+    }
+  ]
+}

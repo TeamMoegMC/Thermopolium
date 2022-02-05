@@ -1,0 +1,12 @@
+{
+  "name": "Rice Pudding",
+  "icon": "thermopolium:rice_pudding",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/rice_pudding.png",
+      "result": "thermopolium:rice_pudding"
+    }
+  ]
+}

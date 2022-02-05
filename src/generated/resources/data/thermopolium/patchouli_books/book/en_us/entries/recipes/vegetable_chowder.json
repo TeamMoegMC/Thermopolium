@@ -1,0 +1,12 @@
+{
+  "name": "Vegetable Chowder",
+  "icon": "thermopolium:vegetable_chowder",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/vegetable_chowder.png",
+      "result": "thermopolium:vegetable_chowder"
+    }
+  ]
+}

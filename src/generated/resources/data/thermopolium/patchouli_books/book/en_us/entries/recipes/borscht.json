@@ -1,0 +1,12 @@
+{
+  "name": "Borscht",
+  "icon": "thermopolium:borscht",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/borscht.png",
+      "result": "thermopolium:borscht"
+    }
+  ]
+}

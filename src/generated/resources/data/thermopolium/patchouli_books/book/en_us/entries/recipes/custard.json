@@ -1,0 +1,12 @@
+{
+  "name": "Custard",
+  "icon": "thermopolium:custard",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/custard.png",
+      "result": "thermopolium:custard"
+    }
+  ]
+}

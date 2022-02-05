@@ -1,0 +1,12 @@
+{
+  "name": "Fricassee",
+  "icon": "thermopolium:fricassee",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/fricassee.png",
+      "result": "thermopolium:fricassee"
+    }
+  ]
+}

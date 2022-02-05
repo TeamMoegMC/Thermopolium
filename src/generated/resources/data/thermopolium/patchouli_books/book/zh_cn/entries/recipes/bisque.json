@@ -1,0 +1,12 @@
+{
+  "name": "海鲜浓汤",
+  "icon": "thermopolium:bisque",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/bisque.png",
+      "result": "thermopolium:bisque"
+    }
+  ]
+}

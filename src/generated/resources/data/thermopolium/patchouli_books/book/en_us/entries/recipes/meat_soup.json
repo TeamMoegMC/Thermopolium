@@ -1,0 +1,12 @@
+{
+  "name": "Meat Stew",
+  "icon": "thermopolium:meat_soup",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/meat_soup.png",
+      "result": "thermopolium:meat_soup"
+    }
+  ]
+}

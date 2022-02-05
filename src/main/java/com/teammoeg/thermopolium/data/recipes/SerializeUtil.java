@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -268,20 +269,20 @@ public class SerializeUtil {
 
 	public static <T> List<T> parseJsonList(JsonElement elm, Function<JsonObject, T> mapper) {
 		if (elm == null)
-			return ImmutableList.of();
+			return Lists.newArrayList();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(JsonElement::getAsJsonObject)
 					.map(mapper).collect(Collectors.toList());
-		return ImmutableList.of(mapper.apply(elm.getAsJsonObject()));
+		return Lists.newArrayList(mapper.apply(elm.getAsJsonObject()));
 	}
 
 	public static <T> List<T> parseJsonElmList(JsonElement elm, Function<JsonElement, T> mapper) {
 		if (elm == null)
-			return ImmutableList.of();
+			return Lists.newArrayList();
 		if (elm.isJsonArray())
 			return StreamSupport.stream(elm.getAsJsonArray().spliterator(), false).map(mapper)
 					.collect(Collectors.toList());
-		return ImmutableList.of(mapper.apply(elm.getAsJsonObject()));
+		return Lists.newArrayList(mapper.apply(elm.getAsJsonObject()));
 	}
 
 	public static <T> JsonArray toJsonList(Collection<T> li, Function<T, JsonElement> mapper) {

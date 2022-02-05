@@ -1,0 +1,12 @@
+{
+  "name": "Cream of Pumpkin Soup",
+  "icon": "thermopolium:pumpkin_soup_cream",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/pumpkin_soup_cream.png",
+      "result": "thermopolium:pumpkin_soup_cream"
+    }
+  ]
+}

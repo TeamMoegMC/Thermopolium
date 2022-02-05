@@ -1,0 +1,12 @@
+{
+  "name": "Ukha",
+  "icon": "thermopolium:ukha",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/ukha.png",
+      "result": "thermopolium:ukha"
+    }
+  ]
+}

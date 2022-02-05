@@ -1,0 +1,12 @@
+{
+  "name": "Egg Tongsui",
+  "icon": "thermopolium:egg_tongsui",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/egg_tongsui.png",
+      "result": "thermopolium:egg_tongsui"
+    }
+  ]
+}

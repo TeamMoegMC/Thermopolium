@@ -1,0 +1,12 @@
+{
+  "name": "麦粥",
+  "icon": "thermopolium:gruel",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/gruel.png",
+      "result": "thermopolium:gruel"
+    }
+  ]
+}

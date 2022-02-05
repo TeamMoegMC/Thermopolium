@@ -104,7 +104,8 @@ public class FoodValueRecipe extends IDataRecipe {
 				f = x.get("chance").getAsInt();
 			return new Pair<>(effect, f);
 		});
-		effects.removeIf(e->e==null);
+		if(effects!=null)
+			effects.removeIf(e->e==null);
 		if (jo.has("item")) {
 			ItemStack[] i = Ingredient.deserialize(jo.get("item")).getMatchingStacks();
 			if (i.length > 0)

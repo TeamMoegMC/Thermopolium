@@ -1,0 +1,12 @@
+{
+  "name": "海鲜杂烩汤",
+  "icon": "thermopolium:fish_chowder",
+  "category": "recipes",
+  "pages": [
+    {
+      "type": "thermopolium:thprecipe",
+      "img": "thermopolium:textures/gui/recipes/fish_chowder.png",
+      "result": "thermopolium:fish_chowder"
+    }
+  ]
+}
