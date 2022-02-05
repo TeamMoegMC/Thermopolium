@@ -68,7 +68,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 		tag(walnut).addOptional(RankineItems.BLACK_WALNUT.getId());
 		tag(baked).add(Items.BREAD).addOptional(RankineItems.TOAST.getId()).addTag(ftag("pasta"))
 				.addOptional(rl(fd + ":pie_crust"));
-		tag(coreals).addTag(atag(rice)).addTag(ftag("grain")).addTag(atag(baked)).add(Items.WHEAT, Items.WHEAT_SEEDS)
+		tag(cereals).addTag(atag(rice)).addTag(ftag("grain")).addTag(atag(baked)).add(Items.WHEAT, Items.WHEAT_SEEDS)
 				.addOptional(rl(RankineItems.CORN_EAR)).addOptional(rl(RankineItems.CORN_FLOUR))
 				.addOptional(rl(RankineItems.CORN_SEEDS));
 		tag(rice).addTag(ftag("grain/rice")).addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_FLOUR))

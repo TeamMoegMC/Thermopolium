@@ -25,8 +25,10 @@ import com.google.gson.JsonSyntaxException;
 import com.teammoeg.thermopolium.data.IDataRecipe;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,9 +60,8 @@ public class BowlContainingRecipe extends IDataRecipe {
 		super(id);
 		bowl = ForgeRegistries.ITEMS.getValue(new ResourceLocation(jo.get("item").getAsString()));
 		fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(jo.get("fluid").getAsString()));
-		if (bowl == null || fluid == null)
-			throw new JsonSyntaxException(
-					"Fluid or item not found: fluid: " + (fluid == null) + ", item: " + (bowl == null));
+		if (bowl == null||bowl==Items.AIR || fluid == null||fluid==Fluids.EMPTY)
+			throw new InvalidRecipeException();
 	}
 
 	public BowlContainingRecipe(ResourceLocation id, PacketBuffer pb) {

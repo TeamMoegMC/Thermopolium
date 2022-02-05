@@ -54,10 +54,10 @@ import pam.pamhc2crops.init.ItemRegistry;
 
 public class THPRecipeProvider extends RecipeProvider {
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
-	static final ResourceLocation rice = mrl("coreals/rice"), eggs = mrl("eggs"), baked = mrl("coreals/baked"),
+	static final ResourceLocation rice = mrl("cereals/rice"), eggs = mrl("eggs"), baked = mrl("cereals/baked"),
 			anyWater = mrl("water"), vegetables = mrl("vegetables"), meat = mrl("meats/meat"),
 			fish = mrl("seafood/fish"), poultry = mrl("meats/poultry"), seafood = mrl("seafood"), meats = mrl("meats"),
-			sugar = mrl("sugar"), coreals = mrl("coreals"), crustaceans = mrl("seafood/crustaceans"),
+			sugar = mrl("sugar"), cereals = mrl("cereals"), crustaceans = mrl("seafood/crustaceans"),
 			roots = mrl("vegetables/roots"), mushrooms = mrl("mushroom"), pumpkin = mrl("vegetables/pumpkin"),
 			walnut = mrl("walnut");
 	static final Fluid water = fluid(mrl("nail_soup")), milk = fluid(mrl("scalded_milk")), stock = fluid(mrl("stock"));
@@ -105,8 +105,8 @@ public class THPRecipeProvider extends RecipeProvider {
 		cook("congee").med().base().tag(anyWater).and().require().half().of(rice).and().then().dense(0.25).finish(out);
 		cook("rice_pudding").med().base().type(milk).and().require().half().of(rice).and().then().dense(0.25)
 				.finish(out);
-		cook("gruel").base().tag(anyWater).and().require().half().of(coreals).and().then().dense(0.25).finish(out);
-		cook("porridge").base().type(milk).and().require().half().of(coreals).and().then().dense(0.25).finish(out);
+		cook("gruel").base().tag(anyWater).and().require().half().of(cereals).and().then().dense(0.25).finish(out);
+		cook("porridge").base().type(milk).and().require().half().of(cereals).and().then().dense(0.25).finish(out);
 		cook("egg_drop_soup").base().tag(anyWater).and().require().mainly().of(eggs).and().not().any().of(vegetables)
 				.and().then().dense(0.5).finish(out);
 		cook("stracciatella").base().tag(anyWater).and().require().mainly().of(eggs).and().any().of(vegetables).and()
@@ -151,13 +151,13 @@ public class THPRecipeProvider extends RecipeProvider {
 				.of(mrl("wolfberries")).and().not().any().of(meats).of(seafood).of(vegetables).and().then()
 				.finish(out);
 		cook("ukha").special().med().base().tag(anyWater).and().require().half().of(fish).plus(roots).and().any().of(fish).of(roots).and().not().any()
-				.of(meats).of(coreals).and().then().finish(out);
+				.of(meats).of(cereals).and().then().finish(out);
 		cook("goulash").special().high().base().type(stock).and().require().mainly().of(ftag("raw_beef")).and().any()
-				.of(vegetables).and().not().any().of(seafood).of(coreals).and().then().finish(out);
+				.of(vegetables).and().not().any().of(seafood).of(cereals).and().then().finish(out);
 		cook("okroshka").special().high().require().half().of(vegetables).plus(meats).and().any().of(vegetables).of(meats).of(mrl("ice"))
 		.and().then().finish(out);
 		cook("nettle_soup").special().med().require().half().of(mrl("fern")).and().not().any().of(seafood).of(meats)
-				.of(coreals).and().then().finish(out);
+				.of(cereals).and().then().finish(out);
 	}
 	private void simpleFood(Consumer<IFinishedRecipe> out,int h,float s,Item i) {
 		out.accept(new FoodValueRecipe(rl("food/"+i.getRegistryName().getPath()),h,s,new ItemStack(i),i));

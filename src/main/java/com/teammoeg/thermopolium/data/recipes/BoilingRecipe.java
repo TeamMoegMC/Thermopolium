@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.data.IDataRecipe;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
@@ -55,6 +56,8 @@ public class BoilingRecipe extends IDataRecipe {
 		before = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(jo.get("from").getAsString()));
 		after = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(jo.get("to").getAsString()));
 		time = jo.get("time").getAsInt();
+		if(before==Fluids.EMPTY||after==Fluids.EMPTY)
+			throw new InvalidRecipeException();
 	}
 
 	public BoilingRecipe(ResourceLocation id, PacketBuffer data) {

@@ -30,6 +30,7 @@ import com.teammoeg.thermopolium.data.IDataRecipe;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -83,8 +84,10 @@ public class FoodValueRecipe extends IDataRecipe {
 			int f = 0;
 			if (x.has("time"))
 				f = x.get("time").getAsInt();
+			if(i==Items.AIR)
+				return null;
 			return new Pair<Item, Integer>(i, f);
-		}).stream().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+		}).stream().filter(e->e!=null).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 		effects = SerializeUtil.parseJsonList(jo.get("effects"), x -> {
 			int amplifier = 0;
 			if (x.has("level"))
@@ -93,17 +96,22 @@ public class FoodValueRecipe extends IDataRecipe {
 			if (x.has("time"))
 				duration = x.get("time").getAsInt();
 			Effect eff = ForgeRegistries.POTIONS.getValue(new ResourceLocation(x.get("effect").getAsString()));
+			if(eff==null)
+				return null;
 			EffectInstance effect = new EffectInstance(eff, duration, amplifier);
 			float f = 1;
 			if (x.has("chance"))
 				f = x.get("chance").getAsInt();
 			return new Pair<>(effect, f);
 		});
+		effects.removeIf(e->e==null);
 		if (jo.has("item")) {
 			ItemStack[] i = Ingredient.deserialize(jo.get("item")).getMatchingStacks();
 			if (i.length > 0)
 				repersent = i[0];
 		}
+		if(processtimes.isEmpty())
+			throw new InvalidRecipeException();
 	}
 	@Override
 	public void serialize(JsonObject json) {

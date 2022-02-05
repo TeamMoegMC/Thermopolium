@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "#thermopolium:coreals/rice",
+    "#thermopolium:cereals/rice",
     "#forge:grain",
-    "#thermopolium:coreals/baked",
+    "#thermopolium:cereals/baked",
     "minecraft:wheat",
     "minecraft:wheat_seeds",
     {

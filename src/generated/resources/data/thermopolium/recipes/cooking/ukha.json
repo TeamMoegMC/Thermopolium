@@ -24,7 +24,7 @@
     },
     {
       "cond": "contains",
-      "type": "thermopolium:coreals"
+      "type": "thermopolium:cereals"
     }
   ],
   "priority": 1088,

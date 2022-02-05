@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.Main;
+import com.teammoeg.thermopolium.data.recipes.InvalidRecipeException;
 
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.network.PacketBuffer;
@@ -41,8 +42,7 @@ public class RecipeSerializer<T extends IDataRecipe>
 	public T read(ResourceLocation recipeId, JsonObject json) {
 		try {
 			return jsfactory.apply(recipeId, json);
-		}catch(Exception e) {
-			logger.info("cannot load recipe "+recipeId+" because "+e.getMessage());
+		}catch(InvalidRecipeException e) {
 			return null;
 		}
 	}

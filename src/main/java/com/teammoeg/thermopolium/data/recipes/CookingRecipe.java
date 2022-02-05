@@ -30,6 +30,7 @@ import com.teammoeg.thermopolium.fluid.SoupFluid;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -94,6 +95,8 @@ public class CookingRecipe extends IDataRecipe {
 		if (data.has("base"))
 			base = SerializeUtil.parseJsonList(data.get("base"), SerializeUtil::ofBase);
 		output = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(data.get("output").getAsString()));
+		if(output==Fluids.EMPTY)
+			throw new InvalidRecipeException();
 	}
 
 	public CookingRecipe(ResourceLocation id, PacketBuffer data) {
