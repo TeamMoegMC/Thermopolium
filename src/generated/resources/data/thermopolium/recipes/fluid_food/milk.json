@@ -1,0 +1,10 @@
+{
+  "type": "thermopolium:fluid_food",
+  "heal": 0,
+  "sat": 5.0,
+  "parts": 4,
+  "fluid": "thermopolium:scalded_milk",
+  "item": {
+    "item": "minecraft:milk_bucket"
+  }
+}

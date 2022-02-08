@@ -27,9 +27,7 @@ import com.teammoeg.thermopolium.THPFluids;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.TagsProvider;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags.IOptionalNamedTag;
@@ -48,7 +46,8 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 	protected void registerTags() {
 
 		tag("stews").add(THPFluids.getAll().collect(Collectors.toList()).toArray(new Fluid[0]));
-
+		tag(new ResourceLocation("frostedheart","drink")).addTag(otag("stews"));
+		tag(new ResourceLocation("frostedheart","hot_drink")).addTag(otag("stews"));
 	}
 
 	private Builder<Fluid> tag(String s) {
@@ -59,7 +58,7 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 		return this.getOrCreateBuilder(FluidTags.createOptional(s));
 	}
 
-	private ResourceLocation rl(RegistryObject<Item> it) {
+	private ResourceLocation rl(RegistryObject<Fluid> it) {
 		return it.getId();
 	}
 
@@ -67,12 +66,12 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 		return new ResourceLocation(r);
 	}
 
-	private IOptionalNamedTag<Item> otag(String s) {
-		return ItemTags.createOptional(mrl(s));
+	private IOptionalNamedTag<Fluid> otag(String s) {
+		return FluidTags.createOptional(mrl(s));
 	}
 
-	private IOptionalNamedTag<Item> atag(ResourceLocation s) {
-		return ItemTags.createOptional(s);
+	private IOptionalNamedTag<Fluid> atag(ResourceLocation s) {
+		return FluidTags.createOptional(s);
 	}
 
 	private ResourceLocation mrl(String s) {

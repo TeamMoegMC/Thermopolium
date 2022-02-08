@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mojang.datafixers.util.Pair;
+import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.SerializeUtil;
 import net.minecraft.item.Food;
@@ -102,6 +103,20 @@ public class SoupInfo {
 					effects.add(es);
 			}
 		}
+		for (Pair<EffectInstance, Float> es : f.foodeffect) {
+			boolean added = false;
+			for (Pair<EffectInstance, Float> oes : foodeffect) {
+				if (es.getSecond()==oes.getSecond()&&isEffectEquals(oes.getFirst(), es.getFirst())) {
+					oes.getFirst().duration += es.getFirst().duration * oparts / cparts;
+					added = true;
+					break;
+				}
+			}
+			if (!added) {
+				foodeffect.add(es);
+			}
+		}
+		shrinkedFluid+=f.shrinkedFluid * oparts / cparts;
 		for (FloatemStack fs : f.stacks) {
 			this.addItem(new FloatemStack(fs.getStack(), fs.count * oparts / cparts));
 		}
@@ -146,6 +161,11 @@ public class SoupInfo {
 				foodeffect.addAll(f.getEffects());
 			}
 		}
+		FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(this.base);
+		if(ffvr!=null) {
+			nh+=ffvr.heal;
+			ns+=ffvr.sat;
+		}
 		this.healing = (int) Math.ceil(nh);
 		this.saturation = ns;
 	}
@@ -160,8 +180,10 @@ public class SoupInfo {
 		for (EffectInstance es : effects) {
 			es.duration = (int) (es.duration * oparts / parts);
 		}
+		float delta=0;
 		if(oparts>parts)
-			shrinkedFluid+=oparts-parts;
+			delta=oparts-parts;
+		shrinkedFluid=(shrinkedFluid*oparts+delta)/parts;
 		healing = (int) (healing * oparts / parts);
 		saturation = saturation * oparts / parts;
 	}
@@ -214,4 +236,5 @@ public class SoupInfo {
 		nbt.putString("base", base.toString());
 		nbt.putFloat("afluid",shrinkedFluid);
 	}
+
 }

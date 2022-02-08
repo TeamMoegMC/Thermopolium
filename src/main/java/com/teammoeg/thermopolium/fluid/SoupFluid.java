@@ -140,4 +140,13 @@ public class SoupFluid extends ForgeFlowingFluid {
 		}
 	}
 
+	public static ResourceLocation getBase(FluidStack stack) {
+		if (stack.hasTag()) {
+			CompoundNBT nbt = stack.getChildTag("soup");
+			if (nbt != null)
+				return new ResourceLocation(SoupInfo.getRegName(nbt));
+		}
+		return stack.getFluid().getRegistryName();
+	}
+
 }

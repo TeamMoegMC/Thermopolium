@@ -41,6 +41,7 @@ public class THDataGenerator {
 			gen.addProvider(new THPLootGenerator(gen));
 			gen.addProvider(new THPStatesProvider(gen, Main.MODID, exHelper));
 			gen.addProvider(new THPBookGenerator(gen,exHelper));
+			gen.addProvider(new THPFHHeatGenerator(gen,exHelper));
 		}
 	}
 }

@@ -38,6 +38,7 @@ import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CountingTags;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
+import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.items.THPBlockItem;
 import com.teammoeg.thermopolium.items.THPItem;
@@ -170,6 +171,8 @@ public class Contents {
 			FoodValueRecipe.SERIALIZER = RECIPE_SERIALIZERS.register("food",
 					() -> new RecipeSerializer<FoodValueRecipe>(FoodValueRecipe::new, FoodValueRecipe::new,
 							FoodValueRecipe::write));
+			FluidFoodValueRecipe.SERIALIZER=RECIPE_SERIALIZERS.register("fluid_food",() -> new RecipeSerializer<FluidFoodValueRecipe>(FluidFoodValueRecipe::new, FluidFoodValueRecipe::new,
+					FluidFoodValueRecipe::write));
 		}
 
 		public static void registerRecipeTypes() {
@@ -179,6 +182,7 @@ public class Contents {
 			DissolveRecipe.TYPE = IRecipeType.register(Main.MODID + ":dissolve");
 			CountingTags.TYPE = IRecipeType.register(Main.MODID + ":tags");
 			FoodValueRecipe.TYPE = IRecipeType.register(Main.MODID + ":food");
+			FluidFoodValueRecipe.TYPE = IRecipeType.register(Main.MODID + ":fluid_food");
 		}
 	}
 }

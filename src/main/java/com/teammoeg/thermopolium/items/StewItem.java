@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.teammoeg.thermopolium.Contents;
 import com.teammoeg.thermopolium.Contents.THPItems;
 import com.teammoeg.thermopolium.Main;
+import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
@@ -47,7 +47,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectUtils;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -60,6 +59,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class StewItem extends Item {
+	ItemStack capturedStack;
+	
 	@Override
 	public ItemStack getContainerItem(ItemStack itemStack) {
 		return super.getContainerItem(itemStack);
@@ -208,7 +209,14 @@ public class StewItem extends Item {
 		}
 		return Lists.newArrayList();
 	}
-
+	public static ResourceLocation getBase(ItemStack stack) {
+		if (stack.hasTag()) {
+			CompoundNBT nbt = stack.getChildTag("soup");
+			if (nbt != null)
+				return new ResourceLocation(SoupInfo.getRegName(nbt));
+		}
+		return BowlContainingRecipe.extractFluid(stack).getFluid().getRegistryName();
+	}
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
@@ -233,5 +241,10 @@ public class StewItem extends Item {
 		Contents.registeredItems.add(this);
 		THPItems.stews.add(this);
 		this.fluid = fluid;
+	}
+
+	@Override
+	public Food getFood() {
+		return super.getFood();
 	}
 }

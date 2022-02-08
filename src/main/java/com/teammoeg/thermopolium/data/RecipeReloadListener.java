@@ -36,6 +36,7 @@ import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CountingTags;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
+import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 
 import com.google.common.base.Stopwatch;
@@ -144,6 +145,8 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 				.collect(Collectors.toMap(e -> e.output, UnaryOperator.identity()));
 		BoilingRecipe.recipes = filterRecipes(recipes, BoilingRecipe.class, BoilingRecipe.TYPE)
 				.collect(Collectors.toMap(e -> e.before, UnaryOperator.identity()));
+		FluidFoodValueRecipe.recipes = filterRecipes(recipes, FluidFoodValueRecipe.class, FluidFoodValueRecipe.TYPE)
+				.collect(Collectors.toMap(e -> e.f, UnaryOperator.identity()));
 		CountingTags.tags = Stream
 				.concat(filterRecipes(recipes, CountingTags.class, CountingTags.TYPE).flatMap(r -> r.tag.stream()),
 						CookingRecipe.recipes.values().stream().flatMap(CookingRecipe::getTags))

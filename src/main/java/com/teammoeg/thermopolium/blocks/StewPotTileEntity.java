@@ -425,8 +425,8 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		become = tank.getFluid().getFluid();
 		
 		StewPendingContext ctx = new StewPendingContext(getCurrent(), become.getRegistryName());
+		nextbase = current.base;
 		if(ctx.getItems().isEmpty()) {
-			nextbase = current.base;
 			return 0;
 		}
 		CookingRecipe cri = CookingRecipe.recipes.get(become);
@@ -504,7 +504,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			return false;
 		SoupInfo n = SoupFluid.getInfo(fs);
 		int pm = 0;
-		if (!getCurrent().base.equals(n.base)) {
+		if (!getCurrent().base.equals(n.base)&&!current.base.equals(fs.getFluid().getRegistryName())&&!n.base.equals(tank.getFluid().getFluid().getRegistryName())) {
 			BoilingRecipe bnx = BoilingRecipe.recipes.get(fs.getFluid());
 			if (bnx == null)
 				return false;

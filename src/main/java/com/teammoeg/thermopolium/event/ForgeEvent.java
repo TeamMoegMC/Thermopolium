@@ -18,11 +18,14 @@
 
 package com.teammoeg.thermopolium.event;
 
+import com.teammoeg.thermopolium.api.ThermopoliumApi;
 import com.teammoeg.thermopolium.data.RecipeReloadListener;
 import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
+import com.teammoeg.thermopolium.fluid.SoupFluid;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -35,12 +38,15 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
@@ -114,7 +120,15 @@ public class ForgeEvent {
 		}
 	}
 	@SubscribeEvent
-	public static void onItemUseFinish(PlayerInteractEvent.RightClickItem event) {
-		
+	public static void onItemUseFinish(LivingEntityUseItemEvent event) {
+		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote
+				&& event.getEntityLiving() instanceof ServerPlayerEntity) {
+			ItemStack stack= event.getItem();
+			LazyOptional<IFluidHandlerItem> cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
+			if (cap.isPresent()) {
+				IFluidHandlerItem data = cap.resolve().get();
+				ThermopoliumApi.applyStew(event.getEntityLiving().world,event.getEntityLiving(),SoupFluid.getInfo(data.getFluidInTank(0)));
+			}
+		}
 	}
 }

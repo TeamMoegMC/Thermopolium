@@ -1,0 +1,7 @@
+{
+  "type": "thermopolium:fluid_food",
+  "heal": 1,
+  "sat": 5.0,
+  "parts": 4,
+  "fluid": "thermopolium:stock"
+}
