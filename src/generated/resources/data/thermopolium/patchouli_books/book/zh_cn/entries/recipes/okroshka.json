@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/okroshka.png",
-      "result": "thermopolium:okroshka"
+      "result": "thermopolium:okroshka",
+      "base": "thermopolium:any_based"
     }
   ]
 }

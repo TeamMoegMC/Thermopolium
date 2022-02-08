@@ -19,6 +19,7 @@
 package com.teammoeg.thermopolium.data.recipes.baseconditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewBaseCondition;
 
 import net.minecraft.fluid.Fluid;
@@ -91,6 +92,11 @@ public class FluidTag implements StewBaseCondition {
 		} else if (!tag.equals(other.tag))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("tag."+this.tag.toString().replaceAll("[:/]","."));
 	}
 
 }

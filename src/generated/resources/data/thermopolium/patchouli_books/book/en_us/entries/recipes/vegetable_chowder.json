@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/vegetable_chowder.png",
-      "result": "thermopolium:vegetable_chowder"
+      "result": "thermopolium:vegetable_chowder",
+      "base": "thermopolium:milk_based"
     }
   ]
 }

@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/walnut_soup.png",
-      "result": "thermopolium:walnut_soup"
+      "result": "thermopolium:walnut_soup",
+      "base": "thermopolium:any_based"
     }
   ]
 }

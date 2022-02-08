@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/dilute_soup.png",
-      "result": "thermopolium:dilute_soup"
+      "result": "thermopolium:dilute_soup",
+      "base": "thermopolium:any_based"
     }
   ]
 }

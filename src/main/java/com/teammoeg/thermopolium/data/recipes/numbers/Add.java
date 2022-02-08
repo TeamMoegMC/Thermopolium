@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.ComplexCalculated;
+import com.teammoeg.thermopolium.data.recipes.SerializeUtil;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
-import com.teammoeg.thermopolium.data.recipes.SerializeUtil;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -128,6 +128,11 @@ public class Add implements StewNumber, ComplexCalculated {
 	@Override
 	public Stream<ResourceLocation> getTags() {
 		return nums.stream().flatMap(StewNumber::getTags);
+	}
+
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return nums.stream().map(e->e.getTranslation(p)).reduce((s1,s2)->s1+"+"+s2).orElse("");
 	}
 
 }

@@ -19,6 +19,7 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 
@@ -68,5 +69,9 @@ public class Must extends NumberedStewCondition {
 		if (!super.equals(obj))
 			return false;
 		return true;
+	}
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("recipe.thermopolium.cond.any",number.getTranslation(p));
 	}
 }

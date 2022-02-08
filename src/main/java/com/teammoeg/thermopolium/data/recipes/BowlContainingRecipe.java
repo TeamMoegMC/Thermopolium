@@ -21,7 +21,6 @@ package com.teammoeg.thermopolium.data.recipes;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.teammoeg.thermopolium.data.IDataRecipe;
 
 import net.minecraft.fluid.Fluid;

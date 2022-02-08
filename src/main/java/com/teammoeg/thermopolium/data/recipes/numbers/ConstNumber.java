@@ -22,11 +22,11 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -102,6 +102,11 @@ public class ConstNumber implements StewNumber {
 	@Override
 	public Stream<ResourceLocation> getTags() {
 		return Stream.empty();
+	}
+
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return String.valueOf(n);
 	}
 
 }

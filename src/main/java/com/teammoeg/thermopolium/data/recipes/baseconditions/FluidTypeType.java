@@ -19,11 +19,13 @@
 package com.teammoeg.thermopolium.data.recipes.baseconditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewBaseCondition;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class FluidTypeType implements StewBaseCondition {
 	ResourceLocation of;
@@ -92,6 +94,11 @@ public class FluidTypeType implements StewBaseCondition {
 		} else if (!of.equals(other.of))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("fluid."+ForgeRegistries.FLUIDS.getValue(of).getAttributes().getTranslationKey());
 	}
 
 }

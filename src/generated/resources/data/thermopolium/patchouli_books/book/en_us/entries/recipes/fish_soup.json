@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/fish_soup.png",
-      "result": "thermopolium:fish_soup"
+      "result": "thermopolium:fish_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

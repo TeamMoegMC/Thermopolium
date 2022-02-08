@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/fish_chowder.png",
-      "result": "thermopolium:fish_chowder"
+      "result": "thermopolium:fish_chowder",
+      "base": "thermopolium:milk_based"
     }
   ]
 }

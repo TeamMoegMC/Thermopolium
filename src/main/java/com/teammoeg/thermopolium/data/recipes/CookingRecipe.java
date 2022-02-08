@@ -188,4 +188,20 @@ public class CookingRecipe extends IDataRecipe {
 		return priority;
 	}
 
+	public List<StewBaseCondition> getBase() {
+		return base;
+	}
+
+	public List<StewCondition> getAllow() {
+		return allow;
+	}
+
+	public List<StewCondition> getDeny() {
+		return deny;
+	}
+
+	public float getDensity() {
+		return density;
+	}
+
 }

@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/goulash.png",
-      "result": "thermopolium:goulash"
+      "result": "thermopolium:goulash",
+      "base": "thermopolium:stock_based"
     }
   ]
 }

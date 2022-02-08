@@ -20,8 +20,8 @@ package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
+
 import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 import com.teammoeg.thermopolium.util.ResultCachingMap;

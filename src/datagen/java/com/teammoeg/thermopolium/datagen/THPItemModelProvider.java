@@ -50,7 +50,13 @@ public class THPItemModelProvider extends ItemModelProvider {
 				super.singleTexture(s, par, "layer0", new ResourceLocation(Main.MODID, "item/" + s));
 			}
 		}
-		super.singleTexture("book",par,"layer0",new ResourceLocation(Main.MODID,"item/book"));
+		simpleTexture("milk_based");
+		simpleTexture("stock_based");
+		simpleTexture("any_based");
+		simpleTexture("water_or_stock_based");
+		simpleTexture("book");
 	}
-
+	public void simpleTexture(String name) {
+		super.singleTexture(name,new ResourceLocation("minecraft", "item/generated"),"layer0",new ResourceLocation(Main.MODID,"item/"+name));
+	}
 }

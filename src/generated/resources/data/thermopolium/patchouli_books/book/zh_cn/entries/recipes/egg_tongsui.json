@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/egg_tongsui.png",
-      "result": "thermopolium:egg_tongsui"
+      "result": "thermopolium:egg_tongsui",
+      "base": "thermopolium:any_based"
     }
   ]
 }

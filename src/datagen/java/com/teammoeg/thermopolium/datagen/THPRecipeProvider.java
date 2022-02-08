@@ -18,7 +18,9 @@
 
 package com.teammoeg.thermopolium.datagen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -30,6 +32,7 @@ import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.THPFluids;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
 import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
+import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
 import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 
@@ -54,14 +57,25 @@ import pam.pamhc2crops.init.ItemRegistry;
 
 public class THPRecipeProvider extends RecipeProvider {
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
-	static final ResourceLocation rice = mrl("cereals/rice"), eggs = mrl("eggs"), baked = mrl("cereals/baked"),
-			anyWater = mrl("water"), vegetables = mrl("vegetables"), meat = mrl("meats/meat"),
-			fish = mrl("seafood/fish"), poultry = mrl("meats/poultry"), seafood = mrl("seafood"), meats = mrl("meats"),
-			sugar = mrl("sugar"), cereals = mrl("cereals"), crustaceans = mrl("seafood/crustaceans"),
-			roots = mrl("vegetables/roots"), mushrooms = mrl("mushroom"), pumpkin = mrl("vegetables/pumpkin"),
+	static final ResourceLocation rice = mrl("cereals/rice"),
+			eggs = mrl("eggs"),
+			baked = mrl("cereals/baked"),
+			anyWater = mrl("water"),
+			vegetables = mrl("vegetables"),
+			meat = mrl("meats/meat"),
+			fish = mrl("seafood/fish"),
+			poultry = mrl("meats/poultry"),
+			seafood = mrl("seafood"),
+			meats = mrl("meats"),
+			sugar = mrl("sugar"),
+			cereals = mrl("cereals"),
+			crustaceans = mrl("seafood/crustaceans"),
+			roots = mrl("vegetables/roots"),
+			mushrooms = mrl("mushroom"),
+			pumpkin = mrl("vegetables/pumpkin"),
 			walnut = mrl("walnut");
 	static final Fluid water = fluid(mrl("nail_soup")), milk = fluid(mrl("scalded_milk")), stock = fluid(mrl("stock"));
-
+	public static List<IFinishedRecipe> recipes=new ArrayList<>();
 	public THPRecipeProvider(DataGenerator generatorIn) {
 		super(generatorIn);
 	}
@@ -101,7 +115,8 @@ public class THPRecipeProvider extends RecipeProvider {
 		simpleFood(out,0,.5f,Items.BONE_MEAL);
 		simpleFood(out,1,1f,Items.BONE);
 		simpleFood(out,3,4f,Items.EGG);
-		cook("acquacotta").base().tag(anyWater).and().require().mainly().of(baked).and().then().finish(out);
+		out=out.andThen(recipes::add);
+		cook("acquacotta").high().base().tag(anyWater).and().require().mainly().of(baked).and().then().finish(out);
 		cook("congee").med().base().tag(anyWater).and().require().half().of(rice).and().then().dense(0.25).finish(out);
 		cook("rice_pudding").med().base().type(milk).and().require().half().of(rice).and().then().dense(0.25)
 				.finish(out);
@@ -126,7 +141,7 @@ public class THPRecipeProvider extends RecipeProvider {
 				.typeMainly(vegetables).of(mushrooms).and().then().finish(out);
 		cook("cream_of_mushroom_soup").high().base().type(milk).and().require().mainly().of(vegetables).and()
 				.typeMainly(vegetables).of(mushrooms).and().then().finish(out);
-		cook("seaweed_soup").base().tag(anyWater).and().require().mainly().of(Items.KELP).and().then().finish(out);
+		cook("seaweed_soup").med().base().tag(anyWater).and().require().mainly().of(Items.KELP).and().then().finish(out);
 		cook("bisque").base().tag(anyWater).and().require().mainly().of(crustaceans).and().then().finish(out);
 		cook("fish_soup").base().tag(anyWater).and().require().mainly().of(fish).and().then().finish(out);
 		cook("fish_chowder").base().type(milk).and().require().mainly().of(seafood).and().then().finish(out);

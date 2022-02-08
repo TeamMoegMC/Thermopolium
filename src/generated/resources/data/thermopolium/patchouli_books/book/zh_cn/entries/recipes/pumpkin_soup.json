@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/pumpkin_soup.png",
-      "result": "thermopolium:pumpkin_soup"
+      "result": "thermopolium:pumpkin_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

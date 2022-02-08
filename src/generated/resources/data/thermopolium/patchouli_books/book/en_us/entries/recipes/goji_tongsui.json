@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/goji_tongsui.png",
-      "result": "thermopolium:goji_tongsui"
+      "result": "thermopolium:goji_tongsui",
+      "base": "thermopolium:any_based"
     }
   ]
 }

@@ -22,11 +22,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.ITranlatable;
 
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public interface StewCondition extends Predicate<StewPendingContext>,Writeable {
+public interface StewCondition extends Predicate<StewPendingContext>,Writeable,ITranlatable   {
 	public JsonObject serialize();
 
 	public String getType();
@@ -38,4 +38,5 @@ public interface StewCondition extends Predicate<StewPendingContext>,Writeable {
 	public default Stream<ResourceLocation> getTags() {
 		return Stream.empty();
 	};
+	
 }

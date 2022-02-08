@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/mushroom_soup.png",
-      "result": "thermopolium:mushroom_soup"
+      "result": "thermopolium:mushroom_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

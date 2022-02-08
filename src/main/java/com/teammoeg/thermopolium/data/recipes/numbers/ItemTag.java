@@ -22,16 +22,12 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 
 public class ItemTag implements StewNumber {
@@ -110,5 +106,10 @@ public class ItemTag implements StewNumber {
 	@Override
 	public Stream<ResourceLocation> getTags() {
 		return Stream.of(tag);
+	}
+
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("tag."+this.tag.toString().replaceAll("[:/]","."));
 	}
 }

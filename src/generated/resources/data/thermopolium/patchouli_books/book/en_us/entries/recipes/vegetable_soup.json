@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/vegetable_soup.png",
-      "result": "thermopolium:vegetable_soup"
+      "result": "thermopolium:vegetable_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

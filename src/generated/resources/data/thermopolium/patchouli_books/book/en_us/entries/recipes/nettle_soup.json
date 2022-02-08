@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/nettle_soup.png",
-      "result": "thermopolium:nettle_soup"
+      "result": "thermopolium:nettle_soup",
+      "base": "thermopolium:any_based"
     }
   ]
 }

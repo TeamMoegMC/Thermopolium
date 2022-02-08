@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/borscht_cream.png",
-      "result": "thermopolium:borscht_cream"
+      "result": "thermopolium:borscht_cream",
+      "base": "thermopolium:milk_based"
     }
   ]
 }

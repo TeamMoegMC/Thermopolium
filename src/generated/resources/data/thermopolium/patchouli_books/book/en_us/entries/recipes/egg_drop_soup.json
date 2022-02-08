@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/egg_drop_soup.png",
-      "result": "thermopolium:egg_drop_soup"
+      "result": "thermopolium:egg_drop_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/poultry_soup.png",
-      "result": "thermopolium:poultry_soup"
+      "result": "thermopolium:poultry_soup",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/bisque.png",
-      "result": "thermopolium:bisque"
+      "result": "thermopolium:bisque",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

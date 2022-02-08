@@ -19,12 +19,13 @@
 package com.teammoeg.thermopolium.data.recipes;
 
 import java.util.function.BiFunction;
-import com.google.gson.JsonObject;
 
-import net.minecraft.network.PacketBuffer;
+import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.ITranlatable;
+
 import net.minecraft.util.ResourceLocation;
 
-public interface StewBaseCondition extends BiFunction<ResourceLocation, ResourceLocation, Integer>,Writeable {
+public interface StewBaseCondition extends BiFunction<ResourceLocation, ResourceLocation, Integer>,Writeable,ITranlatable  {
 	public JsonObject serialize();
 
 	public String getType();

@@ -21,13 +21,12 @@ package com.teammoeg.thermopolium.data.recipes;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import com.google.gson.JsonElement;
+import com.teammoeg.thermopolium.data.ITranlatable;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
 
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public interface StewNumber extends Function<StewPendingContext, Float>,Writeable {
+public interface StewNumber extends Function<StewPendingContext, Float>,Writeable,ITranlatable   {
 	public boolean fits(FloatemTagStack stack);
 
 	public String getType();

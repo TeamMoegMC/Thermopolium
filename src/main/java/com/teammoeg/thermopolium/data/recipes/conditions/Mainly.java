@@ -19,6 +19,7 @@
 package com.teammoeg.thermopolium.data.recipes.conditions;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
@@ -99,5 +100,10 @@ public class Mainly extends NumberedStewCondition {
 		if (isItem != other.isItem)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("recipe.thermopolium.cond.mainly",number.getTranslation(p));
 	}
 }

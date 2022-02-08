@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/porridge.png",
-      "result": "thermopolium:porridge"
+      "result": "thermopolium:porridge",
+      "base": "thermopolium:milk_based"
     }
   ]
 }

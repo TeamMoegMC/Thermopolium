@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/congee.png",
-      "result": "thermopolium:congee"
+      "result": "thermopolium:congee",
+      "base": "thermopolium:water_or_stock_based"
     }
   ]
 }

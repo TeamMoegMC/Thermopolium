@@ -6,7 +6,8 @@
     {
       "type": "thermopolium:thprecipe",
       "img": "thermopolium:textures/gui/recipes/custard.png",
-      "result": "thermopolium:custard"
+      "result": "thermopolium:custard",
+      "base": "thermopolium:milk_based"
     }
   ]
 }

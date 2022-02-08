@@ -41,6 +41,7 @@ import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.items.THPBlockItem;
 import com.teammoeg.thermopolium.items.THPItem;
+import com.teammoeg.thermopolium.items.IconItem;
 import com.teammoeg.thermopolium.items.StewItem;
 
 import net.minecraft.block.Block;
@@ -101,6 +102,10 @@ public class Contents {
 				"poultry_soup", "pumpkin_soup", "pumpkin_soup_cream", "rice_pudding", "scalded_milk", "seaweed_soup",
 				"stock", "stracciatella", "ukha", "vegetable_chowder", "vegetable_soup", "walnut_soup" };
 		public static final List<Item> stews = new ArrayList<>();
+		public static Item anyWater=new IconItem("water_or_stock_based");
+		public static Item stock=new IconItem("stock_based");
+		public static Item milk=new IconItem("milk_based");
+		public static Item any=new IconItem("any_based");
 		//public static Item BOOK=new THPItem("book",new Item.Properties().group(Main.itemGroup));
 		public static void init() {
 			for (String s : items)

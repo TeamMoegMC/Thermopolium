@@ -21,6 +21,7 @@ package com.teammoeg.thermopolium.data.recipes.conditions;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
+import com.teammoeg.thermopolium.data.TranslationProvider;
 import com.teammoeg.thermopolium.data.recipes.StewNumber;
 import com.teammoeg.thermopolium.data.recipes.StewPendingContext;
 import com.teammoeg.thermopolium.util.FloatemTagStack;
@@ -104,5 +105,8 @@ public class MainlyOfType extends NumberedStewCondition {
 	public Stream<ResourceLocation> getTags() {
 		return Stream.concat(super.getTags(), Stream.of(type));
 	}
-
+	@Override
+	public String getTranslation(TranslationProvider p) {
+		return p.getTranslation("recipe.thermopolium.cond.mainlyof",number.getTranslation(p),p.getTranslation("tag."+this.type.toString().replaceAll("[:/]",".")));
+	}
 }
