@@ -75,12 +75,12 @@ public class THPFHHeatGenerator implements IDataProvider {
 	public void act(DirectoryCache cache) throws IOException {
 		main=this.generator.getOutputFolder().resolve("data/frostedheart/temperature/");
 		for(String s:THPFluids.getSoupfluids())
-			if(s.equals("nail_soup")||s.equals("scalded_milk")) {
-				saveJson(cache,createData(s,0.25f,-1,1),main.resolve("food/"+s+".json"));
+			if(s.equals("nail_soup")) {
+				saveJson(cache,createData(s,0.125f,-1,1),main.resolve("food/"+s+".json"));
 				saveJson(cache,createData(s,0.25f),main.resolve("drink/"+s+".json"));
 			}else {
-				saveJson(cache,createData(s,0.3f,-1,1),main.resolve("food/"+s+".json"));
-				saveJson(cache,createData(s,0.3f),main.resolve("drink/"+s+".json"));
+				saveJson(cache,createData(s,0.4f,-1,1),main.resolve("food/"+s+".json"));
+				saveJson(cache,createData(s,0.4f),main.resolve("drink/"+s+".json"));
 			}
 	}
 	@Override

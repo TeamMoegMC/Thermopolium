@@ -120,7 +120,7 @@ public class ForgeEvent {
 		}
 	}
 	@SubscribeEvent
-	public static void onItemUseFinish(LivingEntityUseItemEvent event) {
+	public static void onItemUseFinish(LivingEntityUseItemEvent.Finish event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote
 				&& event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ItemStack stack= event.getItem();

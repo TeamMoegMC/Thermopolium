@@ -1,7 +1,8 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "thermopolium:block/cistern"
+    "particle": "thermopolium:block/cistern",
+	"texture":"thermopolium:block/cistern"
   },
   "loader": "forge:obj",
   "model": "thermopolium:models/block/cistern.obj",

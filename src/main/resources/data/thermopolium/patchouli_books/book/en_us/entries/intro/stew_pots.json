@@ -7,7 +7,11 @@
   "pages": [
     {
       "type": "crafting",
-      "recipe": "thermopolium:stew_pot",
+      "recipe": "thermopolium:clay_cistern"
+    },
+    {
+      "type": "smelting",
+      "recipe": "thermopolium:clay_cistern",
       "text": "Stew pots is tool for cooking soup. It should be on any kind of $(l:stove)stove$(/l)."
     },
     {

@@ -1,4 +1,4 @@
 # Made in Blockbench 4.0.1
 newmtl m_0
-map_Kd thermopolium:block/cistern
+map_Kd #texture
 newmtl none

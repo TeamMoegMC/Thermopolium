@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_brick": {
+    "has_claypot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:brick"
+            "item": "thermopolium:clay_cistern"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_brick",
+      "has_claypot",
       "has_the_recipe"
     ]
   ]

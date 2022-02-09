@@ -232,7 +232,7 @@ public class StewItem extends Item {
 
 	ResourceLocation fluid;
 	// fake food to trick mechanics
-	public static final Food fakefood = new Food.Builder().hunger(4).saturation(0.2f).setAlwaysEdible().fastToEat()
+	public static final Food fakefood = new Food.Builder().hunger(4).saturation(0.2f).fastToEat()
 			.meat().build();
 
 	public StewItem(String name, ResourceLocation fluid, Properties properties) {

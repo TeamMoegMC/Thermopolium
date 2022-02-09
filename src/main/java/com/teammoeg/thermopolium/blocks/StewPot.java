@@ -87,15 +87,18 @@ public class StewPot extends Block implements ILiquidContainer {
 			ISelectionContext context) {
 		return shape;
 	}
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return shape;
 	}
+
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
 		ActionResultType p = super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
-		if(p.isSuccessOrConsume())return p;
+		if (p.isSuccessOrConsume())
+			return p;
 		StewPotTileEntity tileEntity = (StewPotTileEntity) worldIn.getTileEntity(pos);
 		if (tileEntity.canAddFluid()) {
 			ItemStack held = player.getHeldItem(handIn);
@@ -114,15 +117,8 @@ public class StewPot extends Block implements ILiquidContainer {
 
 				return ActionResultType.func_233537_a_(worldIn.isRemote);
 			}
-			FluidActionResult fa = FluidUtil.tryEmptyContainerAndStow(held, tileEntity.getTank(), null, 1250, player,
-					true);
-			if (fa.isSuccess()) {
-				if (fa.getResult() != null)
-					player.setHeldItem(handIn, fa.getResult());
+			if (FluidUtil.interactWithFluidHandler(player, handIn, tileEntity.getTank()))
 				return ActionResultType.SUCCESS;
-			} else if (held.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
-				return ActionResultType.PASS;
-			}
 
 		}
 		if (handIn == Hand.MAIN_HAND) {
@@ -153,19 +149,17 @@ public class StewPot extends Block implements ILiquidContainer {
 		TileEntity te = worldIn.getTileEntity(pos);
 		if (te instanceof StewPotTileEntity) {
 			StewPotTileEntity pot = (StewPotTileEntity) te;
-			if (pot.proctype == 2&&pot.working) {
+			if (pot.proctype == 2 && pot.working) {
 				double d0 = pos.getX();
 				double d1 = pos.getY() + 1;
 				double d2 = pos.getZ();
 				int count = 3;
 				while (--count != 0)
-					worldIn.addParticle(Particles.STEAM.get(), d0 + rand.nextFloat(), d1, d2 + rand.nextFloat(),
-							0.0D, 0.0D, 0.0D);
+					worldIn.addParticle(Particles.STEAM.get(), d0 + rand.nextFloat(), d1, d2 + rand.nextFloat(), 0.0D,
+							0.0D, 0.0D);
 			}
 		}
 	}
-
-
 
 	public ResourceLocation createRegistryName() {
 		return new ResourceLocation(Main.MODID, name);
@@ -221,8 +215,8 @@ public class StewPot extends Block implements ILiquidContainer {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(FACING,context.getPlacementHorizontalFacing().getAxis());
-		
+		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getAxis());
+
 	}
 
 }

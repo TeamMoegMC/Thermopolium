@@ -18,7 +18,6 @@
 
 package com.teammoeg.thermopolium.datagen;
 
-import com.teammoeg.thermopolium.Contents.THPItems;
 import com.teammoeg.thermopolium.Main;
 
 import net.minecraft.data.DataGenerator;
@@ -55,6 +54,7 @@ public class THPItemModelProvider extends ItemModelProvider {
 		simpleTexture("any_based");
 		simpleTexture("water_or_stock_based");
 		simpleTexture("book");
+		super.withExistingParent("clay_cistern",new ResourceLocation(Main.MODID,"block/clay_cistern"));
 	}
 	public void simpleTexture(String name) {
 		super.singleTexture(name,new ResourceLocation("minecraft", "item/generated"),"layer0",new ResourceLocation(Main.MODID,"item/"+name));

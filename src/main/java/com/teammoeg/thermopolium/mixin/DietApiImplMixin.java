@@ -22,22 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.api.ThermopoliumHooks;
 import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
-import com.teammoeg.thermopolium.items.StewItem;
 import com.teammoeg.thermopolium.util.FloatemStack;
+import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import top.theillusivec4.diet.api.DietApi;
 import top.theillusivec4.diet.api.IDietGroup;
 import top.theillusivec4.diet.api.IDietResult;
@@ -47,32 +44,32 @@ import top.theillusivec4.diet.common.util.DietResult;
 //As Diet's author didn't add such a more flexible api, I have to resort to mixin.
 @Mixin(DietApiImpl.class)
 public class DietApiImplMixin extends DietApi {
-	private static ResourceLocation stew=new ResourceLocation(Main.MODID,"stews");
+	
 	private static void THP$getResult(PlayerEntity player,ItemStack input, CallbackInfoReturnable<IDietResult> result) {
-		if (input.getItem().getTags().contains(stew)) {
-			List<FloatemStack> is = ThermopoliumHooks.getItems(input);
-			Map<IDietGroup, Float> groups = new HashMap<>();
-			for (FloatemStack sx : is) {
-				FoodValueRecipe fvr = FoodValueRecipe.recipes.get(sx.getItem());
-				ItemStack stack;
-				if (fvr == null || fvr.getRepersent() == null)
-					stack = sx.getStack();
-				else
-					stack = fvr.getRepersent();
-				IDietResult dr = DietApiImpl.getInstance().get(player, stack);
-				if (dr != DietResult.EMPTY)
-					for (Entry<IDietGroup, Float> me : dr.get().entrySet())
-						groups.merge(me.getKey(), me.getValue() * sx.getCount(), Float::sum);
-			}
-			FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(ThermopoliumHooks.getBase(input));
-			if(ffvr!=null&&ffvr.getRepersent()!=null) {
-				IDietResult dr = DietApiImpl.getInstance().get(player,ffvr.getRepersent());
-				if (dr != DietResult.EMPTY)
-					for (Entry<IDietGroup, Float> me : dr.get().entrySet())
-						groups.merge(me.getKey(), me.getValue()/ffvr.parts, Float::sum);
-			}
-			result.setReturnValue(new DietResult(groups));
+		SoupInfo ois = ThermopoliumHooks.getInfo(input);
+		if(ois==null)return;
+		List<FloatemStack> is=ois.stacks;
+		Map<IDietGroup, Float> groups = new HashMap<>();
+		for (FloatemStack sx : is) {
+			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(sx.getItem());
+			ItemStack stack;
+			if (fvr == null || fvr.getRepersent() == null)
+				stack = sx.getStack();
+			else
+				stack = fvr.getRepersent();
+			IDietResult dr = DietApiImpl.getInstance().get(player, stack);
+			if (dr != DietResult.EMPTY)
+				for (Entry<IDietGroup, Float> me : dr.get().entrySet())
+					groups.merge(me.getKey(), me.getValue() * sx.getCount()*1.3f, Float::sum);
 		}
+		FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(ois.base);
+		if(ffvr!=null&&ffvr.getRepersent()!=null) {
+			IDietResult dr = DietApiImpl.getInstance().get(player,ffvr.getRepersent());
+			if (dr != DietResult.EMPTY)
+				for (Entry<IDietGroup, Float> me : dr.get().entrySet())
+					groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*1.3f, Float::sum);
+		}
+		result.setReturnValue(new DietResult(groups));
 	}
 	@Inject(at = @At("HEAD"), require = 1, method = "get(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)Ltop/theillusivec4/diet/api/IDietResult;", cancellable = true, remap = false)
 	public void get(PlayerEntity player, ItemStack input, CallbackInfoReturnable<IDietResult> result) {

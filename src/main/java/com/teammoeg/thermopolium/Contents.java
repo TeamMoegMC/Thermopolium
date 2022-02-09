@@ -107,6 +107,7 @@ public class Contents {
 		public static Item stock=new IconItem("stock_based");
 		public static Item milk=new IconItem("milk_based");
 		public static Item any=new IconItem("any_based");
+		public static Item clay_pot=new THPItem("clay_cistern",new Item.Properties().group(Main.itemGroup));
 		//public static Item BOOK=new THPItem("book",new Item.Properties().group(Main.itemGroup));
 		public static void init() {
 			for (String s : items)

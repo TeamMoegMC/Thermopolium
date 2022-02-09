@@ -1,19 +1,9 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "BCB",
-    "B B",
-    "BBB"
-  ],
-  "key": {
-    "B": {
-      "item": "minecraft:brick"
-    },
-    "C": {
-      "item": "minecraft:clay_ball"
-    }
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "thermopolium:clay_cistern"
   },
-  "result": {
-    "item": "thermopolium:stew_pot"
-  }
+  "result": "thermopolium:stew_pot",
+  "experience": 0.35,
+  "cookingtime": 200
 }

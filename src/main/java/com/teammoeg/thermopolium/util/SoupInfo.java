@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 public class SoupInfo {
 	public List<FloatemStack> stacks;
@@ -144,7 +145,7 @@ public class SoupInfo {
 
 	public void recalculateHAS() {
 		foodeffect.clear();
-		float nh = this.getDensity();
+		float nh = MathHelper.clamp(this.getDensity(),1,2);
 		float ns = 0;
 		for (FloatemStack fs : stacks) {
 			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(fs.getItem());
@@ -163,8 +164,8 @@ public class SoupInfo {
 		}
 		FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(this.base);
 		if(ffvr!=null) {
-			nh+=ffvr.heal;
-			ns+=ffvr.sat;
+			nh+=ffvr.heal*(1+this.shrinkedFluid);
+			ns+=ffvr.sat*(1+this.shrinkedFluid);
 		}
 		this.healing = (int) Math.ceil(nh);
 		this.saturation = ns;

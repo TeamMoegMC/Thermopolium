@@ -33,6 +33,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags.IOptionalNamedTag;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 
@@ -48,6 +49,8 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 		tag("stews").add(THPFluids.getAll().collect(Collectors.toList()).toArray(new Fluid[0]));
 		tag(new ResourceLocation("frostedheart","drink")).addTag(otag("stews"));
 		tag(new ResourceLocation("frostedheart","hot_drink")).addTag(otag("stews"));
+		tag(new ResourceLocation("frostedheart","hidden_drink")).addTag(otag("stews"));
+		tag(new ResourceLocation("watersource","drink")).add(ForgeRegistries.FLUIDS.getValue(mrl("nail_soup")));
 	}
 
 	private Builder<Fluid> tag(String s) {

@@ -7,6 +7,10 @@
 	"pages": [
 		{
 			"type": "crafting",
+			"recipe": "thermopolium:clay_cistern"
+		},
+		{
+			"type": "smelting",
 			"recipe": "thermopolium:stew_pot",
 			"text": "陶锅是煮汤的厨具之一，需要放在$(l:intro/stove)灶台$(/l)上面使用。"
 		},

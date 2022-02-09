@@ -2,5 +2,5 @@
   "id": "thermopolium:nail_soup",
   "min": -1.0,
   "max": 1.0,
-  "heat": 0.25
+  "heat": 0.125
 }

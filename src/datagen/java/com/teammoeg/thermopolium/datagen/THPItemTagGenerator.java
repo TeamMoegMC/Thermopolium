@@ -20,6 +20,7 @@ package com.teammoeg.thermopolium.datagen;
 
 import java.nio.file.Path;
 import com.cannolicatfish.rankine.init.RankineItems;
+import com.teammoeg.thermopolium.Contents.THPBlocks;
 import com.teammoeg.thermopolium.Contents.THPItems;
 import com.teammoeg.thermopolium.Main;
 import static com.teammoeg.thermopolium.datagen.THPRecipeProvider.*;
@@ -95,7 +96,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 		tag("fern").add(Items.FERN, Items.LARGE_FERN);
 		tag("wolfberries").addOptional(new ResourceLocation("frostedheart:wolfberries"));
 		tag("stews").add(THPItems.stews.toArray(new Item[0]));
-
+		tag("stoves").add(THPBlocks.stove1.asItem(),THPBlocks.stove2.asItem());
 	}
 
 	private Builder<Item> tag(String s) {
