@@ -16,7 +16,7 @@
     },
     {
       "type": "text",
-      "text": "On the left, there's progress bar and control buttons. On the middle, there're 9 ingredient slots and a fluid tank. On the right is bowl interact slot, bowl of fluids can be inserted or extracted."
+      "text": "On the left, there's progress bar and control buttons. On the middle, there're 9 ingredient slots and a fluid tank. On the right is bowl interact slot, bowl of fluids can be inserted or extracted. Moreover, You can use fluid container and click the pot to interact with fluids, shift+right click with empty hand to empty the pot."
     },
      {
       "type": "text",
