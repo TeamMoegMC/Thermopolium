@@ -69,9 +69,10 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 			float rr=fs.getAmount();
 			if(te.proctype==2)//just animate fluid reduction
 				rr+=250f*(1-te.process*1f/te.processMax);
-			float yy = Math.max(1,rr / te.getTank().getCapacity()) * .5f + .3125f;
+			float yy = Math.min(1,rr / te.getTank().getCapacity()) * .5f + .3125f;
 			matrixStack.translate(0, yy, 0);
 			matrixStack.rotate(new Quaternion(90, 0, 0, true));
+			matrixStack.push();
 			IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
 			TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager()
 					.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
@@ -103,8 +104,9 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 						sprite.getMaxV(), combinedLightIn, combinedOverlayIn);
 
 			}
+			matrixStack.pop();
 		}
-
+		
 		matrixStack.pop();
 	}
 

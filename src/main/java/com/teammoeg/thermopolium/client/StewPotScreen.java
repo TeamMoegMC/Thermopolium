@@ -26,6 +26,7 @@ import com.teammoeg.thermopolium.blocks.StewPotTileEntity;
 import com.teammoeg.thermopolium.container.StewPotContainer;
 import com.teammoeg.thermopolium.fluid.SoupFluid;
 import com.teammoeg.thermopolium.items.StewItem;
+import com.teammoeg.thermopolium.util.FloatemStack;
 import com.teammoeg.thermopolium.util.SoupInfo;
 
 import net.minecraft.client.Minecraft;
@@ -152,10 +153,13 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 		btn1.state = te.proctype > 0 ? 1 : 0;
 		btn2.state = te.rsstate ? 1 : 2;
 		super.render(transform, mouseX, mouseY, partial);
-		if (te.proctype < 2) {
+		if (te.proctype < 2&&!te.getTank().isEmpty()) {
 			if (isMouseIn(mouseX, mouseY, 105, 20, 16, 46)) {
 				tooltip.add(te.getTank().getFluid().getDisplayName());
 				SoupInfo si=SoupFluid.getInfo(te.getTank().getFluid());
+				FloatemStack fs=si.stacks.stream().max((t1,t2)->t1.getCount()>t2.getCount()?1:(t1.getCount()==t2.getCount()?0:-1)).orElse(null);
+				if(fs!=null)
+					tooltip.add(new TranslationTextComponent("tooltip.thermopolium.main_ingredient",fs.getStack().getTextComponent()));
 				StewItem.addPotionTooltip(si.effects,tooltip,1);
 			}
 			RenderUtils.handleGuiTank(transform, te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
