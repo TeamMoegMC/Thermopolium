@@ -343,7 +343,9 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				hasItem = true;
 			}
 		}
+		
 		if (!hasItem) {// just reduce water
+			current.completeEffects();
 			processMax = Math.max(100,decideSoup());
 			return true;
 		}
@@ -388,6 +390,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			}
 			tpt +=iis[i];
 		}
+		current.completeAll();
 		tpt=Math.max(100,tpt);
 		interninv.clear();
 		processMax = Math.max(decideSoup(), tpt);

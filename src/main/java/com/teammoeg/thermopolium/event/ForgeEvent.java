@@ -18,6 +18,7 @@
 
 package com.teammoeg.thermopolium.event;
 
+import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.api.ThermopoliumApi;
 import com.teammoeg.thermopolium.data.RecipeReloadListener;
 import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -55,7 +57,7 @@ public class ForgeEvent {
 	public static void addReloadListeners(AddReloadListenerEvent event) {
 		event.addListener(new RecipeReloadListener(event.getDataPackRegistries()));
 	}
-
+	private static ResourceLocation container=new ResourceLocation(Main.MODID,"container");
 	@SubscribeEvent
 	public static void onBlockClick(PlayerInteractEvent.RightClickBlock event) {
 		ItemStack is = event.getItemStack();
@@ -125,9 +127,10 @@ public class ForgeEvent {
 				&& event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ItemStack stack= event.getItem();
 			LazyOptional<IFluidHandlerItem> cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
-			if (cap.isPresent()) {
+			if (cap.isPresent()&&stack.getItem().getTags().contains(container)) {
 				IFluidHandlerItem data = cap.resolve().get();
-				ThermopoliumApi.applyStew(event.getEntityLiving().world,event.getEntityLiving(),SoupFluid.getInfo(data.getFluidInTank(0)));
+				if(data.getFluidInTank(0).getFluid() instanceof SoupFluid)
+					ThermopoliumApi.applyStew(event.getEntityLiving().world,event.getEntityLiving(),SoupFluid.getInfo(data.getFluidInTank(0)));
 			}
 		}
 	}

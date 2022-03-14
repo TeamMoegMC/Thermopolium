@@ -19,16 +19,21 @@
 package com.teammoeg.thermopolium.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Comparators;
 import com.mojang.datafixers.util.Pair;
 import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.SerializeUtil;
+
 import net.minecraft.item.Food;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -121,9 +126,20 @@ public class SoupInfo {
 		for (FloatemStack fs : f.stacks) {
 			this.addItem(new FloatemStack(fs.getStack(), fs.count * oparts / cparts));
 		}
+		completeAll();
 		return true;
 	}
-
+	public void completeAll() {
+		completeData();
+		completeEffects();
+	}
+	public void completeData() {
+		stacks.sort(Comparator.comparingInt(e->Item.getIdFromItem(e.stack.getItem())));
+		foodeffect.sort(Comparator.<Pair<EffectInstance,Float>>comparingInt(e->Effect.getId(e.getFirst().getPotion())).thenComparing(Pair::getSecond));
+	}
+	public void completeEffects() {
+		effects.sort(Comparator.<EffectInstance>comparingInt(x->Effect.getId(x.getPotion())).thenComparingInt(e->e.getDuration()));
+	}
 	public static boolean isEffectEquals(EffectInstance t1, EffectInstance t2) {
 		return t1.getPotion() == t2.getPotion() && t1.getAmplifier() == t2.getAmplifier();
 	}
