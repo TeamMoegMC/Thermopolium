@@ -197,7 +197,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "Frosted Heart",
+                "Specification-Title"     : "Thermopolium",
                 "Specification-Vendor"    : "TeamMoeg",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
@@ -237,7 +237,7 @@ String getChangelogText() {
         if (it.size() > 1) {
             def temp = it
             if (lineCount == 0) {
-                temp = "Thermopolium for The Winter Rescue Modpack ${version}"
+                temp = "Thermopolium ${version}"
                 temp = "<span style=\"font-size: 18px; color: #333399;\">Thermopolium v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
             }else {
                 temp = "<h4>$temp</h4>"

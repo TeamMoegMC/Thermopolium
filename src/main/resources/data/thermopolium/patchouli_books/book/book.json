@@ -5,5 +5,6 @@
   "book_texture": "thermopolium:textures/gui/book.png",
   "model": "thermopolium:book",
   "show_progress": false,
+  "filler_texture":"thermopolium:textures/gui/page_filler.png",
   "creative_tab": "thermopolium"
 }
