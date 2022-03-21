@@ -22,7 +22,7 @@ body:
     id: wanted
     attributes:
       label: What to support
-      description: Tell us what support do you want. Order should match mods above
+      description: Tell us what support do you want. Order should match mods above. Must be specify or we would not add such support.
       placeholder: |
         1. (tag/recipe/anything else)
         2. (tag/recipe/anything else)
