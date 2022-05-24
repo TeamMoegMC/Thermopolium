@@ -58,12 +58,12 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 	@Override
 	public void render(StewPotTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer,
 			int combinedLightIn, int combinedOverlayIn) {
-		if (!te.getWorld().isBlockLoaded(te.getPos()))
+		if (!te.getLevel().hasChunkAt(te.getBlockPos()))
 			return;
 		BlockState state = te.getBlockState();
 		if (state.getBlock() != Contents.THPBlocks.stew_pot)
 			return;
-		matrixStack.push();
+		matrixStack.pushPose();
 		FluidStack fs = te.getTank().getFluid();
 		if (fs != null && !fs.isEmpty() && fs.getFluid() != null) {
 			float rr=fs.getAmount();
@@ -71,11 +71,11 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 				rr+=250f*(1-te.process*1f/te.processMax);
 			float yy = Math.min(1,rr / te.getTank().getCapacity()) * .5f + .3125f;
 			matrixStack.translate(0, yy, 0);
-			matrixStack.rotate(new Quaternion(90, 0, 0, true));
-			matrixStack.push();
-			IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
+			matrixStack.mulPose(new Quaternion(90, 0, 0, true));
+			matrixStack.pushPose();
+			IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
 			TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager()
-					.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+					.getAtlas(PlayerContainer.BLOCK_ATLAS)
 					.getSprite(fs.getFluid().getAttributes().getStillTexture(fs));
 			int col = fs.getFluid().getAttributes().getColor(fs);
 			int iW = sprite.getWidth();
@@ -85,29 +85,29 @@ public class StewPotRenderer extends TileEntityRenderer<StewPotTileEntity> {
 				float alp = 1f;
 				if (te.become != null && te.processMax > 0) {
 					TextureAtlasSprite sprite2 = Minecraft.getInstance().getModelManager()
-							.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+							.getAtlas(PlayerContainer.BLOCK_ATLAS)
 							.getSprite(te.become.getFluid().getAttributes().getStillTexture(fs));
 					float proc = te.process * 1f / te.processMax;
 					clr = clr(col, te.become.getAttributes().getColor(fs), proc);
 					if (sprite2.getWidth() > 0 && sprite2.getHeight() > 0) {
 						alp = 1 - proc;
-						RenderUtils.drawTexturedColoredRect(builder, matrixStack, .125f, .125f, .75f, .75f, clr.getX(),
-								clr.getY(), clr.getZ(), proc, sprite2.getMinU(), sprite2.getMaxU(), sprite2.getMinV(),
-								sprite2.getMaxV(), combinedLightIn, combinedOverlayIn);
+						RenderUtils.drawTexturedColoredRect(builder, matrixStack, .125f, .125f, .75f, .75f, clr.x(),
+								clr.y(), clr.z(), proc, sprite2.getU0(), sprite2.getU1(), sprite2.getV0(),
+								sprite2.getV1(), combinedLightIn, combinedOverlayIn);
 					}
 				} else {
 					clr = clr(col);
 
 				}
-				RenderUtils.drawTexturedColoredRect(builder, matrixStack, .125f, .125f, .75f, .75f, clr.getX(),
-						clr.getY(), clr.getZ(), alp, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(),
-						sprite.getMaxV(), combinedLightIn, combinedOverlayIn);
+				RenderUtils.drawTexturedColoredRect(builder, matrixStack, .125f, .125f, .75f, .75f, clr.x(),
+						clr.y(), clr.z(), alp, sprite.getU0(), sprite.getU1(), sprite.getV0(),
+						sprite.getV1(), combinedLightIn, combinedOverlayIn);
 
 			}
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 		
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 }

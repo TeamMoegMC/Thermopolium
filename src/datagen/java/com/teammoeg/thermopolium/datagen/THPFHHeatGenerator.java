@@ -72,7 +72,7 @@ public class THPFHHeatGenerator implements IDataProvider {
 	}
 
 	@Override
-	public void act(DirectoryCache cache) throws IOException {
+	public void run(DirectoryCache cache) throws IOException {
 		main=this.generator.getOutputFolder().resolve("data/frostedheart/temperature/");
 		for(String s:THPFluids.getSoupfluids())
 			if(s.equals("nail_soup")) {
@@ -104,8 +104,8 @@ public class THPFHHeatGenerator implements IDataProvider {
 	private static void saveJson(DirectoryCache cache, JsonObject recipeJson, Path path) {
 		try {
 			String s = GSON.toJson(recipeJson);
-			String s1 = HASH_FUNCTION.hashUnencodedChars(s).toString();
-			if (!Objects.equals(cache.getPreviousHash(path), s1) || !Files.exists(path)) {
+			String s1 = SHA1.hashUnencodedChars(s).toString();
+			if (!Objects.equals(cache.getHash(path), s1) || !Files.exists(path)) {
 				Files.createDirectories(path.getParent());
 
 				try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
@@ -113,7 +113,7 @@ public class THPFHHeatGenerator implements IDataProvider {
 				}
 			}
 
-			cache.recordHash(path, s1);
+			cache.putNew(path, s1);
 		} catch (IOException ioexception) {
 			LOGGER.error("Couldn't save data json {}", path, ioexception);
 		}

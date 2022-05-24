@@ -157,7 +157,7 @@ public class CookingRecipe extends IDataRecipe {
 	}
 
 	@Override
-	public void serialize(JsonObject json) {
+	public void serializeRecipeData(JsonObject json) {
 		if (allow != null && !allow.isEmpty()) {
 			json.add("allow", SerializeUtil.toJsonList(allow, StewCondition::serialize));
 		}

@@ -61,20 +61,20 @@ public class ThermopoliumApi {
 		info.write(nbt);
 	}
 	public static void applyStew(World worldIn, LivingEntity entityLiving,SoupInfo info) {
-		if (!worldIn.isRemote) {
+		if (!worldIn.isClientSide) {
 			for (EffectInstance eff :info.effects) {
 				if (eff != null) {
-					entityLiving.addPotionEffect(eff);
+					entityLiving.addEffect(eff);
 				}
 			}
-			Random r=entityLiving.getRNG();
+			Random r=entityLiving.getRandom();
 			for(Pair<EffectInstance, Float> ef:info.foodeffect) {
 				if(r.nextFloat()<ef.getSecond())
-					entityLiving.addPotionEffect(ef.getFirst());
+					entityLiving.addEffect(ef.getFirst());
 			}
 			if (entityLiving instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity) entityLiving;
-				player.getFoodStats().addStats(info.healing,info.saturation);
+				player.getFoodData().eat(info.healing,info.saturation);
 			}
 		}
 	}

@@ -29,10 +29,10 @@ public class SteamParticle extends THPParticle {
 	public SteamParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY,
 			double motionZ) {
 		super(world, x, y, z, motionX, motionY, motionZ);
-		this.particleGravity = -0.1F;
-		this.particleRed = this.particleGreen = this.particleBlue = (float) (Math.random() * 0.4) + 0.4f;
+		this.gravity = -0.1F;
+		this.rCol = this.gCol = this.bCol = (float) (Math.random() * 0.4) + 0.4f;
 		this.originalScale = 0.25F;
-		this.maxAge = (int) (12.0D / (Math.random() * 0.8D + 0.2D));
+		this.lifetime = (int) (12.0D / (Math.random() * 0.8D + 0.2D));
 	}
 
 	public static class Factory implements IParticleFactory<BasicParticleType> {
@@ -43,10 +43,10 @@ public class SteamParticle extends THPParticle {
 		}
 
 		@Override
-		public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
+		public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
 				double xSpeed, double ySpeed, double zSpeed) {
 			SteamParticle steamParticle = new SteamParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-			steamParticle.selectSpriteRandomly(this.spriteSet);
+			steamParticle.pickSprite(this.spriteSet);
 			return steamParticle;
 		}
 	}

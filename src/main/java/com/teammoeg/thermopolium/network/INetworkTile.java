@@ -33,12 +33,12 @@ public abstract class INetworkTile extends TileEntity {
 	public abstract void handleMessage(short type, int data);
 
 	public void sendMessage(short type, int data) {
-		PacketHandler.sendToServer(new ClientDataMessage(this.pos, type, data));
+		PacketHandler.sendToServer(new ClientDataMessage(this.worldPosition, type, data));
 	}
 
 	public void syncData() {
-		this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
-		this.markDirty();
+		this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+		this.setChanged();
 	}
 
 	public abstract void readCustomNBT(CompoundNBT nbt, boolean isClient);
@@ -47,24 +47,24 @@ public abstract class INetworkTile extends TileEntity {
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		this.readCustomNBT(pkt.getNbtCompound(), true);
+		this.readCustomNBT(pkt.getTag(), true);
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT nbt) {
-		super.read(state, nbt);
+	public void load(BlockState state, CompoundNBT nbt) {
+		super.load(state, nbt);
 		this.readCustomNBT(nbt, false);
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		this.writeCustomNBT(compound, false);
-		return super.write(compound);
+		return super.save(compound);
 	}
 
 	@Override
 	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+		super.load(state, tag);
 		this.readCustomNBT(tag, true);
 	}
 
@@ -72,7 +72,7 @@ public abstract class INetworkTile extends TileEntity {
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		CompoundNBT cnbt = new CompoundNBT();
 		writeCustomNBT(cnbt, true);
-		return new SUpdateTileEntityPacket(this.pos, 3, cnbt);
+		return new SUpdateTileEntityPacket(this.worldPosition, 3, cnbt);
 	}
 
 	@Override

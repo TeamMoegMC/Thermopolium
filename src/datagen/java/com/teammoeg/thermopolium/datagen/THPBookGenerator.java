@@ -88,7 +88,7 @@ public class THPBookGenerator implements IDataProvider {
 	}
 
 	@Override
-	public void act(DirectoryCache cache) throws IOException {
+	public void run(DirectoryCache cache) throws IOException {
 		bookmain=this.generator.getOutputFolder().resolve("data/"+Main.MODID+"/patchouli_books/book/");
 		recipes=THPRecipeProvider.recipes.stream().map(e->((CookingRecipe)e)).collect(Collectors.toMap(e->e.output.getRegistryName().getPath(),e->e));
 		loadLang("zh_cn");
@@ -151,8 +151,8 @@ public class THPBookGenerator implements IDataProvider {
 	private static void saveJson(DirectoryCache cache, JsonObject recipeJson, Path path) {
 		try {
 			String s = GSON.toJson(recipeJson);
-			String s1 = HASH_FUNCTION.hashUnencodedChars(s).toString();
-			if (!Objects.equals(cache.getPreviousHash(path), s1) || !Files.exists(path)) {
+			String s1 = SHA1.hashUnencodedChars(s).toString();
+			if (!Objects.equals(cache.getHash(path), s1) || !Files.exists(path)) {
 				Files.createDirectories(path.getParent());
 
 				try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
@@ -160,7 +160,7 @@ public class THPBookGenerator implements IDataProvider {
 				}
 			}
 
-			cache.recordHash(path, s1);
+			cache.putNew(path, s1);
 		} catch (IOException ioexception) {
 			LOGGER.error("Couldn't save data json {}", path, ioexception);
 		}

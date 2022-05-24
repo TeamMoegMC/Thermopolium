@@ -79,15 +79,15 @@ public class Contents {
 		}
 
 		public static Block stew_pot = new StewPot("stew_pot",
-				Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
-						.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid(),
+				Block.Properties.of(Material.STONE).sound(SoundType.STONE).requiresCorrectToolForDrops()
+						.harvestTool(ToolType.PICKAXE).strength(2, 10).noOcclusion(),
 				THPBlockItem::new);
-		public static Block stove1 = new KitchenStove("kitchen_stove_t1",Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
-				.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid().setLightLevel(s->s.get(KitchenStove.LIT)?7:0).setOpaque(THPBlocks::isntSolid).setSuffocates(THPBlocks::isntSolid).setBlocksVision(THPBlocks::isntSolid),
+		public static Block stove1 = new KitchenStove("kitchen_stove_t1",Block.Properties.of(Material.STONE).sound(SoundType.STONE).requiresCorrectToolForDrops()
+				.harvestTool(ToolType.PICKAXE).strength(2, 10).noOcclusion().lightLevel(s->s.getValue(KitchenStove.LIT)?7:0).isRedstoneConductor(THPBlocks::isntSolid).isSuffocating(THPBlocks::isntSolid).isViewBlocking(THPBlocks::isntSolid),
 				THPTileTypes.STOVE1,
 				THPBlockItem::new);
-		public static Block stove2 = new KitchenStove("kitchen_stove_t2",Block.Properties.create(Material.ROCK).sound(SoundType.STONE).setRequiresTool()
-				.harvestTool(ToolType.PICKAXE).hardnessAndResistance(2, 10).notSolid().setLightLevel(s->s.get(KitchenStove.LIT)?9:0).setOpaque(THPBlocks::isntSolid).setSuffocates(THPBlocks::isntSolid).setBlocksVision(THPBlocks::isntSolid),
+		public static Block stove2 = new KitchenStove("kitchen_stove_t2",Block.Properties.of(Material.STONE).sound(SoundType.STONE).requiresCorrectToolForDrops()
+				.harvestTool(ToolType.PICKAXE).strength(2, 10).noOcclusion().lightLevel(s->s.getValue(KitchenStove.LIT)?9:0).isRedstoneConductor(THPBlocks::isntSolid).isSuffocating(THPBlocks::isntSolid).isViewBlocking(THPBlocks::isntSolid),
 				THPTileTypes.STOVE2,
 				THPBlockItem::new);
 		   private static boolean isntSolid(BlockState state, IBlockReader reader, BlockPos pos) {
@@ -107,7 +107,7 @@ public class Contents {
 		public static Item stock=new IconItem("stock_based");
 		public static Item milk=new IconItem("milk_based");
 		public static Item any=new IconItem("any_based");
-		public static Item clay_pot=new THPItem("clay_cistern",new Item.Properties().group(Main.itemGroup));
+		public static Item clay_pot=new THPItem("clay_cistern",new Item.Properties().tab(Main.itemGroup));
 		//public static Item BOOK=new THPItem("book",new Item.Properties().group(Main.itemGroup));
 		public static void init() {
 			for (String s : items)
@@ -118,7 +118,7 @@ public class Contents {
 		}
 
 		static Properties createProps() {
-			return new Item.Properties().group(Main.itemGroup).containerItem(Items.BOWL).maxStackSize(1);
+			return new Item.Properties().tab(Main.itemGroup).craftRemainder(Items.BOWL).stacksTo(1);
 		}
 		// public static Item stew_bowl=new StewItem("stew",createProps());
 	}

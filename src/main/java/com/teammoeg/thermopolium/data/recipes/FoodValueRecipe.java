@@ -117,14 +117,14 @@ public class FoodValueRecipe extends IDataRecipe {
 		if(effects!=null)
 			effects.removeIf(e->e==null);
 		if (jo.has("item")) {
-			ItemStack[] i = Ingredient.deserialize(jo.get("item")).getMatchingStacks();
+			ItemStack[] i = Ingredient.fromJson(jo.get("item")).getItems();
 			if (i.length > 0)
 				repersent = i[0];
 		}
 		
 	}
 	@Override
-	public void serialize(JsonObject json) {
+	public void serializeRecipeData(JsonObject json) {
 		json.addProperty("heal", heal);
 		json.addProperty("sat", sat);
 		if(processtimes!=null&&!processtimes.isEmpty())
@@ -139,12 +139,12 @@ public class FoodValueRecipe extends IDataRecipe {
 			JsonObject jo=new JsonObject();
 			jo.addProperty("level",x.getFirst().getAmplifier());
 			jo.addProperty("time",x.getFirst().getDuration());
-			jo.addProperty("effect",x.getFirst().getPotion().getRegistryName().toString());
+			jo.addProperty("effect",x.getFirst().getEffect().getRegistryName().toString());
 			jo.addProperty("chance",x.getSecond());
 			return jo;
 		}));
 		if(repersent!=null)
-		json.add("item",Ingredient.fromStacks(repersent).serialize());
+		json.add("item",Ingredient.of(repersent).toJson());
 				
 			
 	}
@@ -156,8 +156,8 @@ public class FoodValueRecipe extends IDataRecipe {
 		processtimes = SerializeUtil.readList(data, d -> new Pair<>(d.<Item>readRegistryId(), d.readVarInt())).stream()
 				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 		effects = SerializeUtil.readList(data,
-				d -> new Pair<>(EffectInstance.read(d.readCompoundTag()), d.readFloat()));
-		repersent = SerializeUtil.readOptional(data, d -> ItemStack.read(d.readCompoundTag())).orElse(null);
+				d -> new Pair<>(EffectInstance.load(d.readNbt()), d.readFloat()));
+		repersent = SerializeUtil.readOptional(data, d -> ItemStack.of(d.readNbt())).orElse(null);
 	}
 
 	public void write(PacketBuffer data) {
@@ -170,11 +170,11 @@ public class FoodValueRecipe extends IDataRecipe {
 		});
 		SerializeUtil.writeList2(data, effects, (d, e) -> {
 			CompoundNBT nc = new CompoundNBT();
-			e.getFirst().write(nc);
-			d.writeCompoundTag(nc);
+			e.getFirst().save(nc);
+			d.writeNbt(nc);
 			d.writeFloat(e.getSecond());
 		});
-		SerializeUtil.writeOptional(data, repersent, (d, e) -> e.writeCompoundTag(d.serializeNBT()));
+		SerializeUtil.writeOptional(data, repersent, (d, e) -> e.writeNbt(d.serializeNBT()));
 	}
 
 	public void clearCache() {

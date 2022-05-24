@@ -47,7 +47,7 @@ import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder.Par
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class THPStatesProvider extends BlockStateProvider {
-    protected static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
+    protected static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.above(), BlockPos.ZERO.above(2));
 
     protected static final Map<ResourceLocation, String> generatedParticleTextures = new HashMap<>();
     protected final ExistingFileHelper existingFileHelper;
@@ -99,9 +99,9 @@ public class THPStatesProvider extends BlockStateProvider {
     	return horizontalMultipart(block,mf,UnaryOperator.identity());
     }
     public MultiPartBlockStateBuilder horizontalMultipart(MultiPartBlockStateBuilder block,ModelFile mf,UnaryOperator<PartBuilder> act) {
-    	for(Direction d:BlockStateProperties.HORIZONTAL_FACING.getAllowedValues())
+    	for(Direction d:BlockStateProperties.HORIZONTAL_FACING.getPossibleValues())
     		block=act.apply(block.part().modelFile(mf)
-            .rotationY(((int) d.getHorizontalAngle()) % 360)
+            .rotationY(((int) d.toYRot()) % 360)
             .uvLock(true).addModel().condition(BlockStateProperties.HORIZONTAL_FACING,d)).end();
     	return block;
     }

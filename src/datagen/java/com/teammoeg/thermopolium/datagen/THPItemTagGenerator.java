@@ -47,7 +47,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 	static final String sf = "simplefarming:";
 
 	@Override
-	protected void registerTags() {
+	protected void addTags() {
 		/*
 		 * Builder<Item>
 		 * i=this.getOrCreateBuilder(ItemTags.createOptional(mrl("cookable"))).add(Items
@@ -101,11 +101,11 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 	}
 
 	private Builder<Item> tag(String s) {
-		return this.getOrCreateBuilder(ItemTags.createOptional(mrl(s)));
+		return this.tag(ItemTags.createOptional(mrl(s)));
 	}
 
 	private Builder<Item> tag(ResourceLocation s) {
-		return this.getOrCreateBuilder(ItemTags.createOptional(s));
+		return this.tag(ItemTags.createOptional(s));
 	}
 
 	private ResourceLocation rl(RegistryObject<Item> it) {
@@ -134,7 +134,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 
 	private IOptionalNamedTag<Item> ftag(String s) {
 		IOptionalNamedTag<Item> tag = ItemTags.createOptional(new ResourceLocation("forge", s));
-		this.getOrCreateBuilder(tag);
+		this.tag(tag);
 		return tag;
 	}
 
@@ -148,7 +148,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 	}
 
 	@Override
-	protected Path makePath(ResourceLocation id) {
+	protected Path getPath(ResourceLocation id) {
 		return this.generator.getOutputFolder()
 				.resolve("data/" + id.getNamespace() + "/tags/items/" + id.getPath() + ".json");
 	}

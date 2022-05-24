@@ -187,29 +187,29 @@ public class SerializeUtil {
 	}
 
 	public static StewNumber ofNumber(PacketBuffer buffer) {
-		return nmcache.of(numbers.get(buffer.readString()).read(buffer));
+		return nmcache.of(numbers.get(buffer.readUtf()).read(buffer));
 	}
 
 	public static StewCondition ofCondition(PacketBuffer buffer) {
-		return sccache.of(conditions.get(buffer.readString()).read(buffer));
+		return sccache.of(conditions.get(buffer.readUtf()).read(buffer));
 	}
 
 	public static StewBaseCondition ofBase(PacketBuffer buffer) {
-		return bacache.of(basetypes.get(buffer.readString()).read(buffer));
+		return bacache.of(basetypes.get(buffer.readUtf()).read(buffer));
 	}
 
 	public static void write(StewNumber e, PacketBuffer buffer) {
-		buffer.writeString(e.getType());
+		buffer.writeUtf(e.getType());
 		e.write(buffer);
 	}
 
 	public static void write(StewCondition e, PacketBuffer buffer) {
-		buffer.writeString(e.getType());
+		buffer.writeUtf(e.getType());
 		e.write(buffer);
 	}
 
 	public static void write(StewBaseCondition e, PacketBuffer buffer) {
-		buffer.writeString(e.getType());
+		buffer.writeUtf(e.getType());
 		e.write(buffer);
 	}
 

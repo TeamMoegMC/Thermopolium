@@ -31,7 +31,7 @@ import net.minecraftforge.common.ForgeHooks;
 public class KitchenStoveContainer extends Container {
 	public KitchenStoveTileEntity tile;
 	public KitchenStoveContainer(int id, PlayerInventory inv, PacketBuffer buffer) {
-		this(id,inv,(KitchenStoveTileEntity) inv.player.world.getTileEntity(buffer.readBlockPos()));
+		this(id,inv,(KitchenStoveTileEntity) inv.player.level.getBlockEntity(buffer.readBlockPos()));
 	}
 
 	public KitchenStoveContainer(int id, PlayerInventory inv, KitchenStoveTileEntity te) {
@@ -39,7 +39,7 @@ public class KitchenStoveContainer extends Container {
 		tile = te;
 		this.addSlot(new Slot(tile,0,80,49) {
 			@Override
-			public boolean isItemValid(ItemStack stack) {
+			public boolean mayPlace(ItemStack stack) {
 				return ForgeHooks.getBurnTime(stack, null) > 0;
 			}
 		});
@@ -52,33 +52,33 @@ public class KitchenStoveContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity playerIn) {
+	public boolean stillValid(PlayerEntity playerIn) {
 		return true;
 	}
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+	public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
 		ItemStack itemStack = ItemStack.EMPTY;
-		Slot slot = this.inventorySlots.get(index);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack slotStack = slot.getStack();
+		Slot slot = this.slots.get(index);
+		if (slot != null && slot.hasItem()) {
+			ItemStack slotStack = slot.getItem();
 			itemStack = slotStack.copy();
 			if (index == 0) {
-				if (!this.mergeItemStack(slotStack, 1, 37, true)) {
+				if (!this.moveItemStackTo(slotStack, 1, 37, true)) {
 					return ItemStack.EMPTY;
 				}
-				slot.onSlotChange(slotStack, itemStack);
+				slot.onQuickCraft(slotStack, itemStack);
 			} else if (index > 0) {
-				if (!this.mergeItemStack(slotStack,0, 1, false))
+				if (!this.moveItemStackTo(slotStack,0, 1, false))
 					if (index < 28)
-						if (!this.mergeItemStack(slotStack, 28, 37, false))
+						if (!this.moveItemStackTo(slotStack, 28, 37, false))
 							return ItemStack.EMPTY;
-						else if (index < 37 && !this.mergeItemStack(slotStack, 1, 28, false))
+						else if (index < 37 && !this.moveItemStackTo(slotStack, 1, 28, false))
 							return ItemStack.EMPTY;
 			}
 			if (slotStack.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.setChanged();
 			}
 			if (slotStack.getCount() == itemStack.getCount()) {
 				return ItemStack.EMPTY;

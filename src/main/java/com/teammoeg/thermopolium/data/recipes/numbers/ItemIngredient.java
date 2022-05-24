@@ -35,7 +35,7 @@ public class ItemIngredient implements StewNumber {
 	Ingredient i;
 
 	public ItemIngredient(JsonElement jo) {
-		i = Ingredient.deserialize(jo.getAsJsonObject().get("ingredient"));
+		i = Ingredient.fromJson(jo.getAsJsonObject().get("ingredient"));
 	}
 
 	public ItemIngredient(Ingredient i) {
@@ -56,17 +56,17 @@ public class ItemIngredient implements StewNumber {
 	@Override
 	public JsonElement serialize() {
 		JsonObject th = new JsonObject();
-		th.add("ingredient", i.serialize());
+		th.add("ingredient", i.toJson());
 		return th;
 	}
 
 	@Override
 	public void write(PacketBuffer buffer) {
-		i.write(buffer);
+		i.toNetwork(buffer);
 	}
 
 	public ItemIngredient(PacketBuffer buffer) {
-		i = Ingredient.read(buffer);
+		i = Ingredient.fromNetwork(buffer);
 	}
 
 	@Override

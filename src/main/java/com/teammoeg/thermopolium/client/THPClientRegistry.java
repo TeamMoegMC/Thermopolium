@@ -37,17 +37,17 @@ public class THPClientRegistry {
 	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onClientSetupEvent(FMLClientSetupEvent event) {
-		ScreenManager.registerFactory(Contents.THPGui.STEWPOT.get(), StewPotScreen::new);
-		ScreenManager.registerFactory(Contents.THPGui.STOVE.get(),KitchenStoveScreen::new);
-		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stew_pot, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stove1, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stove2, RenderType.getCutout());
+		ScreenManager.register(Contents.THPGui.STEWPOT.get(), StewPotScreen::new);
+		ScreenManager.register(Contents.THPGui.STOVE.get(),KitchenStoveScreen::new);
+		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stew_pot, RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stove1, RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(Contents.THPBlocks.stove2, RenderType.cutout());
 		ClientRegistry.bindTileEntityRenderer(Contents.THPTileTypes.STEW_POT.get(), StewPotRenderer::new);
 	}
 
 	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-		Minecraft.getInstance().particles.registerFactory(Particles.STEAM.get(), SteamParticle.Factory::new);
+		Minecraft.getInstance().particleEngine.register(Particles.STEAM.get(), SteamParticle.Factory::new);
 	}
 }

@@ -22,6 +22,8 @@ import com.teammoeg.thermopolium.Contents;
 import com.teammoeg.thermopolium.Main;
 import net.minecraft.item.Item;
 
+import net.minecraft.item.Item.Properties;
+
 public class THPItem extends Item {
 
 	public THPItem(String name, Properties properties) {

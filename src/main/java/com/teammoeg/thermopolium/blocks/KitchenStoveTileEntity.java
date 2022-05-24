@@ -62,7 +62,7 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 	public void readCustomNBT(CompoundNBT nbt, boolean isClient) {
 		process=nbt.getInt("process");
 		processMax=nbt.getInt("processMax");
-		fuel.set(0,ItemStack.read(nbt.getCompound("fuel")));
+		fuel.set(0,ItemStack.of(nbt.getCompound("fuel")));
 		if(!isClient)
 			cd=nbt.getInt("cd");
 	}
@@ -77,12 +77,12 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 	}
 
 	@Override
-	public void clear() {
+	public void clearContent() {
 		fuel.clear();
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 1;
 	}
 
@@ -92,35 +92,35 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
+	public ItemStack getItem(int index) {
 		return fuel.get(index);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		return ItemStackHelper.getAndSplit(fuel, index, count);
+	public ItemStack removeItem(int index, int count) {
+		return ItemStackHelper.removeItem(fuel, index, count);
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		return ItemStackHelper.getAndRemove(fuel, index);
+	public ItemStack removeItemNoUpdate(int index) {
+		return ItemStackHelper.takeItem(fuel, index);
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
+	public void setItem(int index, ItemStack stack) {
 	      this.fuel.set(index, stack);
-	      if (stack.getCount() > this.getInventoryStackLimit()) {
-	         stack.setCount(this.getInventoryStackLimit());
+	      if (stack.getCount() > this.getMaxStackSize()) {
+	         stack.setCount(this.getMaxStackSize());
 	      }
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
+	public boolean stillValid(PlayerEntity player) {
 		return true;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		ItemStack itemstack = fuel.get(0);
         return ForgeHooks.getBurnTime(stack,null) > 0 || stack.getItem() == Items.BUCKET && itemstack.getItem() != Items.BUCKET;
 	}
@@ -144,42 +144,42 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
         float ftime=time*1.0f/speed;
         float frac=MathHelper.frac(ftime);
         if(frac>0)
-        	processMax=process=(int)ftime+(this.world.rand.nextDouble()<frac?1:0);
+        	processMax=process=(int)ftime+(this.level.random.nextDouble()<frac?1:0);
         else
         	processMax=process=(int)ftime;
         return true;
     }
 	@Override
 	public void tick() {
-		if(!world.isRemote) {
+		if(!level.isClientSide) {
 			BlockState bs=this.getBlockState();
 			boolean flag=false;
-			if(process<=0&&(bs.get(KitchenStove.LIT)||bs.get(KitchenStove.ASH))) {
-				bs=bs.with(KitchenStove.LIT,false).with(KitchenStove.ASH,false);
+			if(process<=0&&(bs.getValue(KitchenStove.LIT)||bs.getValue(KitchenStove.ASH))) {
+				bs=bs.setValue(KitchenStove.LIT,false).setValue(KitchenStove.ASH,false);
 				flag=true;
 			}
 			boolean ie=fuel.get(0).isEmpty();
-			int fs=bs.get(KitchenStove.FUELED);
+			int fs=bs.getValue(KitchenStove.FUELED);
 			if(ie!=(fs==0)) {
 				flag=true;
-				bs=bs.with(KitchenStove.FUELED,ie?0:1);
+				bs=bs.setValue(KitchenStove.FUELED,ie?0:1);
 			}
 			if(process>0) {
-				if(!bs.get(KitchenStove.ASH)) {
+				if(!bs.getValue(KitchenStove.ASH)) {
 					flag=true;
-					bs=bs.with(KitchenStove.ASH,true);
+					bs=bs.setValue(KitchenStove.ASH,true);
 				}
-				if(bs.get(KitchenStove.LIT)) {
+				if(bs.getValue(KitchenStove.LIT)) {
 					cd--;
 					process--;
 					if(cd<=0) {
-						bs=bs.with(KitchenStove.LIT,false);
+						bs=bs.setValue(KitchenStove.LIT,false);
 						flag=true;
 					}
 				}
 			}
 			if(flag)
-				this.world.setBlockState(this.getPos(),bs);
+				this.level.setBlockAndUpdate(this.getBlockPos(),bs);
 			this.syncData();
 		}
 	}
@@ -194,8 +194,8 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 		}
 		BlockState bs=this.getBlockState();
 		cd=maxcd;
-		if(!bs.get(KitchenStove.LIT))
-			this.world.setBlockState(this.getPos(),bs.with(KitchenStove.LIT,true));
+		if(!bs.getValue(KitchenStove.LIT))
+			this.level.setBlockAndUpdate(this.getBlockPos(),bs.setValue(KitchenStove.LIT,true));
 		
 		return speed;
 	}

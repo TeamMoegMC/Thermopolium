@@ -65,7 +65,7 @@ public class ForgeEvent {
 			PlayerEntity playerIn = event.getPlayer();
 			World worldIn = event.getWorld();
 			BlockPos blockpos = event.getPos();
-			TileEntity te = worldIn.getTileEntity(blockpos);
+			TileEntity te = worldIn.getBlockEntity(blockpos);
 			if (te != null) {
 				te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, event.getFace())
 						.ifPresent(handler -> {
@@ -77,14 +77,14 @@ public class ForgeEvent {
 
 									ItemStack ret = recipe.handle(stack);
 									event.setCanceled(true);
-									event.setCancellationResult(ActionResultType.func_233537_a_(worldIn.isRemote));
+									event.setCancellationResult(ActionResultType.sidedSuccess(worldIn.isClientSide));
 									if (is.getCount() > 1) {
 										is.shrink(1);
-										if (!playerIn.addItemStackToInventory(ret)) {
-											playerIn.dropItem(ret, false);
+										if (!playerIn.addItem(ret)) {
+											playerIn.drop(ret, false);
 										}
 									} else
-										playerIn.setHeldItem(event.getHand(), ret);
+										playerIn.setItemInHand(event.getHand(), ret);
 								}
 							}
 						});
@@ -99,38 +99,38 @@ public class ForgeEvent {
 		if (is.getItem() == Items.BOWL) {
 			World worldIn = event.getWorld();
 			PlayerEntity playerIn = event.getPlayer();
-			BlockRayTraceResult ray = Item.rayTrace(worldIn, playerIn, FluidMode.SOURCE_ONLY);
+			BlockRayTraceResult ray = Item.getPlayerPOVHitResult(worldIn, playerIn, FluidMode.SOURCE_ONLY);
 			if (ray.getType() == Type.BLOCK) {
-				BlockPos blockpos = ray.getPos();
+				BlockPos blockpos = ray.getBlockPos();
 				BlockState blockstate1 = worldIn.getBlockState(blockpos);
-				Fluid f = blockstate1.getFluidState().getFluid();
+				Fluid f = blockstate1.getFluidState().getType();
 				if (f != Fluids.EMPTY) {
 					BowlContainingRecipe recipe = BowlContainingRecipe.recipes.get(f);
 
 					ItemStack ret = recipe.handle(f);
 					event.setCanceled(true);
-					event.setCancellationResult(ActionResultType.func_233537_a_(worldIn.isRemote));
+					event.setCancellationResult(ActionResultType.sidedSuccess(worldIn.isClientSide));
 					if (is.getCount() > 1) {
 						is.shrink(1);
-						if (!playerIn.addItemStackToInventory(ret)) {
-							playerIn.dropItem(ret, false);
+						if (!playerIn.addItem(ret)) {
+							playerIn.drop(ret, false);
 						}
 					} else
-						playerIn.setHeldItem(event.getHand(), ret);
+						playerIn.setItemInHand(event.getHand(), ret);
 				}
 			}
 		}
 	}
 	@SubscribeEvent
 	public static void onItemUseFinish(LivingEntityUseItemEvent.Finish event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote
+		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide
 				&& event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ItemStack stack= event.getItem();
 			LazyOptional<IFluidHandlerItem> cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
 			if (cap.isPresent()&&stack.getItem().getTags().contains(container)) {
 				IFluidHandlerItem data = cap.resolve().get();
 				if(data.getFluidInTank(0).getFluid() instanceof SoupFluid)
-					ThermopoliumApi.applyStew(event.getEntityLiving().world,event.getEntityLiving(),SoupFluid.getInfo(data.getFluidInTank(0)));
+					ThermopoliumApi.applyStew(event.getEntityLiving().level,event.getEntityLiving(),SoupFluid.getInfo(data.getFluidInTank(0)));
 			}
 		}
 	}

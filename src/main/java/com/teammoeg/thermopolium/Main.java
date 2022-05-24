@@ -53,7 +53,7 @@ public class Main {
 	public static final ItemGroup itemGroup = new ItemGroup(MODID) {
 		@Override
 		@Nonnull
-		public ItemStack createIcon() {
+		public ItemStack makeIcon() {
 			return new ItemStack(THPBlocks.stew_pot);
 		}
 	};

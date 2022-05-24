@@ -58,6 +58,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class StewItem extends Item {
 	ItemStack capturedStack;
 	
@@ -71,37 +73,37 @@ public class StewItem extends Item {
 		return super.getItemStackLimit(stack);
 	}
 
-	public ItemStack onItemUseFinish(ItemStack itemstack, World worldIn, LivingEntity entityLiving) {
+	public ItemStack finishUsingItem(ItemStack itemstack, World worldIn, LivingEntity entityLiving) {
 
 		SoupInfo si = getInfo(itemstack);
-		if (!worldIn.isRemote) {
+		if (!worldIn.isClientSide) {
 			for (EffectInstance eff : si.effects) {
 				if (eff != null) {
-					entityLiving.addPotionEffect(eff);
+					entityLiving.addEffect(eff);
 				}
 			}
-			Random r = entityLiving.getRNG();
+			Random r = entityLiving.getRandom();
 			for (Pair<EffectInstance, Float> ef : si.foodeffect) {
 				if (r.nextFloat() < ef.getSecond())
-					entityLiving.addPotionEffect(ef.getFirst());
+					entityLiving.addEffect(ef.getFirst());
 			}
 		}
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
-			if (!worldIn.isRemote)
-				player.getFoodStats().addStats(si.healing, si.saturation);
-			if (player.abilities.isCreativeMode)
+			if (!worldIn.isClientSide)
+				player.getFoodData().eat(si.healing, si.saturation);
+			if (player.abilities.instabuild)
 				return itemstack;
 
 		}
 		return new ItemStack(Items.BOWL);
 	}
 
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		ItemStack itemstack = playerIn.getItemInHand(handIn);
 
-		playerIn.setActiveHand(handIn);
-		return ActionResult.resultConsume(itemstack);
+		playerIn.startUsingItem(handIn);
+		return ActionResult.consume(itemstack);
 	}
 
 	@Override
@@ -110,18 +112,18 @@ public class StewItem extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		SoupInfo info=StewItem.getInfo(stack);
 		FloatemStack fs=info.stacks.stream().max((t1,t2)->t1.getCount()>t2.getCount()?1:(t1.getCount()==t2.getCount()?0:-1)).orElse(null);
 		if(fs!=null)
-			tooltip.add(new TranslationTextComponent("tooltip.thermopolium.main_ingredient",fs.getStack().getTextComponent()));
+			tooltip.add(new TranslationTextComponent("tooltip.thermopolium.main_ingredient",fs.getStack().getDisplayName()));
 		addPotionTooltip(info.effects, tooltip, 1);
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	public static SoupInfo getInfo(ItemStack stack) {
 		if (stack.hasTag()) {
-			CompoundNBT soupTag = stack.getChildTag("soup");
+			CompoundNBT soupTag = stack.getTagElement("soup");
 			return soupTag == null ? new SoupInfo(new ResourceLocation(stack.getTag().getString("type")))
 					: new SoupInfo(soupTag);
 		}
@@ -133,14 +135,14 @@ public class StewItem extends Item {
 		if (!list.isEmpty()) {
 			for (EffectInstance effectinstance : list) {
 				IFormattableTextComponent iformattabletextcomponent = new TranslationTextComponent(
-						effectinstance.getEffectName());
-				Effect effect = effectinstance.getPotion();
-				Map<Attribute, AttributeModifier> map = effect.getAttributeModifierMap();
+						effectinstance.getDescriptionId());
+				Effect effect = effectinstance.getEffect();
+				Map<Attribute, AttributeModifier> map = effect.getAttributeModifiers();
 				if (!map.isEmpty()) {
 					for (Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 						AttributeModifier attributemodifier = entry.getValue();
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(),
-								effect.getAttributeModifierAmount(effectinstance.getAmplifier(), attributemodifier),
+								effect.getAttributeModifierValue(effectinstance.getAmplifier(), attributemodifier),
 								attributemodifier.getOperation());
 						list1.add(new Pair<>(entry.getKey(), attributemodifier1));
 					}
@@ -155,16 +157,16 @@ public class StewItem extends Item {
 				if (effectinstance.getDuration() > 20) {
 					iformattabletextcomponent = new TranslationTextComponent("potion.withDuration",
 							iformattabletextcomponent,
-							EffectUtils.getPotionDurationString(effectinstance, durationFactor));
+							EffectUtils.formatDuration(effectinstance, durationFactor));
 				}
 
-				lores.add(iformattabletextcomponent.mergeStyle(effect.getEffectType().getColor()));
+				lores.add(iformattabletextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
 			}
 		}
 
 		if (!list1.isEmpty()) {
 			lores.add(StringTextComponent.EMPTY);
-			lores.add((new TranslationTextComponent("potion.whenDrank")).mergeStyle(TextFormatting.DARK_PURPLE));
+			lores.add((new TranslationTextComponent("potion.whenDrank")).withStyle(TextFormatting.DARK_PURPLE));
 
 			for (Pair<Attribute, AttributeModifier> pair : list1) {
 				AttributeModifier attributemodifier2 = pair.getSecond();
@@ -179,17 +181,17 @@ public class StewItem extends Item {
 
 				if (d0 > 0.0D) {
 					lores.add((new TranslationTextComponent(
-							"attribute.modifier.plus." + attributemodifier2.getOperation().getId(),
-							ItemStack.DECIMALFORMAT.format(d1),
-							new TranslationTextComponent(pair.getFirst().getAttributeName())))
-									.mergeStyle(TextFormatting.BLUE));
+							"attribute.modifier.plus." + attributemodifier2.getOperation().toValue(),
+							ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1),
+							new TranslationTextComponent(pair.getFirst().getDescriptionId())))
+									.withStyle(TextFormatting.BLUE));
 				} else if (d0 < 0.0D) {
 					d1 = d1 * -1.0D;
 					lores.add((new TranslationTextComponent(
-							"attribute.modifier.take." + attributemodifier2.getOperation().getId(),
-							ItemStack.DECIMALFORMAT.format(d1),
-							new TranslationTextComponent(pair.getFirst().getAttributeName())))
-									.mergeStyle(TextFormatting.RED));
+							"attribute.modifier.take." + attributemodifier2.getOperation().toValue(),
+							ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1),
+							new TranslationTextComponent(pair.getFirst().getDescriptionId())))
+									.withStyle(TextFormatting.RED));
 				}
 			}
 		}
@@ -203,7 +205,7 @@ public class StewItem extends Item {
 
 	public static List<FloatemStack> getItems(ItemStack stack) {
 		if (stack.hasTag()) {
-			CompoundNBT nbt = stack.getChildTag("soup");
+			CompoundNBT nbt = stack.getTagElement("soup");
 			if (nbt != null)
 				return SoupInfo.getStacks(nbt);
 		}
@@ -211,28 +213,28 @@ public class StewItem extends Item {
 	}
 	public static ResourceLocation getBase(ItemStack stack) {
 		if (stack.hasTag()) {
-			CompoundNBT nbt = stack.getChildTag("soup");
+			CompoundNBT nbt = stack.getTagElement("soup");
 			if (nbt != null)
 				return new ResourceLocation(SoupInfo.getRegName(nbt));
 		}
 		return BowlContainingRecipe.extractFluid(stack).getFluid().getRegistryName();
 	}
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+		if (this.allowdedIn(group)) {
 			ItemStack is = new ItemStack(this);
 			is.getOrCreateTag().putString("type", fluid.toString());
 			items.add(is);
 		}
 	}
 
-	public UseAction getUseAction(ItemStack stack) {
+	public UseAction getUseAnimation(ItemStack stack) {
 		return UseAction.DRINK;
 	}
 
 	ResourceLocation fluid;
 	// fake food to trick mechanics
-	public static final Food fakefood = new Food.Builder().hunger(4).saturation(0.2f).fastToEat()
+	public static final Food fakefood = new Food.Builder().nutrition(4).saturationMod(0.2f).fast()
 			.meat().build();
 
 	public StewItem(String name, ResourceLocation fluid, Properties properties) {
@@ -244,7 +246,7 @@ public class StewItem extends Item {
 	}
 
 	@Override
-	public Food getFood() {
-		return super.getFood();
+	public Food getFoodProperties() {
+		return super.getFoodProperties();
 	}
 }

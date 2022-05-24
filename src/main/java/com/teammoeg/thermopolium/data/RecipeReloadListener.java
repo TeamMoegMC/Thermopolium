@@ -82,7 +82,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
     }
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onRecipesUpdated(RecipesUpdatedEvent event) {
-		if (!Minecraft.getInstance().isSingleplayer())
+		if (!Minecraft.getInstance().hasSingleplayerServer())
 			buildRecipeLists(event.getRecipeManager());
 	}
 
@@ -93,31 +93,31 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 			return FoodValueRecipe.recipes.get(i);
 		for (SmokingRecipe sr : irs) {
 			if (sr.getIngredients().get(0).test(iis)) {
-				ItemStack reslt = sr.getCraftingResult(null);
+				ItemStack reslt = sr.assemble(null);
 				if (DissolveRecipe.recipes.stream().anyMatch(e -> e.test(reslt)))
 					continue;
 				FoodValueRecipe ret = addCookingTime(reslt.getItem(), reslt, irs, true);
-				Food of = i.getFood();
-				if (of != null && of.getHealing() > ret.heal) {
+				Food of = i.getFoodProperties();
+				if (of != null && of.getNutrition() > ret.heal) {
 					ret.effects = of.getEffects();
-					ret.heal = of.getHealing();
-					ret.sat = of.getSaturation();
+					ret.heal = of.getNutrition();
+					ret.sat = of.getSaturationModifier();
 					ret.setRepersent(iis);
 				}
 				FoodValueRecipe.recipes.put(i, ret);
-				ret.processtimes.put(i, sr.getCookTime() + ret.processtimes.getOrDefault(reslt.getItem(), 0));
+				ret.processtimes.put(i, sr.getCookingTime() + ret.processtimes.getOrDefault(reslt.getItem(), 0));
 				return ret;
 			}
 		}
 		if (force) {
-			Food of = i.getFood();
+			Food of = i.getFoodProperties();
 			FoodValueRecipe ret = FoodValueRecipe.recipes.computeIfAbsent(i,
 					e -> new FoodValueRecipe(new ResourceLocation(Main.MODID, "food/generated/" + (generated_fv++)), 0,
 							0, iis, e));
-			if (of != null && of.getHealing() > ret.heal) {
+			if (of != null && of.getNutrition() > ret.heal) {
 				ret.effects = of.getEffects();
-				ret.heal = of.getHealing();
-				ret.sat = of.getSaturation();
+				ret.heal = of.getNutrition();
+				ret.sat = of.getSaturationModifier();
 				ret.setRepersent(iis);
 			}
 			return ret;
@@ -138,7 +138,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 		FoodValueRecipe.recipes = filterRecipes(recipes, FoodValueRecipe.class, FoodValueRecipe.TYPE)
 				.flatMap(t -> t.processtimes.keySet().stream().map(i -> new Pair<>(i, t)))
 				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
-		List<SmokingRecipe> irs = recipeManager.getRecipesForType(IRecipeType.SMOKING);
+		List<SmokingRecipe> irs = recipeManager.getAllRecipesFor(IRecipeType.SMOKING);
 		DissolveRecipe.recipes = filterRecipes(recipes, DissolveRecipe.class, DissolveRecipe.TYPE)
 				.collect(Collectors.toList());
 		CookingRecipe.recipes = filterRecipes(recipes, CookingRecipe.class, CookingRecipe.TYPE)

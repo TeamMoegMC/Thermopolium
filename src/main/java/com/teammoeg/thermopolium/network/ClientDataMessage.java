@@ -52,9 +52,9 @@ public class ClientDataMessage {
 
 	void handle(Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
-			ServerWorld world = Objects.requireNonNull(context.get().getSender()).getServerWorld();
+			ServerWorld world = Objects.requireNonNull(context.get().getSender()).getLevel();
 			if (world.isAreaLoaded(pos, 1)) {
-				TileEntity tile = world.getTileEntity(pos);
+				TileEntity tile = world.getBlockEntity(pos);
 				if (tile instanceof INetworkTile)
 					((INetworkTile) tile).handleMessage(type, message);
 			}

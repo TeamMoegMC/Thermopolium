@@ -126,10 +126,10 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 
 	@Override
 	public void tick() {
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			working=false;
 			if (processMax > 0) {
-				TileEntity te=world.getTileEntity(pos.down());
+				TileEntity te=level.getBlockEntity(worldPosition.below());
 				if(te instanceof AbstractStove) {
 					int rh=((AbstractStove) te).requestHeat();
 					process+=rh;
@@ -223,12 +223,12 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 	}
 
 	private void prepareWork() {
-		if (rsstate && proctype == 0 && !operate && world.isBlockPowered(this.pos))
+		if (rsstate && proctype == 0 && !operate && level.hasNeighborSignal(this.worldPosition))
 			operate = true;
 		
 		if (operate && proctype == 0) {
 			operate = false;
-			TileEntity te=world.getTileEntity(pos.down());
+			TileEntity te=level.getBlockEntity(worldPosition.below());
 			if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
 				return;
 			if (doBoil())
@@ -299,7 +299,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			if (!is.isEmpty()) {
 
 				if (is.getItem() == Items.POTION) {
-					outer: for (EffectInstance n : PotionUtils.getEffectsFromStack(is)) {
+					outer: for (EffectInstance n : PotionUtils.getMobEffects(is)) {
 						for (EffectInstance eff : cr) {
 							if (SoupInfo.isEffectEquals(eff, n))
 								continue outer;
@@ -324,7 +324,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			ItemStack is = inv.getStackInSlot(i);
 			if (!is.isEmpty()) {
 				if (is.getItem() == Items.POTION) {
-					for (EffectInstance eff : PotionUtils.getEffectsFromStack(is))
+					for (EffectInstance eff : PotionUtils.getMobEffects(is))
 						current.addEffect(eff, parts);
 					inv.setStackInSlot(i, new ItemStack(Items.GLASS_BOTTLE));
 				} else {
@@ -333,7 +333,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 						if (ois.isEmpty()) {
 							interninv.set(j, is.copy());
 							break;
-						} else if (ois.isItemEqual(is) && ItemStack.areItemStackTagsEqual(ois, is)) {
+						} else if (ois.sameItem(is) && ItemStack.tagMatches(ois, is)) {
 							ois.setCount(ois.getCount() + is.getCount());
 							break;
 						}
@@ -477,7 +477,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		}
 		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
 			return false;
-		TileEntity te=world.getTileEntity(pos.down());
+		TileEntity te=level.getBlockEntity(worldPosition.below());
 		if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
 			return false;
 		SoupInfo n = SoupFluid.getInfo(fs);
@@ -502,7 +502,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		}
 		if (tank.getCapacity() - tank.getFluidAmount() < fs.getAmount())
 			return false;
-		TileEntity te=world.getTileEntity(pos.down());
+		TileEntity te=level.getBlockEntity(worldPosition.below());
 		if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
 			return false;
 		SoupInfo n = SoupFluid.getInfo(fs);

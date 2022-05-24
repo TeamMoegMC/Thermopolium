@@ -73,12 +73,12 @@ public class SoupInfo {
 	public SoupInfo(CompoundNBT nbt) {
 		stacks = nbt.getList("items", 10).stream().map(e -> (CompoundNBT) e).map(FloatemStack::new)
 				.collect(Collectors.toList());
-		effects = nbt.getList("effects", 10).stream().map(e -> (CompoundNBT) e).map(EffectInstance::read)
+		effects = nbt.getList("effects", 10).stream().map(e -> (CompoundNBT) e).map(EffectInstance::load)
 				.collect(Collectors.toList());
 		healing = nbt.getInt("heal");
 		saturation = nbt.getFloat("sat");
 		foodeffect = nbt.getList("feffects", 10).stream().map(e -> (CompoundNBT) e)
-				.map(e -> new Pair<>(EffectInstance.read(e.getCompound("effect")), e.getFloat("chance")))
+				.map(e -> new Pair<>(EffectInstance.load(e.getCompound("effect")), e.getFloat("chance")))
 				.collect(Collectors.toList());
 		base = new ResourceLocation(nbt.getString("base"));
 		shrinkedFluid=nbt.getFloat("afluid");
@@ -134,14 +134,14 @@ public class SoupInfo {
 		completeEffects();
 	}
 	public void completeData() {
-		stacks.sort(Comparator.comparingInt(e->Item.getIdFromItem(e.stack.getItem())));
-		foodeffect.sort(Comparator.<Pair<EffectInstance,Float>>comparingInt(e->Effect.getId(e.getFirst().getPotion())).thenComparing(Pair::getSecond));
+		stacks.sort(Comparator.comparingInt(e->Item.getId(e.stack.getItem())));
+		foodeffect.sort(Comparator.<Pair<EffectInstance,Float>>comparingInt(e->Effect.getId(e.getFirst().getEffect())).thenComparing(Pair::getSecond));
 	}
 	public void completeEffects() {
-		effects.sort(Comparator.<EffectInstance>comparingInt(x->Effect.getId(x.getPotion())).thenComparingInt(e->e.getDuration()));
+		effects.sort(Comparator.<EffectInstance>comparingInt(x->Effect.getId(x.getEffect())).thenComparingInt(e->e.getDuration()));
 	}
 	public static boolean isEffectEquals(EffectInstance t1, EffectInstance t2) {
-		return t1.getPotion() == t2.getPotion() && t1.getAmplifier() == t2.getAmplifier();
+		return t1.getEffect() == t2.getEffect() && t1.getAmplifier() == t2.getAmplifier();
 	}
 
 	public void addEffect(EffectInstance eff, float parts) {
@@ -171,10 +171,10 @@ public class SoupInfo {
 				foodeffect.addAll(fvr.effects);
 				continue;
 			}
-			Food f = fs.getItem().getFood();
+			Food f = fs.getItem().getFoodProperties();
 			if (f != null) {
-				nh += fs.count * f.getHealing();
-				ns += fs.count * f.getSaturation();
+				nh += fs.count * f.getNutrition();
+				ns += fs.count * f.getSaturationModifier();
 				foodeffect.addAll(f.getEffects());
 			}
 		}
@@ -244,10 +244,10 @@ public class SoupInfo {
 
 	public void write(CompoundNBT nbt) {
 		nbt.put("items", SerializeUtil.toNBTList(stacks, FloatemStack::serializeNBT));
-		nbt.put("effects", SerializeUtil.toNBTList(effects, e -> e.write(new CompoundNBT())));
+		nbt.put("effects", SerializeUtil.toNBTList(effects, e -> e.save(new CompoundNBT())));
 		nbt.put("feffects", SerializeUtil.toNBTList(foodeffect, e -> {
 			CompoundNBT cnbt = new CompoundNBT();
-			cnbt.put("effect", e.getFirst().write(new CompoundNBT()));
+			cnbt.put("effect", e.getFirst().save(new CompoundNBT()));
 			cnbt.putFloat("chance", e.getSecond());
 			return cnbt;
 		}));

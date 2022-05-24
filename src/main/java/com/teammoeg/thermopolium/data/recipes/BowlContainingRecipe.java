@@ -80,7 +80,7 @@ public class BowlContainingRecipe extends IDataRecipe {
 		pack.writeRegistryId(fluid);
 	}
 
-	public void serialize(JsonObject jo) {
+	public void serializeRecipeData(JsonObject jo) {
 		jo.addProperty("item", bowl.getRegistryName().toString());
 		jo.addProperty("fluid", fluid.getRegistryName().toString());
 	}

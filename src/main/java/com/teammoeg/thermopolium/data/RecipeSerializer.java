@@ -39,7 +39,7 @@ public class RecipeSerializer<T extends IDataRecipe>
 	BiConsumer<T, PacketBuffer> writer;
 	static final Logger logger=LogManager.getLogger(Main.MODID+" recipe serialize");
 	@Override
-	public T read(ResourceLocation recipeId, JsonObject json) {
+	public T fromJson(ResourceLocation recipeId, JsonObject json) {
 		try {
 			return jsfactory.apply(recipeId, json);
 		}catch(InvalidRecipeException e) {
@@ -48,12 +48,12 @@ public class RecipeSerializer<T extends IDataRecipe>
 	}
 
 	@Override
-	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
+	public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
 		return pkfactory.apply(recipeId, buffer);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, T recipe) {
+	public void toNetwork(PacketBuffer buffer, T recipe) {
 		writer.accept(recipe, buffer);
 	}
 

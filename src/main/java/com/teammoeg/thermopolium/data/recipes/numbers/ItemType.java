@@ -116,6 +116,6 @@ public class ItemType implements StewNumber {
 
 	@Override
 	public String getTranslation(TranslationProvider p) {
-		return p.getTranslation(type.getTranslationKey());
+		return p.getTranslation(type.getDescriptionId());
 	}
 }

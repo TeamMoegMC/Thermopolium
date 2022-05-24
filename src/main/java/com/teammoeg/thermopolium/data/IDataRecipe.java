@@ -27,21 +27,12 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public abstract class IDataRecipe implements IRecipe<IInventory>, IFinishedRecipe {
+public abstract class IDataRecipe implements IRecipe<IInventory> {
 	@Override
-	public ResourceLocation getID() {
+	public ResourceLocation getId() {
 		return id;
 	}
 
-	@Override
-	public JsonObject getAdvancementJson() {
-		return null;
-	}
-
-	@Override
-	public ResourceLocation getAdvancementID() {
-		return null;
-	}
 
 	ResourceLocation id;
 
@@ -55,22 +46,18 @@ public abstract class IDataRecipe implements IRecipe<IInventory>, IFinishedRecip
 	}
 
 	@Override
-	public ItemStack getCraftingResult(IInventory inv) {
+	public ItemStack assemble(IInventory inv) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return false;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getResultItem() {
 		return ItemStack.EMPTY;
 	}
-
-	@Override
-	public ResourceLocation getId() {
-		return id;
-	}
+	public abstract void serializeRecipeData(JsonObject json);
 }

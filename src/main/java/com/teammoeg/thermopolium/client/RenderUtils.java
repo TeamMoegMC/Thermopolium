@@ -53,45 +53,45 @@ public class RenderUtils {
 	@SuppressWarnings("deprecation")
 	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h) {
 		FluidStack fluid = tank.getFluid();
-		transform.push();
+		transform.pushPose();
 
-		IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 		if (fluid != null && fluid.getFluid() != null) {
 			int fluidHeight = (int) (h * (fluid.getAmount() / (float) tank.getCapacity()));
 			drawRepeatedFluidSpriteGui(buffer, transform, fluid, x, y + h - fluidHeight, w, fluidHeight);
 			RenderSystem.color3f(1, 1, 1);
 		}
-		buffer.finish();
-		transform.pop();
+		buffer.endBatch();
+		transform.popPose();
 	}
 
 	private static RenderType getGui(ResourceLocation texture) {
-		return RenderType.makeType("gui_" + texture, DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256,
-				RenderType.State.getBuilder().texture(new RenderState.TextureState(texture, false, false))
-						.alpha(new RenderState.AlphaState(0.5F)).build(false));
+		return RenderType.create("gui_" + texture, DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256,
+				RenderType.State.builder().setTextureState(new RenderState.TextureState(texture, false, false))
+						.setAlphaState(new RenderState.AlphaState(0.5F)).createCompositeState(false));
 	}
 
 	private static void buildVertex(IVertexBuilder bu, MatrixStack transform, float r, float g, float b, float a,
 			float p1, float p2, float u0, float u1, int light, int overlay) {
-		bu.pos(transform.getLast().getMatrix(), p1, p2, 0).color(r, g, b, a).tex(u0, u1).overlay(overlay)
-				.lightmap(light).normal(transform.getLast().getNormal(), 1, 1, 1).endVertex();
+		bu.vertex(transform.last().pose(), p1, p2, 0).color(r, g, b, a).uv(u0, u1).overlayCoords(overlay)
+				.uv2(light).normal(transform.last().normal(), 1, 1, 1).endVertex();
 	}
 
 	public static void drawRepeatedFluidSpriteGui(IRenderTypeBuffer.Impl buffer, MatrixStack transform,
 			FluidStack fluid, float x, float y, float w, float h) {
-		RenderType renderType = getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		RenderType renderType = getGui(PlayerContainer.BLOCK_ATLAS);
 		IVertexBuilder builder = buffer.getBuffer(renderType);
 		TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager()
-				.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+				.getAtlas(PlayerContainer.BLOCK_ATLAS)
 				.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
 		if (iW > 0 && iH > 0)
-			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(),
-					sprite.getMinV(), sprite.getMaxV(), (col >> 16 & 255) / 255.0f, (col >> 8 & 255) / 255.0f,
-					(col & 255) / 255.0f, 0.8f, LightTexture.packLight(15, 15), OverlayTexture.NO_OVERLAY);
-		buffer.finish(renderType);
+			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH, sprite.getU0(), sprite.getU1(),
+					sprite.getV0(), sprite.getV1(), (col >> 16 & 255) / 255.0f, (col >> 8 & 255) / 255.0f,
+					(col & 255) / 255.0f, 0.8f, LightTexture.pack(15, 15), OverlayTexture.NO_OVERLAY);
+		buffer.endBatch(renderType);
 	}
 
 	public static void drawRepeatedSprite(IVertexBuilder builder, MatrixStack transform, float x, float y, float w,

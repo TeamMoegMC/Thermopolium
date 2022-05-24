@@ -30,6 +30,6 @@ public class IconItem extends THPItem {
 	}
 	//omit to avoid display in JEI and CT
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
 
 }

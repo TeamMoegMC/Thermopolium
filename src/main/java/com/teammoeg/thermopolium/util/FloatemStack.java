@@ -77,7 +77,7 @@ public class FloatemStack {
 	}
 
 	public CompoundNBT write(CompoundNBT nbt) {
-		CompoundNBT cnbt = stack.write(nbt);
+		CompoundNBT cnbt = stack.save(nbt);
 		cnbt.putFloat("th_countf", count);
 		return cnbt;
 	}
@@ -91,7 +91,7 @@ public class FloatemStack {
 	}
 
 	public boolean isDamageable() {
-		return stack.isDamageable();
+		return stack.isDamageableItem();
 	}
 
 	public boolean isDamaged() {
@@ -99,11 +99,11 @@ public class FloatemStack {
 	}
 
 	public int getDamage() {
-		return stack.getDamage();
+		return stack.getDamageValue();
 	}
 
 	public void setDamage(int damage) {
-		stack.setDamage(damage);
+		stack.setDamageValue(damage);
 	}
 
 	public int getMaxDamage() {
@@ -127,15 +127,15 @@ public class FloatemStack {
 	}
 
 	public boolean isItemEqual(ItemStack other) {
-		return stack.isItemEqual(other);
+		return stack.sameItem(other);
 	}
 
 	public boolean isItemEqualIgnoreDurability(ItemStack stack) {
-		return stack.isItemEqualIgnoreDurability(stack);
+		return stack.sameItemStackIgnoreDurability(stack);
 	}
 
 	public String getTranslationKey() {
-		return stack.getTranslationKey();
+		return stack.getDescriptionId();
 	}
 
 	public boolean hasTag() {
@@ -151,15 +151,15 @@ public class FloatemStack {
 	}
 
 	public CompoundNBT getOrCreateChildTag(String key) {
-		return stack.getOrCreateChildTag(key);
+		return stack.getOrCreateTagElement(key);
 	}
 
 	public CompoundNBT getChildTag(String key) {
-		return stack.getChildTag(key);
+		return stack.getTagElement(key);
 	}
 
 	public void removeChildTag(String p_196083_1_) {
-		stack.removeChildTag(p_196083_1_);
+		stack.removeTagKey(p_196083_1_);
 	}
 
 	public void setTag(CompoundNBT nbt) {
@@ -167,23 +167,23 @@ public class FloatemStack {
 	}
 
 	public ITextComponent getDisplayName() {
-		return stack.getDisplayName();
+		return stack.getHoverName();
 	}
 
 	public ItemStack setDisplayName(ITextComponent name) {
-		return stack.setDisplayName(name);
+		return stack.setHoverName(name);
 	}
 
 	public void clearCustomName() {
-		stack.clearCustomName();
+		stack.resetHoverName();
 	}
 
 	public boolean hasDisplayName() {
-		return stack.hasDisplayName();
+		return stack.hasCustomHoverName();
 	}
 
 	public boolean hasEffect() {
-		return stack.hasEffect();
+		return stack.hasFoil();
 	}
 
 	public Rarity getRarity() {
@@ -191,11 +191,11 @@ public class FloatemStack {
 	}
 
 	public void setTagInfo(String key, INBT value) {
-		stack.setTagInfo(key, value);
+		stack.addTagElement(key, value);
 	}
 
 	public ITextComponent getTextComponent() {
-		return stack.getTextComponent();
+		return stack.getDisplayName();
 	}
 
 	public float getCount() {
@@ -217,18 +217,18 @@ public class FloatemStack {
 	}
 
 	public boolean isFood() {
-		return stack.isFood();
+		return stack.isEdible();
 	}
 
 	public boolean equals(ItemStack other) {
 		if (this.getItem() != other.getItem()) {
 			return false;
 		}
-		return ItemStack.areItemStackTagsEqual(this.getStack(), other);
+		return ItemStack.tagMatches(this.getStack(), other);
 	}
 
 	public void deserializeNBT(CompoundNBT nbt) {
-		stack = ItemStack.read(nbt);
+		stack = ItemStack.of(nbt);
 		this.count = nbt.getFloat("th_countf");
 	}
 }

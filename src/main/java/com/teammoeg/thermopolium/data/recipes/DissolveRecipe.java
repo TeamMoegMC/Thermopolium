@@ -56,7 +56,7 @@ public class DissolveRecipe extends IDataRecipe {
 
 	public DissolveRecipe(ResourceLocation id, JsonObject jo) {
 		super(id);
-		item = Ingredient.deserialize(jo.get("item"));
+		item = Ingredient.fromJson(jo.get("item"));
 		time = jo.get("time").getAsInt();
 	}
 
@@ -66,18 +66,18 @@ public class DissolveRecipe extends IDataRecipe {
 
 	public DissolveRecipe(ResourceLocation id, PacketBuffer data) {
 		super(id);
-		item = Ingredient.read(data);
+		item = Ingredient.fromNetwork(data);
 		time = data.readVarInt();
 	}
 
 	public void write(PacketBuffer data) {
-		item.write(data);
+		item.toNetwork(data);
 		data.writeVarInt(time);
 	}
 
 	@Override
-	public void serialize(JsonObject json) {
-		json.add("item", item.serialize());
+	public void serializeRecipeData(JsonObject json) {
+		json.add("item", item.toJson());
 		json.addProperty("time", time);
 	}
 

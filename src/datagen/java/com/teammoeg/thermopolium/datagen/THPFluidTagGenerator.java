@@ -44,7 +44,7 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 
 
 	@Override
-	protected void registerTags() {
+	protected void addTags() {
 
 		tag("stews").add(THPFluids.getAll().collect(Collectors.toList()).toArray(new Fluid[0]));
 		tag(new ResourceLocation("frostedheart","drink")).addTag(otag("stews"));
@@ -54,11 +54,11 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 	}
 
 	private Builder<Fluid> tag(String s) {
-		return this.getOrCreateBuilder(FluidTags.createOptional(mrl(s)));
+		return this.tag(FluidTags.createOptional(mrl(s)));
 	}
 
 	private Builder<Fluid> tag(ResourceLocation s) {
-		return this.getOrCreateBuilder(FluidTags.createOptional(s));
+		return this.tag(FluidTags.createOptional(s));
 	}
 
 	private ResourceLocation rl(RegistryObject<Fluid> it) {
@@ -96,7 +96,7 @@ public class THPFluidTagGenerator extends TagsProvider<Fluid> {
 	}
 
 	@Override
-	protected Path makePath(ResourceLocation id) {
+	protected Path getPath(ResourceLocation id) {
 		return this.generator.getOutputFolder()
 				.resolve("data/" + id.getNamespace() + "/tags/fluids/" + id.getPath() + ".json");
 	}

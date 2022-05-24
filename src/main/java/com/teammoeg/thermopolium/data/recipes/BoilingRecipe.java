@@ -81,7 +81,7 @@ public class BoilingRecipe extends IDataRecipe {
 	}
 
 	@Override
-	public void serialize(JsonObject json) {
+	public void serializeRecipeData(JsonObject json) {
 		json.addProperty("from", before.getRegistryName().toString());
 		json.addProperty("to", after.getRegistryName().toString());
 		json.addProperty("time", time);

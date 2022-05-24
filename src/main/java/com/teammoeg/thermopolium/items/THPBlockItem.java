@@ -31,7 +31,7 @@ public class THPBlockItem extends BlockItem {
 	}
 
 	public THPBlockItem(Block block, Item.Properties props, String name) {
-		this(block, props.group(Main.itemGroup));
+		this(block, props.tab(Main.itemGroup));
 		this.setRegistryName(Main.MODID, name);
 		Contents.registeredItems.add(this);
 	}

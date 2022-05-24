@@ -26,10 +26,12 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
 import com.cannolicatfish.rankine.init.RankineItems;
+import com.google.gson.JsonObject;
 import com.teammoeg.thermopolium.Contents.THPBlocks;
 import com.teammoeg.thermopolium.Contents.THPItems;
 import com.teammoeg.thermopolium.Main;
 import com.teammoeg.thermopolium.THPFluids;
+import com.teammoeg.thermopolium.data.IDataRecipe;
 import com.teammoeg.thermopolium.data.recipes.BoilingRecipe;
 import com.teammoeg.thermopolium.data.recipes.BowlContainingRecipe;
 import com.teammoeg.thermopolium.data.recipes.CookingRecipe;
@@ -49,6 +51,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeMod;
@@ -76,13 +79,43 @@ public class THPRecipeProvider extends RecipeProvider {
 			pumpkin = mrl("vegetables/pumpkin"),
 			walnut = mrl("walnut");
 	static final Fluid water = fluid(mrl("nail_soup")), milk = fluid(mrl("scalded_milk")), stock = fluid(mrl("stock"));
-	public static List<IFinishedRecipe> recipes=new ArrayList<>();
+	public static List<IDataRecipe> recipes=new ArrayList<>();
 	public THPRecipeProvider(DataGenerator generatorIn) {
 		super(generatorIn);
 	}
 
 	@Override
-	protected void registerRecipes(@Nonnull Consumer<IFinishedRecipe> out) {
+	protected void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> outx) {
+		Consumer<IDataRecipe> out=r->{
+			outx.accept(new IFinishedRecipe() {
+
+				@Override
+				public void serializeRecipeData(JsonObject jo) {
+					r.serializeRecipeData(jo);
+				}
+
+				@Override
+				public ResourceLocation getId() {
+					return r.getId();
+				}
+
+				@Override
+				public IRecipeSerializer<?> getType() {
+					return r.getSerializer();
+				}
+
+				@Override
+				public JsonObject serializeAdvancement() {
+					return null;
+				}
+
+				@Override
+				public ResourceLocation getAdvancementId() {
+					return null;
+				}
+				
+			});
+		};
 		for (String s : THPFluids.getSoupfluids()) {
 			ResourceLocation fs = mrl(s);
 			out.accept(new BowlContainingRecipe(rl("bowl/" + s), item(fs), fluid(fs)));
@@ -96,12 +129,12 @@ public class THPRecipeProvider extends RecipeProvider {
 		out.accept(new FoodValueRecipe(rl("food/pumpkin"),3,6f,new ItemStack(Items.PUMPKIN),Items.PUMPKIN,Items.CARVED_PUMPKIN));
 		out.accept(new FoodValueRecipe(rl("food/wheat"),3,5f,new ItemStack(Items.WHEAT),Items.WHEAT,Items.WHEAT_SEEDS));
 		out.accept(new FoodValueRecipe(rl("food/fern"),1,0.5f,new ItemStack(Items.FERN),Items.FERN,Items.LARGE_FERN));
-		ShapedRecipeBuilder.shapedRecipe(THPBlocks.stove1).key('D',Items.DIRT).key('S',Items.COBBLESTONE).patternLine("DDD").patternLine("SSS").patternLine("S S").addCriterion("has_cobblestone", hasItem(Blocks.COBBLESTONE)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(THPBlocks.stove2).key('T',Items.BRICK_SLAB).key('B',Items.BRICKS).key('C',Items.CLAY).patternLine("TTT").patternLine("BCB").patternLine("B B").addCriterion("has_bricks", hasItem(Blocks.BRICKS)).build(out);
-		ShapedRecipeBuilder.shapedRecipe(THPItems.clay_pot).key('C',Items.CLAY_BALL).key('S',Items.STICK).patternLine("CCC").patternLine("CSC").patternLine("CCC").addCriterion("has_clay", hasItem(Items.CLAY_BALL)).build(out);
-		net.minecraft.data.CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(THPItems.clay_pot),THPBlocks.stew_pot,0.35f,200).addCriterion("has_claypot",hasItem(THPItems.clay_pot)).build(out);
-		//ShapedRecipeBuilder.shapedRecipe(THPBlocks.stew_pot).key('B',Items.BRICK).key('C',Items.CLAY_BALL).patternLine("BCB").patternLine("B B").patternLine("BBB").addCriterion("has_brick", hasItem(Items.BRICK)).build(out);
-		//ShapelessRecipeBuilder.shapelessRecipe(THPItems.BOOK).addIngredient(Items.BOOK).addIngredient(Items.BOWL).addCriterion("has_bowl", hasItem(Items.BOWL)).build(out);
+		ShapedRecipeBuilder.shaped(THPBlocks.stove1).define('D',Items.DIRT).define('S',Items.COBBLESTONE).pattern("DDD").pattern("SSS").pattern("S S").unlockedBy("has_cobblestone", has(Blocks.COBBLESTONE)).save(outx);
+		ShapedRecipeBuilder.shaped(THPBlocks.stove2).define('T',Items.BRICK_SLAB).define('B',Items.BRICKS).define('C',Items.CLAY).pattern("TTT").pattern("BCB").pattern("B B").unlockedBy("has_bricks", has(Blocks.BRICKS)).save(outx);
+		ShapedRecipeBuilder.shaped(THPItems.clay_pot).define('C',Items.CLAY_BALL).define('S',Items.STICK).pattern("CCC").pattern("CSC").pattern("CCC").unlockedBy("has_clay", has(Items.CLAY_BALL)).save(outx);
+		net.minecraft.data.CookingRecipeBuilder.smelting(Ingredient.of(THPItems.clay_pot),THPBlocks.stew_pot,0.35f,200).unlockedBy("has_claypot",has(THPItems.clay_pot)).save(outx);
+		//ShapedRecipeBuilder.shapedRecipe(THPBlocks.stew_pot).key('B',Items.BRICK).key('C',Items.CLAY_BALL).patternLine("BCB").patternLine("B B").patternLine("BBB").unlockedBy("has_brick", hasItem(Items.BRICK)).build(out);
+		//ShapelessRecipeBuilder.shapelessRecipe(THPItems.BOOK).addIngredient(Items.BOOK).addIngredient(Items.BOWL).unlockedBy("has_bowl", hasItem(Items.BOWL)).build(out);
 		out.accept(new FluidFoodValueRecipe(rl("fluid_food/milk"),0,1.2f,new ItemStack(Items.MILK_BUCKET),4,new ResourceLocation(Main.MODID,"scalded_milk")));
 		out.accept(new FluidFoodValueRecipe(rl("fluid_food/stock"),2,5,null,4,new ResourceLocation(Main.MODID,"stock")));
 		simpleFood(out,2,0.4f,Items.HONEYCOMB);
@@ -179,12 +212,12 @@ public class THPRecipeProvider extends RecipeProvider {
 		cook("nettle_soup").special().med().require().half().of(mrl("fern")).and().not().any().of(seafood).of(meats)
 				.of(cereals).and().then().finish(out);
 	}
-	private void simpleFood(Consumer<IFinishedRecipe> out,int h,float s,Item i) {
+	private void simpleFood(Consumer<IDataRecipe> out,int h,float s,Item i) {
 		out.accept(new FoodValueRecipe(rl("food/"+i.getRegistryName().getPath()),h,s,new ItemStack(i),i));
 	}
 	private DissolveRecipe dissolve(Item item) {
 		return new DissolveRecipe(rl("dissolve/" + item.getRegistryName().getPath()),
-				Ingredient.fromStacks(new ItemStack(item)), 10);
+				Ingredient.of(new ItemStack(item)), 10);
 	}
 
 	private CookingRecipeBuilder cook(String s) {

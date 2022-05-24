@@ -42,38 +42,38 @@ public class THPParticle extends SpriteTexturedParticle {
 	}
 
 	@Override
-	public void renderParticle(IVertexBuilder worldRendererIn, ActiveRenderInfo entityIn, float pt) {
-		float age = (this.age + pt) / maxAge * 32.0F;
+	public void render(IVertexBuilder worldRendererIn, ActiveRenderInfo entityIn, float pt) {
+		float age = (this.age + pt) / lifetime * 32.0F;
 
 		age = MathHelper.clamp(age, 0.0F, 1.0F);
 
-		this.particleScale = originalScale * age;
-		super.renderParticle(worldRendererIn, entityIn, pt);
+		this.quadSize = originalScale * age;
+		super.render(worldRendererIn, entityIn, pt);
 	}
 
 	public void tick() {
-		this.prevPosX = posX;
-		this.prevPosY = posY;
-		this.prevPosZ = posZ;
-		if (age >= maxAge)
-			setExpired();
+		this.xo = x;
+		this.yo = y;
+		this.zo = z;
+		if (age >= lifetime)
+			remove();
 		this.age++;
 
-		this.motionY -= 0.04D * particleGravity;
-		move(motionX, motionY, motionZ);
+		this.yd -= 0.04D * gravity;
+		move(xd, yd, zd);
 
-		if (posY == prevPosY) {
-			this.motionX *= 1.1D;
-			this.motionZ *= 1.1D;
+		if (y == yo) {
+			this.xd *= 1.1D;
+			this.zd *= 1.1D;
 		}
 
-		this.motionX *= 0.96D;
-		this.motionY *= 0.96D;
-		this.motionZ *= 0.96D;
+		this.xd *= 0.96D;
+		this.yd *= 0.96D;
+		this.zd *= 0.96D;
 
 		if (onGround) {
-			this.motionX *= 0.67D;
-			this.motionZ *= 0.67D;
+			this.xd *= 0.67D;
+			this.zd *= 0.67D;
 		}
 	}
 

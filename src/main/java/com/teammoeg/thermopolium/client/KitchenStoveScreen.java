@@ -39,14 +39,14 @@ public class KitchenStoveScreen extends ContainerScreen<KitchenStoveContainer> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
 		this.renderBackground(matrixStack);
-		Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
+		Minecraft.getInstance().getTextureManager().bind(TEXTURE);
 
-		this.blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		if (te.processMax > 0 && te.process > 0) {
 			int h = (int) (20 * (1-te.process / (float) te.processMax));
-			this.blit(matrixStack, guiLeft + 73, guiTop + 7 + h, 176,h, 31,20 - h);
+			this.blit(matrixStack, leftPos + 73, topPos + 7 + h, 176,h, 31,20 - h);
 		}
 	}
 

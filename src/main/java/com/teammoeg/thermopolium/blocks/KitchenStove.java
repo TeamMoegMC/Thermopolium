@@ -58,6 +58,8 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class KitchenStove extends Block {
 	public final String name;
 	protected int lightOpacity;
@@ -77,36 +79,36 @@ public class KitchenStove extends Block {
 		setRegistryName(registryName);
 
 		Contents.registeredBlocks.add(this);
-		Item item = createItemBlock.apply(this, new Item.Properties().group(Main.itemGroup));
+		Item item = createItemBlock.apply(this, new Item.Properties().tab(Main.itemGroup));
 		if (item != null) {
 			item.setRegistryName(registryName);
 			Contents.registeredItems.add(item);
 		}
 	}
 	@Override
-	public VoxelShape getRayTraceShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getVisualShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
 		return VoxelShapes.empty();
 	}
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return 1.0F;
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
+	public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player,
 			Hand handIn, BlockRayTraceResult hit) {
-		ActionResultType p = super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
-		if (p.isSuccessOrConsume())
+		ActionResultType p = super.use(state, worldIn, pos, player, handIn, hit);
+		if (p.consumesAction())
 			return p;
-		KitchenStoveTileEntity tileEntity = (KitchenStoveTileEntity) worldIn.getTileEntity(pos);
+		KitchenStoveTileEntity tileEntity = (KitchenStoveTileEntity) worldIn.getBlockEntity(pos);
 		/*for(Item i:ForgeRegistries.ITEMS) {
 			if(CountingTags.tags.stream().anyMatch(i.getTags()::contains)&&!i.isFood()&&FoodValueRecipe.recipes.get(i)==null)
 				System.out.println(i.getRegistryName());
 		}*/
 		if (handIn == Hand.MAIN_HAND) {
-			if (tileEntity != null && !worldIn.isRemote)
-				NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity, tileEntity.getPos());
+			if (tileEntity != null && !worldIn.isClientSide)
+				NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity, tileEntity.getBlockPos());
 			return ActionResultType.SUCCESS;
 		}
 		return p;
@@ -114,13 +116,13 @@ public class KitchenStove extends Block {
 
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos bp, Random rand) {
-		TileEntity te = worldIn.getTileEntity(bp);
-		if (stateIn.get(LIT)) {
+		TileEntity te = worldIn.getBlockEntity(bp);
+		if (stateIn.getValue(LIT)) {
 			double d0 = bp.getX();
 			double d1 = bp.getY();
 			double d2 = bp.getZ();
 			if (rand.nextDouble() < 0.2D) {
-				worldIn.playSound(d0, d1, d2, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F,
+				worldIn.playLocalSound(d0, d1, d2, SoundEvents.FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F,
 						false);
 			}
 			worldIn.addParticle(ParticleTypes.FLAME, d0 + rand.nextDouble(), bp.getY() + 1, d2 + rand.nextDouble(),
@@ -148,34 +150,34 @@ public class KitchenStove extends Block {
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		if (tileEntity instanceof KitchenStoveTileEntity && state.getBlock() != newState.getBlock()) {
 			KitchenStoveTileEntity te = (KitchenStoveTileEntity) tileEntity;
-			ItemStack is = te.getStackInSlot(0);
+			ItemStack is = te.getItem(0);
 			if (!is.isEmpty())
-				super.spawnAsEntity(worldIn, pos, is);
+				super.popResource(worldIn, pos, is);
 		}
-		super.onReplaced(state, worldIn, pos, newState, isMoving);
+		super.onRemove(state, worldIn, pos, newState, isMoving);
 	}
 
 	@Override
-	protected void fillStateContainer(net.minecraft.state.StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
+	protected void createBlockStateDefinition(net.minecraft.state.StateContainer.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
 		builder.add(FACING).add(LIT).add(FUELED).add(ASH);
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(LIT, false).with(ASH, false).with(FUELED, 0).with(FACING,
-				context.getPlacementHorizontalFacing().getOpposite());
+		return this.defaultBlockState().setValue(LIT, false).setValue(ASH, false).setValue(FUELED, 0).setValue(FACING,
+				context.getHorizontalDirection().getOpposite());
 
 	}
 
 	static final VoxelShape shape = VoxelShapes.or(
-			VoxelShapes.or(Block.makeCuboidShape(0, 0, 0, 16, 14, 16), Block.makeCuboidShape(0, 14, 0, 2, 16, 16)),
-			VoxelShapes.or(Block.makeCuboidShape(0, 14, 0, 16, 16, 2), VoxelShapes
-					.or(Block.makeCuboidShape(14, 14, 0, 16, 16, 16), Block.makeCuboidShape(0, 14, 14, 16, 16, 16))));
+			VoxelShapes.or(Block.box(0, 0, 0, 16, 14, 16), Block.box(0, 14, 0, 2, 16, 16)),
+			VoxelShapes.or(Block.box(0, 14, 0, 16, 16, 2), VoxelShapes
+					.or(Block.box(14, 14, 0, 16, 16, 16), Block.box(0, 14, 14, 16, 16, 16))));
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
@@ -189,7 +191,7 @@ public class KitchenStove extends Block {
 	}
 
 	@Override
-	public boolean isTransparent(BlockState state) {
+	public boolean useShapeForLightOcclusion(BlockState state) {
 		return true;
 	}
 

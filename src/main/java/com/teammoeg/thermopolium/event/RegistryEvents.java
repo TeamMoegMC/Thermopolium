@@ -58,6 +58,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.common.Mod;
 
+import com.teammoeg.thermopolium.Contents.THPItems;
+
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
 	@SubscribeEvent
@@ -82,16 +84,16 @@ public class RegistryEvents {
 				throw e;
 			}
 		}
-		DispenserBlock.registerDispenseBehavior(Items.BOWL, new DefaultDispenseItemBehavior() {
+		DispenserBlock.registerBehavior(Items.BOWL, new DefaultDispenseItemBehavior() {
 			private final DefaultDispenseItemBehavior defaultBehaviour = new DefaultDispenseItemBehavior();
 
 			@Override
-			protected ItemStack dispenseStack(IBlockSource bp, ItemStack is) {
+			protected ItemStack execute(IBlockSource bp, ItemStack is) {
 
-				Direction d = bp.getBlockState().get(DispenserBlock.FACING);
-				BlockPos front = bp.getBlockPos().offset(d);
-				FluidState fs = bp.getWorld().getBlockState(front).getFluidState();
-				TileEntity te = bp.getWorld().getTileEntity(front);
+				Direction d = bp.getBlockState().getValue(DispenserBlock.FACING);
+				BlockPos front = bp.getPos().relative(d);
+				FluidState fs = bp.getLevel().getBlockState(front).getFluidState();
+				TileEntity te = bp.getLevel().getBlockEntity(front);
 				if (te != null) {
 					LazyOptional<IFluidHandler> ip = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
 							d.getOpposite());
@@ -101,19 +103,19 @@ public class RegistryEvents {
 							if (is.getCount() == 1)
 								return ret;
 							is.shrink(1);
-							if (bp.<DispenserTileEntity>getBlockTileEntity().addItemStack(ret) == -1)
+							if (bp.<DispenserTileEntity>getEntity().addItem(ret) == -1)
 								this.defaultBehaviour.dispense(bp, ret);
 						}
 					}
 					;
 					return is;
 				} else if (!fs.isEmpty()) {
-					ItemStack ret = ThermopoliumApi.fillBowl(new FluidStack(fs.getFluid(), 250)).orElse(null);
+					ItemStack ret = ThermopoliumApi.fillBowl(new FluidStack(fs.getType(), 250)).orElse(null);
 					if (ret != null) {
 						if (is.getCount() == 1)
 							return ret;
 						is.shrink(1);
-						if (bp.<DispenserTileEntity>getBlockTileEntity().addItemStack(ret) == -1)
+						if (bp.<DispenserTileEntity>getEntity().addItem(ret) == -1)
 							this.defaultBehaviour.dispense(bp, ret);
 					}
 					return is;
@@ -128,14 +130,14 @@ public class RegistryEvents {
 			/**
 			 * Dispense the specified stack, play the dispense sound and spawn particles.
 			 */
-			public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+			public ItemStack execute(IBlockSource source, ItemStack stack) {
 				
-				BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
-				World world = source.getWorld();
-				Direction d = source.getBlockState().get(DispenserBlock.FACING);
-				BlockPos front = source.getBlockPos().offset(d);
-				FluidState fs = source.getWorld().getBlockState(front).getFluidState();
-				TileEntity te = source.getWorld().getTileEntity(front);
+				BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+				World world = source.getLevel();
+				Direction d = source.getBlockState().getValue(DispenserBlock.FACING);
+				BlockPos front = source.getPos().relative(d);
+				FluidState fs = source.getLevel().getBlockState(front).getFluidState();
+				TileEntity te = source.getLevel().getBlockEntity(front);
 				if (te != null) {
 					LazyOptional<IFluidHandler> ip = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
 							d.getOpposite());
@@ -154,16 +156,16 @@ public class RegistryEvents {
 				return this.defaultBehaviour.dispense(source, stack);
 			}
 		};
-		DispenserBlock.registerDispenseBehavior(Items.MILK_BUCKET, idispenseitembehavior1);
+		DispenserBlock.registerBehavior(Items.MILK_BUCKET, idispenseitembehavior1);
 		DefaultDispenseItemBehavior ddib = new DefaultDispenseItemBehavior() {
 			private final DefaultDispenseItemBehavior defaultBehaviour = new DefaultDispenseItemBehavior();
 
 			@Override
-			protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+			protected ItemStack execute(IBlockSource source, ItemStack stack) {
 				FluidStack fs = BowlContainingRecipe.extractFluid(stack);
-				Direction d = source.getBlockState().get(DispenserBlock.FACING);
-				BlockPos front = source.getBlockPos().offset(d);
-				TileEntity te = source.getWorld().getTileEntity(front);
+				Direction d = source.getBlockState().getValue(DispenserBlock.FACING);
+				BlockPos front = source.getPos().relative(d);
+				TileEntity te = source.getLevel().getBlockEntity(front);
 
 				if (!fs.isEmpty()) {
 					if (te instanceof StewPotTileEntity) {
@@ -172,7 +174,7 @@ public class RegistryEvents {
 							if (stack.getCount() == 1)
 								return ret;
 							stack.shrink(1);
-							if (source.<DispenserTileEntity>getBlockTileEntity().addItemStack(ret) == -1)
+							if (source.<DispenserTileEntity>getEntity().addItem(ret) == -1)
 								this.defaultBehaviour.dispense(source, ret);
 						}
 					} else if (te != null) {
@@ -186,7 +188,7 @@ public class RegistryEvents {
 								if (stack.getCount() == 1)
 									return ret;
 								stack.shrink(1);
-								if (source.<DispenserTileEntity>getBlockTileEntity().addItemStack(ret) == -1)
+								if (source.<DispenserTileEntity>getEntity().addItem(ret) == -1)
 									this.defaultBehaviour.dispense(source, ret);
 							}
 						}
@@ -198,7 +200,7 @@ public class RegistryEvents {
 
 		};
 		for (Item i : THPItems.stews) {
-			DispenserBlock.registerDispenseBehavior(i, ddib);
+			DispenserBlock.registerBehavior(i, ddib);
 		}
 	}
 

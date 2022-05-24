@@ -72,7 +72,7 @@ public class CountingTags extends IDataRecipe {
 	}
 
 	@Override
-	public void serialize(JsonObject json) {
+	public void serializeRecipeData(JsonObject json) {
 		json.add("tags", SerializeUtil.toJsonList(tag, e -> new JsonPrimitive(e.toString())));
 	}
 

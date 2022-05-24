@@ -57,15 +57,15 @@ public class THPLootGenerator extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
-        map.forEach((name, table) -> LootTableManager.validateLootTable(validationtracker, name, table));
+        map.forEach((name, table) -> LootTableManager.validate(validationtracker, name, table));
     }
 
     private static class LTBuilder extends BlockLootTables {
 		@Override
         protected void addTables() {
-        	registerDropSelfLootTable(THPBlocks.stew_pot);
-        	registerDropSelfLootTable(THPBlocks.stove1);
-        	registerDropSelfLootTable(THPBlocks.stove2);
+        	dropSelf(THPBlocks.stew_pot);
+        	dropSelf(THPBlocks.stove1);
+        	dropSelf(THPBlocks.stove2);
         }
 		ArrayList<Block> added=new ArrayList<>();
 		@Override
@@ -74,9 +74,9 @@ public class THPLootGenerator extends LootTableProvider {
 		}
 
 		@Override
-		public void registerDropping(Block blockIn, IItemProvider drop) {
+		public void dropOther(Block blockIn, IItemProvider drop) {
 			added.add(blockIn);
-			super.registerDropping(blockIn, drop);
+			super.dropOther(blockIn, drop);
 		}
 
     }

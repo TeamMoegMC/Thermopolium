@@ -52,7 +52,7 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 
 		public ImageButton(int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn,
 				Button.IPressable onPressIn) {
-			this(xIn, yIn, widthIn, heightIn, xTexStartIn, yTexStartIn, EMPTY_TOOLTIP, onPressIn);
+			this(xIn, yIn, widthIn, heightIn, xTexStartIn, yTexStartIn, NO_TOOLTIP, onPressIn);
 		}
 
 		public ImageButton(int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn,
@@ -63,7 +63,7 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 
 		public ImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int textureWidth,
 				int textureHeight, Button.IPressable onPress, ITextComponent title) {
-			this(x, y, width, height, xTexStart, yTexStart, textureWidth, textureHeight, onPress, EMPTY_TOOLTIP, title);
+			this(x, y, width, height, xTexStart, yTexStart, textureWidth, textureHeight, onPress, NO_TOOLTIP, title);
 		}
 
 		public ImageButton(int p_i244513_1_, int p_i244513_2_, int p_i244513_3_, int p_i244513_4_, int p_i244513_5_,
@@ -81,13 +81,13 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 			this.y = yIn;
 		}
 
-		public void renderWidget(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 			int i = 0, j = state * this.height;
 
 			if (this.isHovered()) {
 				i += this.width;
 			}
-			Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
+			Minecraft.getInstance().getTextureManager().bind(TEXTURE);
 			RenderSystem.enableDepthTest();
 			blit(matrixStack, this.x, this.y, this.xTexStart + i, this.yTexStart + j, this.width, this.height,
 					this.textureWidth, this.textureHeight);
@@ -102,10 +102,10 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 
 	public StewPotScreen(StewPotContainer container, PlayerInventory inv, ITextComponent titleIn) {
 		super(container, inv, titleIn);
-		this.titleY = 4;
-		this.titleX = 7;
-		this.playerInventoryTitleY = this.ySize - 92;
-		this.playerInventoryTitleX = 4;
+		this.titleLabelY = 4;
+		this.titleLabelX = 7;
+		this.inventoryLabelY = this.imageHeight - 92;
+		this.inventoryLabelX = 4;
 		te = container.getTile();
 	}
 
@@ -126,7 +126,7 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 	public void init() {
 		super.init();
 		this.buttons.clear();
-		this.addButton(btn1 = new ImageButton(guiLeft + 7, guiTop + 48, 20, 12, 176, 83, (b, s, x, y) -> {
+		this.addButton(btn1 = new ImageButton(leftPos + 7, topPos + 48, 20, 12, 176, 83, (b, s, x, y) -> {
 			if (btn1.state == 0)
 				tooltip.add(start);
 			else
@@ -136,7 +136,7 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 				te.sendMessage((short) 0, 0);
 
 		}));
-		this.addButton(btn2 = new ImageButton(guiLeft + 7, guiTop + 61, 20, 20, 176, 107, (b, s, x, y) -> {
+		this.addButton(btn2 = new ImageButton(leftPos + 7, topPos + 61, 20, 20, 176, 107, (b, s, x, y) -> {
 			if (btn2.state == 1)
 				tooltip.add(nors);
 			else
@@ -159,45 +159,45 @@ public class StewPotScreen extends ContainerScreen<StewPotContainer> {
 				SoupInfo si=SoupFluid.getInfo(te.getTank().getFluid());
 				FloatemStack fs=si.stacks.stream().max((t1,t2)->t1.getCount()>t2.getCount()?1:(t1.getCount()==t2.getCount()?0:-1)).orElse(null);
 				if(fs!=null)
-					tooltip.add(new TranslationTextComponent("tooltip.thermopolium.main_ingredient",fs.getStack().getTextComponent()));
+					tooltip.add(new TranslationTextComponent("tooltip.thermopolium.main_ingredient",fs.getStack().getDisplayName()));
 				StewItem.addPotionTooltip(si.effects,tooltip,1);
 			}
-			RenderUtils.handleGuiTank(transform, te.getTank(), guiLeft + 105, guiTop + 20, 16, 46);
+			RenderUtils.handleGuiTank(transform, te.getTank(), leftPos + 105, topPos + 20, 16, 46);
 		}
 		if (!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 		else
-			super.renderHoveredTooltip(transform, mouseX, mouseY);
+			super.renderTooltip(transform, mouseX, mouseY);
 
 	}
 
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
-		this.font.drawText(matrixStack, this.title, this.titleX, this.titleY, 0xffda856b);
-		ITextComponent name = this.playerInventory.getDisplayName();
-		int w = this.font.getStringWidth(name.getString());
-		this.font.drawText(matrixStack, name, this.xSize - w - this.playerInventoryTitleX, this.playerInventoryTitleY,
+	protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+		this.font.draw(matrixStack, this.title, this.titleLabelX, this.titleLabelY, 0xffda856b);
+		ITextComponent name = this.inventory.getDisplayName();
+		int w = this.font.width(name.getString());
+		this.font.draw(matrixStack, name, this.imageWidth - w - this.inventoryLabelX, this.inventoryLabelY,
 				0xffda856b);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float partial, int x, int y) {
+	protected void renderBg(MatrixStack transform, float partial, int x, int y) {
 		this.renderBackground(transform);
-		Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
+		Minecraft.getInstance().getTextureManager().bind(TEXTURE);
 
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		if (te.processMax > 0 && te.process > 0) {
 			int h = (int) (29 * (te.process / (float) te.processMax));
-			this.blit(transform, guiLeft + 9, guiTop + 17 + h, 176, 54 + h, 16, 29 - h);
+			this.blit(transform, leftPos + 9, topPos + 17 + h, 176, 54 + h, 16, 29 - h);
 		}
 		if (te.proctype > 1) {
 			if (te.proctype == 2)
-				this.blit(transform, guiLeft + 44, guiTop + 16, 176, 0, 54, 54);
-			this.blit(transform, guiLeft + 102, guiTop + 17, 230, 0, 21, 51);
+				this.blit(transform, leftPos + 44, topPos + 16, 176, 0, 54, 54);
+			this.blit(transform, leftPos + 102, topPos + 17, 230, 0, 21, 51);
 		}
 	}
 
 	public boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {
-		return mouseX >= guiLeft + x && mouseY >= guiTop + y && mouseX < guiLeft + x + w && mouseY < guiTop + y + h;
+		return mouseX >= leftPos + x && mouseY >= topPos + y && mouseX < leftPos + x + w && mouseY < topPos + y + h;
 	}
 
 }
