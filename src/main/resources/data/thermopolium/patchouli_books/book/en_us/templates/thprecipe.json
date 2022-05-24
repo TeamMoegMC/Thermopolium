@@ -37,7 +37,7 @@
 			"type": "image",
 			"image": "#img",
 			"width": 200,
-			"height": 200,
+			"height": 210,
 			"scale":0.5,
 			"y":20
 		},

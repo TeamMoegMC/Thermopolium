@@ -141,7 +141,7 @@ repositories {
         url = "https://maven.theillusivec4.top/"
     }
     maven {
-        url "https://cursemaven.com"
+        url "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
@@ -180,6 +180,10 @@ dependencies {
 	
 	compile fg.deobf("curse.maven:crock-pot-404523:3568413")
 	implementation fg.deobf("curse.maven:crock-pot-404523:3568413")
+	
+	compile fg.deobf("curse.maven:simple-farming-327554:3400041")
+	implementation fg.deobf("curse.maven:simple-farming-327554:3400041")
+
 	
 	compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.2:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-53.2")

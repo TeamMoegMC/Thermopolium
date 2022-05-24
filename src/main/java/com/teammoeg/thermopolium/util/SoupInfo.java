@@ -161,7 +161,7 @@ public class SoupInfo {
 
 	public void recalculateHAS() {
 		foodeffect.clear();
-		float nh = MathHelper.clamp(this.getDensity(),1,2);
+		float nh = 0;
 		float ns = 0;
 		for (FloatemStack fs : stacks) {
 			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(fs.getItem());
@@ -182,6 +182,9 @@ public class SoupInfo {
 		if(ffvr!=null) {
 			nh+=ffvr.heal*(1+this.shrinkedFluid);
 			ns+=ffvr.sat*(1+this.shrinkedFluid);
+		}
+		if(nh>0) {
+			nh+=MathHelper.clamp(this.getDensity(),1,2);
 		}
 		this.healing = (int) Math.ceil(nh);
 		this.saturation = ns;

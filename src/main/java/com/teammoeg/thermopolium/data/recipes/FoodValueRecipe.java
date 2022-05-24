@@ -21,6 +21,7 @@ package com.teammoeg.thermopolium.data.recipes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,30 +81,39 @@ public class FoodValueRecipe extends IDataRecipe {
 		heal = jo.get("heal").getAsInt();
 		sat = jo.get("sat").getAsFloat();
 		processtimes = SerializeUtil.parseJsonList(jo.get("items"), x -> {
-			Item i = ForgeRegistries.ITEMS.getValue(new ResourceLocation(x.get("item").getAsString()));
-			int f = 0;
-			if (x.has("time"))
-				f = x.get("time").getAsInt();
-			if(i==Items.AIR)
-				return null;
-			return new Pair<Item, Integer>(i, f);
-		}).stream().filter(e->e!=null).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+			ResourceLocation rl=new ResourceLocation(x.get("item").getAsString());
+			if(ForgeRegistries.ITEMS.containsKey(rl)) {
+				Item i = ForgeRegistries.ITEMS.getValue(rl);
+				int f = 0;
+				if (x.has("time"))
+					f = x.get("time").getAsInt();
+				if(i==Items.AIR)
+					return null;
+				return new Pair<Item, Integer>(i, f);
+			}
+			return null;
+		}).stream().filter(Objects::nonNull).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+		if(processtimes.isEmpty())
+			throw new InvalidRecipeException();
 		effects = SerializeUtil.parseJsonList(jo.get("effects"), x -> {
-			int amplifier = 0;
-			if (x.has("level"))
-				amplifier = x.get("level").getAsInt();
-			int duration = 0;
-			if (x.has("time"))
-				duration = x.get("time").getAsInt();
-			Effect eff = ForgeRegistries.POTIONS.getValue(new ResourceLocation(x.get("effect").getAsString()));
-			if(eff==null)
-				return null;
-			EffectInstance effect = new EffectInstance(eff, duration, amplifier);
-			float f = 1;
-			if (x.has("chance"))
-				f = x.get("chance").getAsInt();
-			return new Pair<>(effect, f);
-		});
+			ResourceLocation rl=new ResourceLocation(x.get("effect").getAsString());
+			if(ForgeRegistries.POTIONS.containsKey(rl)) {
+				int amplifier = 0;
+				if (x.has("level"))
+					amplifier = x.get("level").getAsInt();
+				int duration = 0;
+				if (x.has("time"))
+					duration = x.get("time").getAsInt();
+				Effect eff = ForgeRegistries.POTIONS.getValue(rl);
+				if(eff==null)
+					return null;
+				EffectInstance effect = new EffectInstance(eff, duration, amplifier);
+				float f = 1;
+				if (x.has("chance"))
+					f = x.get("chance").getAsInt();
+				return new Pair<>(effect, f);
+			}return null;
+		}).stream().filter(Objects::nonNull).collect(Collectors.toList());
 		if(effects!=null)
 			effects.removeIf(e->e==null);
 		if (jo.has("item")) {
@@ -111,8 +121,7 @@ public class FoodValueRecipe extends IDataRecipe {
 			if (i.length > 0)
 				repersent = i[0];
 		}
-		if(processtimes.isEmpty())
-			throw new InvalidRecipeException();
+		
 	}
 	@Override
 	public void serialize(JsonObject json) {
