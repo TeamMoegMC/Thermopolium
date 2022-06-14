@@ -67,7 +67,10 @@ public class DietApiImplMixin extends DietApi {
 			IDietResult dr = DietApiImpl.getInstance().get(player,ffvr.getRepersent());
 			if (dr != DietResult.EMPTY)
 				for (Entry<IDietGroup, Float> me : dr.get().entrySet())
-					groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*1.3f, Float::sum);
+					if(me.getKey().isBeneficial()) {
+						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*1.3f, Float::sum);
+					}else
+						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts, Float::sum);
 		}
 		result.setReturnValue(new DietResult(groups));
 	}
