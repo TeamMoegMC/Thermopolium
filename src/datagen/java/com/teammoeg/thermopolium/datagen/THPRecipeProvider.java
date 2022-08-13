@@ -102,8 +102,8 @@ public class THPRecipeProvider extends RecipeProvider {
 		net.minecraft.data.CookingRecipeBuilder.smeltingRecipe(Ingredient.fromItems(THPItems.clay_pot),THPBlocks.stew_pot,0.35f,200).addCriterion("has_claypot",hasItem(THPItems.clay_pot)).build(out);
 		//ShapedRecipeBuilder.shapedRecipe(THPBlocks.stew_pot).key('B',Items.BRICK).key('C',Items.CLAY_BALL).patternLine("BCB").patternLine("B B").patternLine("BBB").addCriterion("has_brick", hasItem(Items.BRICK)).build(out);
 		//ShapelessRecipeBuilder.shapelessRecipe(THPItems.BOOK).addIngredient(Items.BOOK).addIngredient(Items.BOWL).addCriterion("has_bowl", hasItem(Items.BOWL)).build(out);
-		out.accept(new FluidFoodValueRecipe(rl("fluid_food/milk"),0,1.2f,new ItemStack(Items.MILK_BUCKET),4,new ResourceLocation(Main.MODID,"scalded_milk")));
-		out.accept(new FluidFoodValueRecipe(rl("fluid_food/stock"),2,5,null,4,new ResourceLocation(Main.MODID,"stock")));
+		out.accept(new FluidFoodValueRecipe(rl("fluid_food/milk"),0,2f,new ItemStack(Items.MILK_BUCKET),4,new ResourceLocation(Main.MODID,"scalded_milk")));
+		out.accept(new FluidFoodValueRecipe(rl("fluid_food/stock"),2,5f,null,4,new ResourceLocation(Main.MODID,"stock")));
 		simpleFood(out,2,0.4f,Items.HONEYCOMB);
 		simpleFood(out,3,5f,ItemRegistry.amaranthitem);
 		simpleFood(out,3,5f,ItemRegistry.barleyitem);

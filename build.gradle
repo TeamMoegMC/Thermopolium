@@ -255,7 +255,7 @@ String getChangelogText() {
 
 // changelog debugging
 //new File("changelog.html").write getChangelogText()
-/*
+
 curseforge {
     project {
         def envApiKey = System.getenv('CURSEFORGE_API_KEY')
@@ -268,18 +268,10 @@ curseforge {
         addGameVersion project.minecraft_version
 
         mainArtifact (jar) {
-            relations {
-                requiredDependency 'create'
-                requiredDependency 'flywheel'
-                requiredDependency 'immersive-engineering'
-//                requiredDependency 'project-rankine'
-//                requiredDependency 'snow-real-magic'
-//                requiredDependency 'kiwi'
-//                requiredDependency 'primal-winter'
-            }
+        	optionalDependency 'patchouli'
         }
     }
-}*/
+}
 
 // Automatically apply a license header when running checkLicense / updateLicense
 license {

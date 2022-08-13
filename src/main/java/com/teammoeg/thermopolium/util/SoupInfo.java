@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.Mth;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -167,27 +168,27 @@ public class SoupInfo {
 			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(fs.getItem());
 			if (fvr != null) {
 				nh += fvr.heal * fs.count;
-				ns += fvr.sat * fs.count;
+				ns += fvr.sat * fvr.heal * fs.count;
 				foodeffect.addAll(fvr.effects);
 				continue;
 			}
 			Food f = fs.getItem().getFood();
 			if (f != null) {
 				nh += fs.count * f.getHealing();
-				ns += fs.count * f.getSaturation();
+				ns += fs.count * f.getSaturation() * f.getHealing();
 				foodeffect.addAll(f.getEffects());
 			}
 		}
 		FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(this.base);
 		if(ffvr!=null) {
 			nh+=ffvr.heal*(1+this.shrinkedFluid);
-			ns+=ffvr.sat*(1+this.shrinkedFluid);
+			ns+=ffvr.sat*(1+this.shrinkedFluid)/2;
 		}
-		if(nh>0) {
-			nh+=MathHelper.clamp(this.getDensity(),1,2);
-		}
-		this.healing = (int) Math.ceil(nh);
-		this.saturation = ns;
+		float dense = this.getDensity();
+		int conv = (int) (MathHelper.clamp((dense - 1) / 2f, 0, 1) * 0.3 * nh);
+		this.healing = (int) Math.ceil(nh - conv);
+		ns += conv / 2f;
+		this.saturation = Math.max(0.7f, ns / this.healing);
 	}
 
 	public void adjustParts(float oparts, float parts) {
