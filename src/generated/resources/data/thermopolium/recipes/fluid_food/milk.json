@@ -1,7 +1,7 @@
 {
   "type": "thermopolium:fluid_food",
   "heal": 0,
-  "sat": 1.2,
+  "sat": 2.0,
   "parts": 4,
   "fluid": "thermopolium:scalded_milk",
   "item": {

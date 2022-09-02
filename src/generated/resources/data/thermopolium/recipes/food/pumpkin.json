@@ -1,13 +1,13 @@
 {
   "type": "thermopolium:food",
   "heal": 3,
-  "sat": 6.0,
+  "sat": 1.0,
   "items": [
     {
-      "item": "minecraft:pumpkin"
+      "item": "minecraft:carved_pumpkin"
     },
     {
-      "item": "minecraft:carved_pumpkin"
+      "item": "minecraft:pumpkin"
     }
   ],
   "item": {

@@ -17,6 +17,7 @@
     {
       "id": "rankine:corn_seeds",
       "required": false
-    }
+    },
+    "#forge:bread"
   ]
 }

@@ -40,6 +40,7 @@
     {
       "id": "stone_age:tiger_meat",
       "required": false
-    }
+    },
+    "#forge:raw_bacon"
   ]
 }
