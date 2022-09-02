@@ -2,5 +2,5 @@
   "type": "thermopolium:boiling",
   "from": "minecraft:water",
   "to": "thermopolium:nail_soup",
-  "time": 100
+  "time": 200
 }
