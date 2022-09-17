@@ -126,6 +126,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 
 	@Override
 	public void tick() {
+		boolean flag=false;
 		if (!world.isRemote) {
 			working=false;
 			if (processMax > 0) {
@@ -133,24 +134,30 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				if(te instanceof AbstractStove) {
 					int rh=((AbstractStove) te).requestHeat();
 					process+=rh;
-					if(rh>0)
+					if(rh>0) {
 						working=true;
+						flag=true;
+					}
 					if (process >= processMax) {
 						process = 0;
 						processMax = 0;
 						doWork();
+						flag=true;
 					}
+					
 				}else return;
 			} else {
 				prepareWork();
 				if (canAddFluid())
-					tryContianFluid();
+					flag|=tryContianFluid();
 			}
+			if(flag)
+				this.syncData();
 		}
-		this.syncData();
+		
 	}
 
-	private void tryContianFluid() {
+	private boolean tryContianFluid() {
 		ItemStack is = inv.getStackInSlot(9);
 		if (!is.isEmpty() && inv.getStackInSlot(10).isEmpty()) {
 			if (is.getItem() == Items.BOWL && tank.getFluidAmount() >= 250) {
@@ -158,7 +165,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				if (recipe != null) {
 					is.shrink(1);
 					inv.setStackInSlot(10, recipe.handle(tank.drain(250, FluidAction.EXECUTE)));
-					return;
+					return true;
 				}
 			}
 			if (is.getItem() instanceof StewItem) {
@@ -166,16 +173,19 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 					ItemStack ret = is.getContainerItem();
 					is.shrink(1);
 					inv.setStackInSlot(10,ret);
+					return true;
 				}
-				return;
+				return false;
 			}
 			FluidActionResult far = FluidUtil.tryFillContainer(is, this.tank, 1250, null, true);
 			if (far.isSuccess()) {
 				is.shrink(1);
 				if (far.getResult() != null)
 					inv.setStackInSlot(10, far.getResult());
+				return true;
 			}
 		}
+		return false;
 	}
 
 	public boolean canAddFluid() {

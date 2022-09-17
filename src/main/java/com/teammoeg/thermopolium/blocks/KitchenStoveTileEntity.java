@@ -154,6 +154,7 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 		if(!world.isRemote) {
 			BlockState bs=this.getBlockState();
 			boolean flag=false;
+			boolean requireSync=false;
 			if(process<=0&&(bs.get(KitchenStove.LIT)||bs.get(KitchenStove.ASH))) {
 				bs=bs.with(KitchenStove.LIT,false).with(KitchenStove.ASH,false);
 				flag=true;
@@ -172,6 +173,7 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 				if(bs.get(KitchenStove.LIT)) {
 					cd--;
 					process--;
+					requireSync=true;
 					if(cd<=0) {
 						bs=bs.with(KitchenStove.LIT,false);
 						flag=true;
@@ -180,7 +182,8 @@ public class KitchenStoveTileEntity extends INetworkTile implements IInventory,I
 			}
 			if(flag)
 				this.world.setBlockState(this.getPos(),bs);
-			this.syncData();
+			if(requireSync)
+				this.syncData();
 		}
 	}
 

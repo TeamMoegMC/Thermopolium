@@ -163,7 +163,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener {
 				continue;
 			addCookingTime(i, iis, irs, false);
 		}
-
+		
 		FoodValueRecipe.recipeset = new HashSet<>(FoodValueRecipe.recipes.values());
 		CookingRecipe.sorted = new ArrayList<>(CookingRecipe.recipes.values());
 		CookingRecipe.sorted.sort((t2, t1) -> t1.getPriority() - t2.getPriority());
