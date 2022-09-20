@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.teammoeg.thermopolium.Config;
 import com.teammoeg.thermopolium.api.ThermopoliumHooks;
 import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
@@ -50,6 +51,8 @@ public class DietApiImplMixin extends DietApi {
 		if(ois==null)return;
 		List<FloatemStack> is=ois.stacks;
 		Map<IDietGroup, Float> groups = new HashMap<>();
+		float b=Config.COMMON.benefitModifier.get();
+		float h=Config.COMMON.harmfulModifier.get();
 		for (FloatemStack sx : is) {
 			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(sx.getItem());
 			ItemStack stack;
@@ -60,7 +63,10 @@ public class DietApiImplMixin extends DietApi {
 			IDietResult dr = DietApiImpl.getInstance().get(player, stack);
 			if (dr != DietResult.EMPTY)
 				for (Entry<IDietGroup, Float> me : dr.get().entrySet())
-					groups.merge(me.getKey(), me.getValue() * sx.getCount()*1.3f, Float::sum);
+					if(me.getKey().isBeneficial()) {
+						groups.merge(me.getKey(), me.getValue()*sx.getCount()*b, Float::sum);
+					}else
+						groups.merge(me.getKey(), me.getValue()*sx.getCount()*h, Float::sum);
 		}
 		FluidFoodValueRecipe ffvr=FluidFoodValueRecipe.recipes.get(ois.base);
 		if(ffvr!=null&&ffvr.getRepersent()!=null) {
@@ -68,9 +74,9 @@ public class DietApiImplMixin extends DietApi {
 			if (dr != DietResult.EMPTY)
 				for (Entry<IDietGroup, Float> me : dr.get().entrySet())
 					if(me.getKey().isBeneficial()) {
-						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*1.4f, Float::sum);
+						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*b, Float::sum);
 					}else
-						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*0.6f, Float::sum);
+						groups.merge(me.getKey(), me.getValue()*(ois.shrinkedFluid+1)/ffvr.parts*h, Float::sum);
 		}
 		result.setReturnValue(new DietResult(groups));
 	}
