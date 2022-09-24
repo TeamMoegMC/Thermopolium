@@ -106,7 +106,7 @@ public class ForgeEvent {
 				Fluid f = blockstate1.getFluidState().getFluid();
 				if (f != Fluids.EMPTY) {
 					BowlContainingRecipe recipe = BowlContainingRecipe.recipes.get(f);
-
+					if(recipe==null)return;
 					ItemStack ret = recipe.handle(f);
 					event.setCanceled(true);
 					event.setCancellationResult(ActionResultType.func_233537_a_(worldIn.isRemote));
