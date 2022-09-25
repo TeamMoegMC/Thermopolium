@@ -64,7 +64,6 @@ public class FoodValueRecipe extends IDataRecipe {
 	public List<Pair<EffectInstance, Float>> effects;
 	public final Map<Item, Integer> processtimes;
 	private ItemStack repersent;
-	private ItemStack cookedStack;
 	public transient Set<ResourceLocation> tags;
 
 	public FoodValueRecipe(ResourceLocation id, int heal, float sat, ItemStack rps, Item... types) {
@@ -199,11 +198,4 @@ public class FoodValueRecipe extends IDataRecipe {
 			this.repersent = null;
 	}
 
-	public ItemStack getCookedStack() {
-		return cookedStack;
-	}
-
-	public void setCookedStack(ItemStack cookedStack) {
-		this.cookedStack = cookedStack;
-	}
 }

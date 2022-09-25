@@ -1,1 +1,1 @@
-Add config for diet values
+Fix a crash when using bowl on lava
