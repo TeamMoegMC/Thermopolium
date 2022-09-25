@@ -1,0 +1,8 @@
+{
+  "type": "watersource:water_level_item",
+  "ingredient": {
+    "item": "thermopolium:egg_tongsui"
+  },
+  "waterLevel": 2,
+  "waterSaturationLevel": 2
+}

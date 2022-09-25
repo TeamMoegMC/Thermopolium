@@ -1,1 +1,1 @@
-Fix a crash when using bowl on lava
+Add water level for stews

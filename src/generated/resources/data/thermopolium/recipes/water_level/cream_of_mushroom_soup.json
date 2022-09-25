@@ -1,0 +1,8 @@
+{
+  "type": "watersource:water_level_item",
+  "ingredient": {
+    "item": "thermopolium:cream_of_mushroom_soup"
+  },
+  "waterLevel": 2,
+  "waterSaturationLevel": 2
+}

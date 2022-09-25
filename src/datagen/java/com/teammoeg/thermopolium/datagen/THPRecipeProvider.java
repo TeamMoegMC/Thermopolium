@@ -19,6 +19,7 @@
 package com.teammoeg.thermopolium.datagen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -37,6 +38,8 @@ import com.teammoeg.thermopolium.data.recipes.DissolveRecipe;
 import com.teammoeg.thermopolium.data.recipes.FluidFoodValueRecipe;
 import com.teammoeg.thermopolium.data.recipes.FoodValueRecipe;
 
+import gloridifice.watersource.WaterSource;
+import gloridifice.watersource.registry.RecipeSerializersRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.CustomRecipeBuilder;
 import net.minecraft.data.DataGenerator;
@@ -120,6 +123,14 @@ public class THPRecipeProvider extends RecipeProvider {
 		simpleFood(out,0,.8f,Items.BONE_MEAL);
 		simpleFood(out,1,.5f,Items.BONE);
 		simpleFood(out,3,.5f,Items.EGG);
+		String[] ovride=new String[] {
+				"dilute_soup",
+				"nail_soup",
+				"plain_water"
+		};
+		for (Item s : THPItems.stews)
+			if(!Arrays.stream(ovride).anyMatch(s.getRegistryName().getPath()::equals))
+				out.accept(new WaterLevelRecipe(new ResourceLocation(Main.MODID,"water_level/"+s.getRegistryName().getPath()),Ingredient.fromItems(s),2,2));
 		out=out.andThen(recipes::add);
 		cook("acquacotta").high().base().tag(anyWater).and().require().mainly().of(baked).and().then().finish(out);
 		cook("congee").med().base().tag(anyWater).and().require().half().of(rice).and().then().dense(0.25).finish(out);

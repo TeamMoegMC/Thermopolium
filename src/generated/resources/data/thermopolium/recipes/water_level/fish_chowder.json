@@ -1,0 +1,8 @@
+{
+  "type": "watersource:water_level_item",
+  "ingredient": {
+    "item": "thermopolium:fish_chowder"
+  },
+  "waterLevel": 2,
+  "waterSaturationLevel": 2
+}

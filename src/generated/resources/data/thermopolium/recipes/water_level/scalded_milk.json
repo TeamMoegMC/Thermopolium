@@ -1,0 +1,8 @@
+{
+  "type": "watersource:water_level_item",
+  "ingredient": {
+    "item": "thermopolium:scalded_milk"
+  },
+  "waterLevel": 2,
+  "waterSaturationLevel": 2
+}

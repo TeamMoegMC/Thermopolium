@@ -1,0 +1,8 @@
+{
+  "type": "watersource:water_level_item",
+  "ingredient": {
+    "item": "thermopolium:seaweed_soup"
+  },
+  "waterLevel": 2,
+  "waterSaturationLevel": 2
+}
