@@ -1,1 +1,1 @@
-Add water level for stews
+Fixed config values

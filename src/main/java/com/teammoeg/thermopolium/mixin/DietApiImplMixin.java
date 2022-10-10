@@ -51,8 +51,8 @@ public class DietApiImplMixin extends DietApi {
 		if(ois==null)return;
 		List<FloatemStack> is=ois.stacks;
 		Map<IDietGroup, Float> groups = new HashMap<>();
-		float b=Config.COMMON.benefitModifier.get();
-		float h=Config.COMMON.harmfulModifier.get();
+		float b=(float)(double)Config.COMMON.benefitModifier.get();
+		float h=(float)(double)Config.COMMON.harmfulModifier.get();
 		for (FloatemStack sx : is) {
 			FoodValueRecipe fvr = FoodValueRecipe.recipes.get(sx.getItem());
 			ItemStack stack;

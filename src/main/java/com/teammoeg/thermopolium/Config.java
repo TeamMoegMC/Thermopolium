@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -45,13 +46,13 @@ public class Config {
 		/**
 		 * @param builder
 		 */
-		public ConfigValue<Float> benefitModifier;
-		public ConfigValue<Float> harmfulModifier;
+		public DoubleValue benefitModifier;
+		public DoubleValue harmfulModifier;
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.push("diet_compat");
 			builder.comment("beneficial and harmful diet value modifier when cooked into soup.");
-			benefitModifier=builder.define("beneficial_modifier", 1.3f);
-			harmfulModifier=builder.define("harmful_modifier", 0.6f);
+			benefitModifier=builder.defineInRange("beneficial_modifier", 1.3f,0f,Float.MAX_VALUE);
+			harmfulModifier=builder.defineInRange("harmful_modifier", 0.6f,0f,Float.MAX_VALUE);
 			builder.pop();
 		}
 	}
