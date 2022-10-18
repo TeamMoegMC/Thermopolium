@@ -53,6 +53,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.RegistryObject;
@@ -95,7 +97,12 @@ public class THPRecipeProvider extends RecipeProvider {
 		out.accept(new BowlContainingRecipe(rl("bowl/plain_milk"), item(mrl("plain_milk")), ForgeMod.MILK.get()));
 		out.accept(new BoilingRecipe(rl("boil/water"), fluid(mcrl("water")), fluid(mrl("nail_soup")), 100));
 		out.accept(new BoilingRecipe(rl("boil/milk"), fluid(mcrl("milk")), fluid(mrl("scalded_milk")), 100));
-		out.accept(new FoodValueRecipe(rl("food/mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),Items.RED_MUSHROOM,Items.BROWN_MUSHROOM));
+		//rankine:honey_mushroom
+		//[23:35:10] [INFO] server_scripts:the_winter_rescue/recipetypes/stoneage/tree_stump.js:38: rankine:sulfur_shelf_mushroom
+		//[23:35:10] [INFO] server_scripts:the_winter_rescue/recipetypes/stoneage/tree_stump.js:38: rankine:oyster_mushroom
+		//[23:35:10] [INFO] server_scripts:the_winter_rescue/recipetypes/stoneage/tree_stump.js:38: rankine:lions_mane_mushroom
+		out.accept(new FoodValueRecipe(rl("food/mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),Items.RED_MUSHROOM,Items.BROWN_MUSHROOM,RankineItems.HONEY_MUSHROOM.get(),RankineItems.SULFUR_SHELF_MUSHROOM.get(),RankineItems.OYSTER_MUSHROOM.get(),RankineItems.LIONS_MANE_MUSHROOM.get()));
+		out.accept(new FoodValueRecipe(rl("food/poison_mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),RankineItems.ARTIST_CONK_MUSHROOM.get(),RankineItems.TINDER_CONK_MUSHROOM.get(),RankineItems.TURKEY_TAIL_MUSHROOM.get(),RankineItems.CINNABAR_POLYPORE_MUSHROOM.get()).addEffect(new EffectInstance(Effects.POISON,100,2),1).addEffect(new EffectInstance(Effects.NAUSEA,400),1));
 		out.accept(new FoodValueRecipe(rl("food/pumpkin"),3,1f,new ItemStack(Items.PUMPKIN),Items.PUMPKIN,Items.CARVED_PUMPKIN));
 		out.accept(new FoodValueRecipe(rl("food/wheat"),3,.8f,new ItemStack(Items.WHEAT),Items.WHEAT,Items.WHEAT_SEEDS));
 		out.accept(new FoodValueRecipe(rl("food/fern"),1,0.5f,new ItemStack(Items.FERN),Items.FERN,Items.LARGE_FERN));
@@ -108,18 +115,28 @@ public class THPRecipeProvider extends RecipeProvider {
 		out.accept(new FluidFoodValueRecipe(rl("fluid_food/milk"),0,2f,new ItemStack(Items.MILK_BUCKET),4,new ResourceLocation(Main.MODID,"scalded_milk")));
 		out.accept(new FluidFoodValueRecipe(rl("fluid_food/stock"),2,5f,null,4,new ResourceLocation(Main.MODID,"stock")));
 		simpleFood(out,2,0.4f,Items.HONEYCOMB);
-		simpleFood(out,3,.8f,ItemRegistry.amaranthitem);
-		simpleFood(out,3,.8f,ItemRegistry.barleyitem);
-		simpleFood(out,3,.8f,ItemRegistry.beanitem);
-		simpleFood(out,3,.8f,ItemRegistry.chickpeaitem);
-		simpleFood(out,3,.8f,ItemRegistry.cornitem);
-		simpleFood(out,3,.8f,ItemRegistry.lentilitem);
-		simpleFood(out,3,.8f,ItemRegistry.milletitem);
-		simpleFood(out,3,.8f,ItemRegistry.oatsitem);
-		simpleFood(out,3,.8f,ItemRegistry.quinoaitem);
-		simpleFood(out,3,.8f,ItemRegistry.riceitem);
-		simpleFood(out,3,.8f,ItemRegistry.ryeitem);
-		simpleFood(out,3,.8f,ItemRegistry.soybeanitem);
+		simpleFood(out,3,.8f,ItemRegistry.amaranthitem,ItemRegistry.amaranthseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.barleyitem,ItemRegistry.barleyseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.beanitem,ItemRegistry.beanseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.chickpeaitem,ItemRegistry.chickpeaseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.cornitem,ItemRegistry.cornseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.lentilitem,ItemRegistry.lentilseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.milletitem,ItemRegistry.milletseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.oatsitem,ItemRegistry.oatsseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.quinoaitem,ItemRegistry.quinoaseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.riceitem,ItemRegistry.riceseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.ryeitem,ItemRegistry.ryeseeditem);
+		simpleFood(out,3,.8f,ItemRegistry.soybeanitem,ItemRegistry.soybeanseeditem);
+		simpleFood(out,3,.8f,RankineItems.BARLEY,RankineItems.BARLEY_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.SOYBEANS);
+		simpleFood(out,3,.8f,RankineItems.CORN_EAR,RankineItems.CORN_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.MILLET,RankineItems.MILLET_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.OATS,RankineItems.OAT_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.RYE,RankineItems.RYE_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.RICE,RankineItems.RICE_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.SORGHUM,RankineItems.SORGHUM_GRAIN);
+		simpleFood(out,3,.8f,RankineItems.WHEAT_GRAIN);
+		
 		simpleFood(out,0,.8f,Items.BONE_MEAL);
 		simpleFood(out,1,.5f,Items.BONE);
 		simpleFood(out,3,.5f,Items.EGG);
@@ -190,8 +207,15 @@ public class THPRecipeProvider extends RecipeProvider {
 		cook("nettle_soup").special().med().require().half().of(mrl("fern")).and().not().any().of(seafood).of(meats)
 				.of(cereals).and().then().finish(out);
 	}
-	private void simpleFood(Consumer<IFinishedRecipe> out,int h,float s,Item i) {
-		out.accept(new FoodValueRecipe(rl("food/"+i.getRegistryName().getPath()),h,s,new ItemStack(i),i));
+	private void simpleFood(Consumer<IFinishedRecipe> out,int h,float s,Item... is) {
+		out.accept(new FoodValueRecipe(rl("food/"+is[0].getRegistryName().getNamespace()+"/"+is[0].getRegistryName().getPath()),h,s,new ItemStack(is[0]),is));
+	}
+	@SafeVarargs
+	private final void simpleFood(Consumer<IFinishedRecipe> out,int h,float s,RegistryObject<Item>... is) {
+		Item[] its=new Item[is.length];
+		for(int i=0;i<its.length;i++)
+			its[i]=is[i].get();
+		out.accept(new FoodValueRecipe(rl("food/"+is[0].getId().getNamespace()+"/"+is[0].getId().getPath()),h,s,new ItemStack(is[0].get()),its));
 	}
 	private DissolveRecipe dissolve(Item item) {
 		return new DissolveRecipe(rl("dissolve/" + item.getRegistryName().getPath()),

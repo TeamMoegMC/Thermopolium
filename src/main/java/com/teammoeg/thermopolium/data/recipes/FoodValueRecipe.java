@@ -18,7 +18,9 @@
 
 package com.teammoeg.thermopolium.data.recipes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -70,12 +72,12 @@ public class FoodValueRecipe extends IDataRecipe {
 		super(id);
 		this.heal = heal;
 		this.sat = sat;
-		processtimes = new HashMap<>();
+		processtimes = new LinkedHashMap<>();
 		repersent = rps;
 		for (Item i : types)
 			processtimes.put(i, 0);
 	}
-
+	
 	public FoodValueRecipe(ResourceLocation id, JsonObject jo) {
 		super(id);
 		heal = jo.get("heal").getAsInt();
@@ -122,6 +124,12 @@ public class FoodValueRecipe extends IDataRecipe {
 				repersent = i[0];
 		}
 		
+	}
+	public FoodValueRecipe addEffect(EffectInstance effect, float chance) {
+		if(effects==null)
+			effects=new ArrayList<>();
+		effects.add(Pair.of(effect, chance));
+		return this;
 	}
 	@Override
 	public void serialize(JsonObject json) {

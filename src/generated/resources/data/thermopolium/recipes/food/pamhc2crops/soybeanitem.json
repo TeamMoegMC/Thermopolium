@@ -5,6 +5,9 @@
   "items": [
     {
       "item": "pamhc2crops:soybeanitem"
+    },
+    {
+      "item": "pamhc2crops:soybeanseeditem"
     }
   ],
   "item": {

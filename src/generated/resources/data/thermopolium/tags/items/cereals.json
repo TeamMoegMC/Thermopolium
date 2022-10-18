@@ -11,13 +11,14 @@
       "required": false
     },
     {
-      "id": "rankine:corn_flour",
+      "id": "rankine:corn_grain",
       "required": false
     },
     {
       "id": "rankine:corn_seeds",
       "required": false
     },
-    "#forge:bread"
+    "#forge:bread",
+    "#forge:flour"
   ]
 }

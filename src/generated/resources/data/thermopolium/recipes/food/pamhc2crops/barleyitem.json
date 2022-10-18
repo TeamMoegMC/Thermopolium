@@ -5,6 +5,9 @@
   "items": [
     {
       "item": "pamhc2crops:barleyitem"
+    },
+    {
+      "item": "pamhc2crops:barleyseeditem"
     }
   ],
   "item": {

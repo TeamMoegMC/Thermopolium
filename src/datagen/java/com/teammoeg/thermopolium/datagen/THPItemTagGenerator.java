@@ -71,9 +71,9 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 		tag(baked).add(Items.BREAD).addOptional(RankineItems.TOAST.getId()).addTag(ftag("pasta"))
 				.addOptional(rl(fd + ":pie_crust"));
 		tag(cereals).addTag(atag(rice)).addTag(ftag("grain")).addTag(atag(baked)).add(Items.WHEAT, Items.WHEAT_SEEDS)
-				.addOptional(rl(RankineItems.CORN_EAR)).addOptional(rl(RankineItems.CORN_FLOUR))
-				.addOptional(rl(RankineItems.CORN_SEEDS)).addTag(ftag("bread"));
-		tag(rice).addTag(ftag("grain/rice")).addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_FLOUR))
+				.addOptional(rl(RankineItems.CORN_EAR)).addOptional(rl(RankineItems.CORN_GRAIN))
+				.addOptional(rl(RankineItems.CORN_SEEDS)).addTag(ftag("bread")).addTag(ftag("flour"));
+		tag(rice).addTag(ftag("grain/rice")).addOptional(rl(RankineItems.RICE)).addOptional(rl(RankineItems.RICE_GRAIN))
 				.addOptional(rl(RankineItems.RICE_SEEDS));
 		tag(roots).add(Items.POTATO, Items.BAKED_POTATO).addTag(ftag("rootvegetables"));
 		tag(vegetables).add(Items.CARROT, Items.BEETROOT, Items.PUMPKIN).addTag(atag(mushrooms))

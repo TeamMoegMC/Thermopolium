@@ -4,13 +4,13 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "minecraft:wheat"
+      "item": "rankine:corn_ear"
     },
     {
-      "item": "minecraft:wheat_seeds"
+      "item": "rankine:corn_grain"
     }
   ],
   "item": {
-    "item": "minecraft:wheat"
+    "item": "rankine:corn_ear"
   }
 }

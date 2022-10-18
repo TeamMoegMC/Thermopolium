@@ -4,13 +4,13 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "minecraft:wheat"
+      "item": "pamhc2crops:riceitem"
     },
     {
-      "item": "minecraft:wheat_seeds"
+      "item": "pamhc2crops:riceseeditem"
     }
   ],
   "item": {
-    "item": "minecraft:wheat"
+    "item": "pamhc2crops:riceitem"
   }
 }

@@ -4,13 +4,13 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "minecraft:wheat"
+      "item": "pamhc2crops:milletitem"
     },
     {
-      "item": "minecraft:wheat_seeds"
+      "item": "pamhc2crops:milletseeditem"
     }
   ],
   "item": {
-    "item": "minecraft:wheat"
+    "item": "pamhc2crops:milletitem"
   }
 }

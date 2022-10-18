@@ -4,10 +4,13 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "pamhc2crops:ryeitem"
+      "item": "rankine:rye"
+    },
+    {
+      "item": "rankine:rye_grain"
     }
   ],
   "item": {
-    "item": "pamhc2crops:ryeitem"
+    "item": "rankine:rye"
   }
 }

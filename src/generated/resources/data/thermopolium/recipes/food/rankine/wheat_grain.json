@@ -4,10 +4,10 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "pamhc2crops:milletitem"
+      "item": "rankine:wheat_grain"
     }
   ],
   "item": {
-    "item": "pamhc2crops:milletitem"
+    "item": "rankine:wheat_grain"
   }
 }

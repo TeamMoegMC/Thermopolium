@@ -5,6 +5,9 @@
   "items": [
     {
       "item": "pamhc2crops:beanitem"
+    },
+    {
+      "item": "pamhc2crops:beanseeditem"
     }
   ],
   "item": {

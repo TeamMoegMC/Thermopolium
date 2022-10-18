@@ -5,6 +5,9 @@
   "items": [
     {
       "item": "pamhc2crops:cornitem"
+    },
+    {
+      "item": "pamhc2crops:cornseeditem"
     }
   ],
   "item": {

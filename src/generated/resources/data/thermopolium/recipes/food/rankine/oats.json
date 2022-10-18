@@ -4,10 +4,13 @@
   "sat": 0.8,
   "items": [
     {
-      "item": "pamhc2crops:lentilitem"
+      "item": "rankine:oats"
+    },
+    {
+      "item": "rankine:oat_grain"
     }
   ],
   "item": {
-    "item": "pamhc2crops:lentilitem"
+    "item": "rankine:oats"
   }
 }
