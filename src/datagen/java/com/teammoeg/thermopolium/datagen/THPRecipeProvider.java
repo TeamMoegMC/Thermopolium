@@ -102,7 +102,7 @@ public class THPRecipeProvider extends RecipeProvider {
 		//[23:35:10] [INFO] server_scripts:the_winter_rescue/recipetypes/stoneage/tree_stump.js:38: rankine:oyster_mushroom
 		//[23:35:10] [INFO] server_scripts:the_winter_rescue/recipetypes/stoneage/tree_stump.js:38: rankine:lions_mane_mushroom
 		out.accept(new FoodValueRecipe(rl("food/mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),Items.RED_MUSHROOM,Items.BROWN_MUSHROOM,RankineItems.HONEY_MUSHROOM.get(),RankineItems.SULFUR_SHELF_MUSHROOM.get(),RankineItems.OYSTER_MUSHROOM.get(),RankineItems.LIONS_MANE_MUSHROOM.get()));
-		out.accept(new FoodValueRecipe(rl("food/poison_mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),RankineItems.ARTIST_CONK_MUSHROOM.get(),RankineItems.TINDER_CONK_MUSHROOM.get(),RankineItems.TURKEY_TAIL_MUSHROOM.get(),RankineItems.CINNABAR_POLYPORE_MUSHROOM.get()).addEffect(new EffectInstance(Effects.POISON,100,2),1).addEffect(new EffectInstance(Effects.NAUSEA,400),1));
+		out.accept(new FoodValueRecipe(rl("food/poison_mushroom"),3,.5f,new ItemStack(Items.RED_MUSHROOM),RankineItems.ARTIST_CONK_MUSHROOM.get(),RankineItems.TINDER_CONK_MUSHROOM.get(),RankineItems.TURKEY_TAIL_MUSHROOM.get(),RankineItems.CINNABAR_POLYPORE_MUSHROOM.get()).addEffect(new EffectInstance(Effects.POISON,400,2),1).addEffect(new EffectInstance(Effects.HUNGER,1200,1),1).addEffect(new EffectInstance(Effects.NAUSEA,400),1));
 		out.accept(new FoodValueRecipe(rl("food/pumpkin"),3,1f,new ItemStack(Items.PUMPKIN),Items.PUMPKIN,Items.CARVED_PUMPKIN));
 		out.accept(new FoodValueRecipe(rl("food/wheat"),3,.8f,new ItemStack(Items.WHEAT),Items.WHEAT,Items.WHEAT_SEEDS));
 		out.accept(new FoodValueRecipe(rl("food/fern"),1,0.5f,new ItemStack(Items.FERN),Items.FERN,Items.LARGE_FERN));

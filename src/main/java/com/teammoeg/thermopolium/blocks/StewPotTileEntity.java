@@ -129,7 +129,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		boolean flag=false;
 		if (!world.isRemote) {
 			working=false;
-			if (processMax > 0) {
+			if (processMax>0) {
 				TileEntity te=world.getTileEntity(pos.down());
 				if(te instanceof AbstractStove) {
 					int rh=((AbstractStove) te).requestHeat();
@@ -236,20 +236,25 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		if (rsstate && proctype == 0 && !operate && world.isBlockPowered(this.pos))
 			operate = true;
 		
-		if (operate && proctype == 0) {
-			operate = false;
-			TileEntity te=world.getTileEntity(pos.down());
-			if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
-				return;
-			if (doBoil())
-				proctype = 1;
-			else if (makeSoup())
-				proctype = 2;
+		if (proctype == 0) {
+			if(operate){
+				operate = false;
+				TileEntity te=world.getTileEntity(pos.down());
+				if(!(te instanceof AbstractStove)||!((AbstractStove) te).canEmitHeat()) 
+					return;
+				if (doBoil())
+					proctype = 1;
+				else if (makeSoup())
+					proctype = 2;
+			}
 		} else if (proctype == 1) {
 			if (makeSoup())
 				proctype = 2;
 			else
 				proctype = 0;
+		}else {//Some exception cause processMax not properly set.
+			Main.logger.warn("Unproper process in stew pot "+this.serializeNBT()+" forced to proper");
+			processMax=50;
 		}
 	}
 

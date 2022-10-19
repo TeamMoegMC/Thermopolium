@@ -19,8 +19,14 @@
   "effects": [
     {
       "level": 2,
-      "time": 100,
+      "time": 400,
       "effect": "minecraft:poison",
+      "chance": 1.0
+    },
+    {
+      "level": 1,
+      "time": 1200,
+      "effect": "minecraft:hunger",
       "chance": 1.0
     },
     {
