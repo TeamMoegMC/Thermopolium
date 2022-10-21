@@ -187,7 +187,8 @@ public class SoupInfo {
 		int conv = (int) (MathHelper.clamp((dense - 1) / 2f, 0, 1) * 0.3 * nh);
 		this.healing = (int) Math.ceil(nh - conv);
 		ns += conv / 2f;
-		this.saturation = Math.max(0.7f, ns / this.healing);
+		if(this.healing>0)
+			this.saturation = Math.max(0.7f, ns / this.healing);
 	}
 
 	public void adjustParts(float oparts, float parts) {

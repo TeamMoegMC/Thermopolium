@@ -230,7 +230,7 @@ artifacts {
 }
 String getChangelogText() {
     def changelogFile = file('changelog.txt')
-    String str = ''
+    String str = "<span style=\"font-size: 18px; color: #333399;\">Thermopolium v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
     int lineCount = 0
     boolean done = false
     changelogFile.eachLine {
@@ -239,12 +239,8 @@ String getChangelogText() {
         }
         if (it.size() > 1) {
             def temp = it
-            if (lineCount == 0) {
-                temp = "Thermopolium ${version}"
-                temp = "<span style=\"font-size: 18px; color: #333399;\">Thermopolium v${mod_version}</span>&nbsp;&nbsp;<em>for Minecraft ${minecraft_version}</em><br/>"
-            }else {
-                temp = "<h4>$temp</h4>"
-            }
+            temp = "<h4>$temp</h4>"
+            
             str += temp
             lineCount++
         }
