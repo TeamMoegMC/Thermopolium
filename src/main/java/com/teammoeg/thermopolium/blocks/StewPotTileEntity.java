@@ -73,7 +73,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			if (slot < 9)
-				return stack.getItem() == Items.POTION || CookingRecipe.isCookable(stack);
+				return (stack.getItem() == Items.POTION&&!PotionUtils.getEffectsFromStack(stack).stream().anyMatch(t->t.duration==1)) || CookingRecipe.isCookable(stack);
 			if (slot == 9) {
 				Item i = stack.getItem();
 				return i == Items.BOWL || i instanceof StewItem;

@@ -88,8 +88,10 @@ public class StewItem extends Item {
 		}
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
-			if (!worldIn.isRemote)
-				player.getFoodStats().addStats(si.healing, si.saturation);
+			if (!worldIn.isRemote) {
+				if(!Float.isNaN(si.saturation))
+					player.getFoodStats().addStats(si.healing, si.saturation);
+			}
 			if (player.abilities.isCreativeMode)
 				return itemstack;
 

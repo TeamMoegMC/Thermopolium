@@ -74,7 +74,8 @@ public class ThermopoliumApi {
 			}
 			if (entityLiving instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity) entityLiving;
-				player.getFoodStats().addStats(info.healing,info.saturation);
+				if(!Float.isNaN(info.saturation))
+					player.getFoodStats().addStats(info.healing,info.saturation);
 			}
 		}
 	}

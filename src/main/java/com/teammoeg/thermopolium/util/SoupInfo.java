@@ -189,6 +189,8 @@ public class SoupInfo {
 		ns += conv / 2f;
 		if(this.healing>0)
 			this.saturation = Math.max(0.7f, ns / this.healing);
+		else
+			this.saturation=0;
 	}
 
 	public void adjustParts(float oparts, float parts) {
