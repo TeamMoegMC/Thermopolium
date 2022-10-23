@@ -23,6 +23,9 @@ import com.cannolicatfish.rankine.init.RankineItems;
 import com.teammoeg.thermopolium.Contents.THPBlocks;
 import com.teammoeg.thermopolium.Contents.THPItems;
 import com.teammoeg.thermopolium.Main;
+
+import enemeez.simplefarming.init.ModItems;
+
 import static com.teammoeg.thermopolium.datagen.THPRecipeProvider.*;
 
 import net.minecraft.data.DataGenerator;
@@ -81,7 +84,7 @@ public class THPItemTagGenerator extends TagsProvider<Item> {
 		tag(eggs).add(Items.EGG).addTag(ftag("cooked_eggs"));
 		tag(crustaceans);
 		tag(fish).addTag(atag(mcrl("fishes"))).addTag(ftag("raw_fishes"));
-		tag(seafood).add(Items.KELP, Items.DRIED_KELP);
+		tag(seafood).add(Items.KELP, Items.DRIED_KELP).add(ModItems.raw_calamari,ModItems.fried_calamari);
 		tag(poultry).add(Items.CHICKEN, Items.RABBIT).addTag(ftag("raw_chicken")).addTag(ftag("raw_rabbit"))
 				.addOptional(rl(sa + "fowl_meat")).addTag(atag(frl("bread"))).addOptional(rl(sf+"raw_chicken_wings")).addOptional(rl(sf+"raw_sausage")).addOptional(rl(sf+"raw_horse_meat"));
 		tag(meat).add(Items.BEEF, Items.MUTTON, Items.PORKCHOP, Items.ROTTEN_FLESH).addTag(ftag("bacon"))
