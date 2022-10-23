@@ -1,1 +1,1 @@
-Fixed a rare case that stew pot may stuck in some state
+Minor optimization

@@ -59,7 +59,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class StewPot extends Block implements ILiquidContainer {
+public class StewPot extends Block {
 	public final String name;
 	protected int lightOpacity;
 	public static final EnumProperty<Axis> FACING = BlockStateProperties.HORIZONTAL_AXIS;
@@ -127,21 +127,6 @@ public class StewPot extends Block implements ILiquidContainer {
 			return ActionResultType.SUCCESS;
 		}
 		return p;
-	}
-
-	@Override
-	public boolean canContainFluid(IBlockReader w, BlockPos p, BlockState s, Fluid f) {
-		StewPotTileEntity te = (StewPotTileEntity) w.getTileEntity(p);
-		return te.canAddFluid(new FluidStack(f.getFluid(), 1000));
-	}
-
-	@Override
-	public boolean receiveFluid(IWorld w, BlockPos p, BlockState s, FluidState f) {
-		StewPotTileEntity te = (StewPotTileEntity) w.getTileEntity(p);
-		if (te.tryAddFluid(new FluidStack(f.getFluid(), 1000))) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
