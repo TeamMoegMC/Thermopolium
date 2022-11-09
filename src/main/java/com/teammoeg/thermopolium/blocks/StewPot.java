@@ -138,7 +138,7 @@ public class StewPot extends Block {
 				double d0 = pos.getX();
 				double d1 = pos.getY() + 1;
 				double d2 = pos.getZ();
-				int count = 3;
+				int count = 2;
 				while (--count != 0)
 					worldIn.addParticle(Particles.STEAM.get(), d0 + rand.nextFloat(), d1, d2 + rand.nextFloat(), 0.0D,
 							0.0D, 0.0D);

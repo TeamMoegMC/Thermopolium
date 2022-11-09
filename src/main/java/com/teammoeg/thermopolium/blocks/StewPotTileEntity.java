@@ -597,7 +597,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		public int fill(FluidStack resource, FluidAction action) {
 			if (canAddFluid()) {
 				int filled=tank.fill(resource, action);
-				if(filled>0&&action==FluidAction.EXECUTE) {
+				if(filled>0&&action.execute()) {
 					syncData();
 				}
 				return filled;
@@ -609,7 +609,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		public FluidStack drain(FluidStack resource, FluidAction action) {
 			if (canAddFluid()) {
 				FluidStack drained=tank.drain(resource, action);
-				if(!drained.isEmpty()&&action==FluidAction.EXECUTE){
+				if(!drained.isEmpty()&&action.execute()){
 					syncData();
 				}
 				return drained;
@@ -621,7 +621,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 		public FluidStack drain(int maxDrain, FluidAction action) {
 			if (canAddFluid()) {
 				FluidStack drained=tank.drain(maxDrain, action);
-				if(!drained.isEmpty()&&action==FluidAction.EXECUTE){
+				if(!drained.isEmpty()&&action.execute()){
 					syncData();
 				}
 				return drained;

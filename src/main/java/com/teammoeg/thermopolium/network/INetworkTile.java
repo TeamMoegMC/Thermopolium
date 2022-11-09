@@ -37,8 +37,9 @@ public abstract class INetworkTile extends TileEntity {
 	}
 
 	public void syncData() {
-		this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
 		this.markDirty();
+		this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
+		
 	}
 
 	public abstract void readCustomNBT(CompoundNBT nbt, boolean isClient);

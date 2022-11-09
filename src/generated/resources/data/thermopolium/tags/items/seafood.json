@@ -4,6 +4,8 @@
     "#thermopolium:seafood/fish",
     "#thermopolium:seafood/crustaceans",
     "minecraft:kelp",
-    "minecraft:dried_kelp"
+    "minecraft:dried_kelp",
+    "simplefarming:raw_calamari",
+    "simplefarming:fried_calamari"
   ]
 }
