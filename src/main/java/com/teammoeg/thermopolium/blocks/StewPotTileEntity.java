@@ -562,6 +562,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 				rsstate = false;
 			else if (data == 2)
 				rsstate = true;
+			this.syncData();
 		}
 
 	}
