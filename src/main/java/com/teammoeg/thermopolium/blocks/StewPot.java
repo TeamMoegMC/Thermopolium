@@ -117,8 +117,10 @@ public class StewPot extends Block {
 
 				return ActionResultType.func_233537_a_(worldIn.isRemote);
 			}
-			if (FluidUtil.interactWithFluidHandler(player, handIn, tileEntity.getTank()))
+			if (FluidUtil.interactWithFluidHandler(player, handIn, tileEntity.getTank())) {
+				tileEntity.syncData();
 				return ActionResultType.SUCCESS;
+			}
 
 		}
 		if (handIn == Hand.MAIN_HAND) {
