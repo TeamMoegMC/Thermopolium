@@ -1,1 +1,1 @@
-Fix wrong tags cause tag system fail.
+Fix error potion duration handling

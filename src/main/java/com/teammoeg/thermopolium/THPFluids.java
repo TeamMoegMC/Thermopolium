@@ -109,7 +109,7 @@ public class THPFluids {
 		for (Entry<String, TAC> i : soupfluids.entrySet()) {
 			FLUIDS.register(i.getKey(),
 					() -> new SoupFluid(new ForgeFlowingFluid.Properties(null, null,
-							SoupAttributes.builder(i.getValue().t, i.getValue().t).viscosity(1200).color(i.getValue().c)
+							SoupAttributes.builder(THPStewTexture.texture.getOrDefault(i.getKey(),i.getValue().t),THPStewTexture.texture.getOrDefault(i.getKey(),i.getValue().t)).viscosity(1200).color(THPStewTexture.texture.containsKey(i.getKey())?0xffffffff:i.getValue().c)
 									.temperature(333).rarity(Rarity.UNCOMMON)).slopeFindDistance(1)
 											.explosionResistance(100F)));
 		}

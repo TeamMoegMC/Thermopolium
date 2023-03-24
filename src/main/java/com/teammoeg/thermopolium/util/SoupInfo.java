@@ -91,7 +91,11 @@ public class SoupInfo {
 	public boolean canMerge(SoupInfo f, float cparts, float oparts) {
 		return (this.getDensity() * cparts + f.getDensity() * oparts) / (cparts + oparts) <= 3;
 	}
-
+	/*
+	 *
+	 * @param cparts current soup amout
+	 * @param oparts new soup amout
+	 **/
 	public boolean merge(SoupInfo f, float cparts, float oparts) {
 		if (!canMerge(f,cparts,oparts))
 			return false;
@@ -105,8 +109,11 @@ public class SoupInfo {
 				}
 			}
 			if (!added) {
-				if (effects.size() < 3)
-					effects.add(es);
+				if (effects.size() < 3) {
+					EffectInstance copy=new EffectInstance(es);
+					copy.duration=(int) (copy.duration*oparts/cparts);
+					effects.add(copy);
+				}
 			}
 		}
 		for (Pair<EffectInstance, Float> es : f.foodeffect) {
@@ -126,6 +133,7 @@ public class SoupInfo {
 		for (FloatemStack fs : f.stacks) {
 			this.addItem(new FloatemStack(fs.getStack(), fs.count * oparts / cparts));
 		}
+
 		completeAll();
 		return true;
 	}

@@ -531,6 +531,7 @@ public class StewPotTileEntity extends INetworkTile implements ITickableTileEnti
 			fs = bnx.handle(fs);
 			pm = (int) (bnx.time*(fs.getAmount()/250f));
 		}
+		//n = SoupFluid.getInfo(fs);
 		if (current.merge(n, tank.getFluidAmount() / 250f, fs.getAmount() / 250f)) {
 			this.adjustParts(fs.getAmount() / 250);
 			int num=Math.max(decideSoup(),50);
