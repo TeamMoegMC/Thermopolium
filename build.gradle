@@ -156,6 +156,15 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    maven {
+        name = "TeamMoeg COS Maven"
+        url = "https://maven-1301510336.cos.ap-guangzhou.myqcloud.com"
+        content {
+            includeGroup "gloridifice.watersource"
+            includeGroup "com.alcatrazescapee.primalwinter"
+            includeGroup "java.moze_intel"
+        }
+    }
 }
 
 dependencies {
@@ -283,6 +292,12 @@ publishing {
             artifact jar
             artifact deobfJar
             artifact sourcesJar
+        }
+    }
+    repositories {
+        maven {
+            name = "COS"
+            url = "http://127.0.0.1:9999"
         }
     }
 }
